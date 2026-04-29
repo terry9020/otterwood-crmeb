@@ -13,7 +13,7 @@ import com.otterwood.common.model.system.SystemAttachment;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.request.SystemAttachmentMoveRequest;
 import com.otterwood.common.request.SystemAttachmentRequest;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.service.dao.SystemAttachmentDao;
 import com.otterwood.service.service.SystemAttachmentService;
 import com.otterwood.service.service.SystemConfigService;
@@ -28,13 +28,13 @@ import java.util.List;
 /**
  * SystemAttachmentServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -73,7 +73,7 @@ public class SystemAttachmentServiceImpl extends ServiceImpl<SystemAttachmentDao
         LambdaQueryWrapper<SystemAttachment> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(SystemAttachment::getPid, pid);
         if(StringUtils.isNotEmpty(attType)){
-            lambdaQueryWrapper.in(SystemAttachment::getAttType, CrmebUtil.stringToArrayStr(attType));
+            lambdaQueryWrapper.in(SystemAttachment::getAttType, OtterwoodUtil.stringToArrayStr(attType));
         }
         lambdaQueryWrapper.orderByDesc(SystemAttachment::getAttId);
         return dao.selectList(lambdaQueryWrapper);
@@ -93,7 +93,7 @@ public class SystemAttachmentServiceImpl extends ServiceImpl<SystemAttachmentDao
     @Override
     public String prefixUploadf(String path) {
         // 如果那些域名不需要加，则跳过
-        return path.replace("crmebimage/" + UploadConstants.UPLOAD_AFTER_FILE_KEYWORD+"/", getCdnUrl() + "/" +"crmebimage/" + UploadConstants.UPLOAD_AFTER_FILE_KEYWORD+"/");
+        return path.replace("otterwoodimage/" + UploadConstants.UPLOAD_AFTER_FILE_KEYWORD+"/", getCdnUrl() + "/" +"otterwoodimage/" + UploadConstants.UPLOAD_AFTER_FILE_KEYWORD+"/");
     }
 
     /**
@@ -105,13 +105,13 @@ public class SystemAttachmentServiceImpl extends ServiceImpl<SystemAttachmentDao
     public String prefixFile(String path) {
         if (path.contains(Constants.WECHAT_SOURCE_CODE_FILE_NAME)) {
             String cdnUrl = systemConfigService.getValueByKey("local" + "UploadUrl");
-            return path.replace("crmebimage/", cdnUrl + "/crmebimage/");
+            return path.replace("otterwoodimage/", cdnUrl + "/otterwoodimage/");
         }
         if (path.contains("downloadf/excel")) {
             String cdnUrl = systemConfigService.getValueByKey("local" + "UploadUrl");
-            return path.replace("crmebimage/downloadf/", cdnUrl + "/crmebimage/downloadf/");
+            return path.replace("otterwoodimage/downloadf/", cdnUrl + "/otterwoodimage/downloadf/");
         }
-        return path.replace("crmebimage/file/", getCdnUrl() + "/crmebimage/file/");
+        return path.replace("otterwoodimage/file/", getCdnUrl() + "/otterwoodimage/file/");
     }
 
     /**
@@ -165,7 +165,7 @@ public class SystemAttachmentServiceImpl extends ServiceImpl<SystemAttachmentDao
     @Override
     public Boolean updateAttrId(SystemAttachmentMoveRequest move) {
         LambdaUpdateWrapper<SystemAttachment> lup = new LambdaUpdateWrapper<>();
-        lup.in(SystemAttachment::getAttId, CrmebUtil.stringToArray(move.getAttrId()));
+        lup.in(SystemAttachment::getAttId, OtterwoodUtil.stringToArray(move.getAttrId()));
         lup.set(SystemAttachment::getPid, move.getPid());
         return update(lup);
     }

@@ -1,6 +1,6 @@
 package com.otterwood.common.result;
 
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.vo.MyRecord;
 
 import java.io.Serializable;
@@ -11,13 +11,13 @@ import java.util.Map;
 /**
  * 公共返回对象
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 public class CommonResult<T> implements Serializable {
@@ -127,7 +127,7 @@ public class CommonResult<T> implements Serializable {
     /**
      * 失败返回结果
      */
-    public static <T> CommonResult<T> failed(CrmebException e) {
+    public static <T> CommonResult<T> failed(OtterwoodException e) {
         return new CommonResult<>(e.getCode(), e.getMessage());
     }
 

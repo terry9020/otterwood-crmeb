@@ -7,16 +7,16 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.otterwood.common.config.CrmebConfig;
+import com.otterwood.common.config.OtterwoodConfig;
 import com.otterwood.common.constants.PayConstants;
 import com.otterwood.common.constants.WeChatConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.wechat.WechatExceptions;
 import com.otterwood.common.model.wechat.WechatPayInfo;
 import com.otterwood.common.request.SaveConfigRequest;
 import com.otterwood.common.response.WeChatJsSdkConfigResponse;
 import com.otterwood.common.token.WeChatOauthToken;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.utils.RestTemplateUtil;
 import com.otterwood.common.utils.XmlUtil;
@@ -42,13 +42,13 @@ import java.util.concurrent.TimeUnit;
 /**
  *  微信公用服务实现类
  *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
  */
 @Service
@@ -56,7 +56,7 @@ public class WechatNewServiceImpl implements WechatNewService {
     private static final Logger logger = LoggerFactory.getLogger(WechatNewServiceImpl.class);
 
     @Autowired
-    private CrmebConfig crmebConfig;
+    private OtterwoodConfig otterwoodConfig;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -85,11 +85,11 @@ public class WechatNewServiceImpl implements WechatNewService {
         }
         String appId = systemConfigService.getValueByKey(WeChatConstants.WECHAT_PUBLIC_APPID);
         if (StrUtil.isBlank(appId)) {
-            throw new CrmebException("微信公众号appId未设置");
+            throw new OtterwoodException("微信公众号appId未设置");
         }
         String secret = systemConfigService.getValueByKey(WeChatConstants.WECHAT_PUBLIC_APPSECRET);
         if (StrUtil.isBlank(secret)) {
-            throw new CrmebException("微信公众号secret未设置");
+            throw new OtterwoodException("微信公众号secret未设置");
         }
         WeChatAccessTokenVo accessTokenVo = getAccessToken(appId, secret, "public");
         // 缓存accessToken
@@ -112,11 +112,11 @@ public class WechatNewServiceImpl implements WechatNewService {
         }
         String appId = systemConfigService.getValueByKey(WeChatConstants.WECHAT_MINI_APPID);
         if (StrUtil.isBlank(appId)) {
-            throw new CrmebException("微信小程序appId未设置");
+            throw new OtterwoodException("微信小程序appId未设置");
         }
         String secret = systemConfigService.getValueByKey(WeChatConstants.WECHAT_MINI_APPSECRET);
         if (StrUtil.isBlank(secret)) {
-            throw new CrmebException("微信小程序secret未设置");
+            throw new OtterwoodException("微信小程序secret未设置");
         }
         WeChatAccessTokenVo accessTokenVo = getAccessToken(appId, secret, "mini");
         // 缓存accessToken
@@ -135,22 +135,22 @@ public class WechatNewServiceImpl implements WechatNewService {
     public WeChatOauthToken getOauth2AccessToken(String code) {
         String appId = systemConfigService.getValueByKey(WeChatConstants.WECHAT_PUBLIC_APPID);
         if (StrUtil.isBlank(appId)) {
-            throw new CrmebException("微信公众号appId未设置");
+            throw new OtterwoodException("微信公众号appId未设置");
         }
         String secret = systemConfigService.getValueByKey(WeChatConstants.WECHAT_PUBLIC_APPSECRET);
         if (StrUtil.isBlank(secret)) {
-            throw new CrmebException("微信公众号secret未设置");
+            throw new OtterwoodException("微信公众号secret未设置");
         }
         String url = StrUtil.format(WeChatConstants.WECHAT_OAUTH2_ACCESS_TOKEN_URL, appId, secret, code);
         JSONObject data = restTemplateUtil.getData(url);
         if (ObjectUtil.isNull(data)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (data.containsKey("errcode") && !data.getString("errcode").equals("0")) {
             if (data.containsKey("errmsg")) {
                 // 保存到微信异常表
                 wxExceptionDispose(data, "微信获取开放平台access_token异常");
-                throw new CrmebException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
+                throw new OtterwoodException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
             }
         }
         return JSONObject.parseObject(data.toJSONString(), WeChatOauthToken.class);
@@ -168,13 +168,13 @@ public class WechatNewServiceImpl implements WechatNewService {
         String url = StrUtil.format(WeChatConstants.WECHAT_SNS_USERINFO_URL, accessToken, openid, "zh_CN");
         JSONObject data = restTemplateUtil.getData(url);
         if (ObjectUtil.isNull(data)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (data.containsKey("errcode") && !data.getString("errcode").equals("0")) {
             if (data.containsKey("errmsg")) {
                 // 保存到微信异常表
                 wxExceptionDispose(data, "微信获取开放平台用户信息异常");
-                throw new CrmebException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
+                throw new OtterwoodException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
             }
         }
         return JSONObject.parseObject(data.toJSONString(), WeChatAuthorizeLoginUserInfoVo.class);
@@ -188,22 +188,22 @@ public class WechatNewServiceImpl implements WechatNewService {
     public WeChatMiniAuthorizeVo miniAuthCode(String code) {
         String appId = systemConfigService.getValueByKey(WeChatConstants.WECHAT_MINI_APPID);
         if (StrUtil.isBlank(appId)) {
-            throw new CrmebException("微信小程序appId未设置");
+            throw new OtterwoodException("微信小程序appId未设置");
         }
         String secret = systemConfigService.getValueByKey(WeChatConstants.WECHAT_MINI_APPSECRET);
         if (StrUtil.isBlank(secret)) {
-            throw new CrmebException("微信小程序secret未设置");
+            throw new OtterwoodException("微信小程序secret未设置");
         }
         String url = StrUtil.format(WeChatConstants.WECHAT_MINI_SNS_AUTH_CODE2SESSION_URL, appId, secret, code);
         JSONObject data = restTemplateUtil.getData(url);
         if (ObjectUtil.isNull(data)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (data.containsKey("errcode") && !data.getString("errcode").equals("0")) {
             if (data.containsKey("errmsg")) {
                 // 保存到微信异常表
                 wxExceptionDispose(data, "微信小程序登录凭证校验异常");
-                throw new CrmebException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
+                throw new OtterwoodException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
             }
         }
         return JSONObject.parseObject(data.toJSONString(), WeChatMiniAuthorizeVo.class);
@@ -218,15 +218,15 @@ public class WechatNewServiceImpl implements WechatNewService {
         try {
             url = URLDecoder.decode(url, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new CrmebException("url无法解析！");
+            throw new OtterwoodException("url无法解析！");
         }
 
         String appId = systemConfigService.getValueByKey(WeChatConstants.WECHAT_PUBLIC_APPID);
         if (StrUtil.isBlank(appId)) {
-            throw new CrmebException("微信公众号appId未设置");
+            throw new OtterwoodException("微信公众号appId未设置");
         }
         String ticket = getJsApiTicket();
-        String nonceStr = CrmebUtil.getUuid();
+        String nonceStr = OtterwoodUtil.getUuid();
         Long timestamp = DateUtil.currentSeconds();
         String signature = getJsSDKSignature(nonceStr, ticket, timestamp , url);
 
@@ -236,8 +236,8 @@ public class WechatNewServiceImpl implements WechatNewService {
         response.setNonceStr(nonceStr);
         response.setTimestamp(timestamp);
         response.setSignature(signature);
-        response.setJsApiList(CrmebUtil.stringToArrayStr(WeChatConstants.PUBLIC_API_JS_API_SDK_LIST));
-        response.setDebug(crmebConfig.isWechatJsApiDebug());
+        response.setJsApiList(OtterwoodUtil.stringToArrayStr(WeChatConstants.PUBLIC_API_JS_API_SDK_LIST));
+        response.setDebug(otterwoodConfig.isWechatJsApiDebug());
         return response;
     }
 
@@ -275,20 +275,20 @@ public class WechatNewServiceImpl implements WechatNewService {
                     wxExceptionDispose(data2, "微信小程序重试生成小程序码异常");
                 } else {
                     try {
-                        return CrmebUtil.getBase64Image(Base64.encodeBase64String(bytes));
+                        return OtterwoodUtil.getBase64Image(Base64.encodeBase64String(bytes));
                     } catch (Exception e) {
                         e.printStackTrace();
-                        throw new CrmebException("微信小程序码转换Base64异常");
+                        throw new OtterwoodException("微信小程序码转换Base64异常");
                     }
                 }
             }
-            throw new CrmebException("微信生成二维码异常");
+            throw new OtterwoodException("微信生成二维码异常");
         }
         try {
-            return CrmebUtil.getBase64Image(Base64.encodeBase64String(bytes));
+            return OtterwoodUtil.getBase64Image(Base64.encodeBase64String(bytes));
         } catch (Exception e) {
             e.printStackTrace();
-            throw new CrmebException("微信小程序码转换Base64异常");
+            throw new OtterwoodException("微信小程序码转换Base64异常");
         }
     }
 
@@ -323,20 +323,20 @@ public class WechatNewServiceImpl implements WechatNewService {
                     wxExceptionDispose(data2, "微信小程序重试生成小程序码异常");
                 } else {
                     try {
-                        return CrmebUtil.getBase64Image(Base64.encodeBase64String(bytes));
+                        return OtterwoodUtil.getBase64Image(Base64.encodeBase64String(bytes));
                     } catch (Exception e) {
                         e.printStackTrace();
-                        throw new CrmebException("微信小程序码转换Base64异常");
+                        throw new OtterwoodException("微信小程序码转换Base64异常");
                     }
                 }
             }
-            throw new CrmebException("微信生成二维码异常");
+            throw new OtterwoodException("微信生成二维码异常");
         }
         try {
-            return CrmebUtil.getBase64Image(Base64.encodeBase64String(bytes));
+            return OtterwoodUtil.getBase64Image(Base64.encodeBase64String(bytes));
         } catch (Exception e) {
             e.printStackTrace();
-            throw new CrmebException("微信小程序码转换Base64异常");
+            throw new OtterwoodException("微信小程序码转换Base64异常");
         }
     }
 
@@ -353,25 +353,25 @@ public class WechatNewServiceImpl implements WechatNewService {
             String xml = restTemplateUtil.postXml(url, request);
             HashMap<String, Object> map = XmlUtil.xmlToMap(xml);
             if (null == map) {
-                throw new CrmebException("微信下单失败！");
+                throw new OtterwoodException("微信下单失败！");
             }
             // 保存微信预下单
             WechatPayInfo wechatPayInfo = createWechatPayInfo(unifiedorderVo);
 
-            CreateOrderResponseVo responseVo = CrmebUtil.mapToObj(map, CreateOrderResponseVo.class);
+            CreateOrderResponseVo responseVo = OtterwoodUtil.mapToObj(map, CreateOrderResponseVo.class);
             if (responseVo.getReturnCode().toUpperCase().equals("FAIL")) {
                 // 保存到微信异常表
                 wxPayExceptionDispose(map, "微信支付预下单异常");
                 wechatPayInfo.setErrCode(map.get("return_code").toString());
                 wechatPayInfoService.save(wechatPayInfo);
-                throw new CrmebException("微信下单失败1！" +  responseVo.getReturnMsg());
+                throw new OtterwoodException("微信下单失败1！" +  responseVo.getReturnMsg());
             }
 
             if (responseVo.getResultCode().toUpperCase().equals("FAIL")) {
                 wxPayExceptionDispose(map, "微信支付预下单业务异常");
                 wechatPayInfo.setErrCode(map.get("err_code").toString());
                 wechatPayInfoService.save(wechatPayInfo);
-                throw new CrmebException("微信下单失败2！" + responseVo.getErrCodeDes());
+                throw new OtterwoodException("微信下单失败2！" + responseVo.getErrCodeDes());
             }
             wechatPayInfo.setErrCode("200");
             wechatPayInfo.setPrepayId(responseVo.getPrepayId());
@@ -380,7 +380,7 @@ public class WechatNewServiceImpl implements WechatNewService {
             return responseVo;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new CrmebException(e.getMessage());
+            throw new OtterwoodException(e.getMessage());
         }
     }
 
@@ -427,27 +427,27 @@ public class WechatNewServiceImpl implements WechatNewService {
             HashMap<String, Object> map = XmlUtil.xmlToMap(xml);
             MyRecord record = new MyRecord();
             if (null == map) {
-                throw new CrmebException("微信订单查询失败！");
+                throw new OtterwoodException("微信订单查询失败！");
             }
             record.setColums(map);
             if (record.getStr("return_code").toUpperCase().equals("FAIL")) {
                 wxPayQueryExceptionDispose(record, "微信支付查询订单通信异常");
-                throw new CrmebException("微信订单查询失败1！" +  record.getStr("return_msg"));
+                throw new OtterwoodException("微信订单查询失败1！" +  record.getStr("return_msg"));
             }
 
             if (record.getStr("result_code").toUpperCase().equals("FAIL")) {
                 wxPayQueryExceptionDispose(record, "微信支付查询订单结果异常");
-                throw new CrmebException("微信订单查询失败2！" + record.getStr("err_code") + record.getStr("err_code_des"));
+                throw new OtterwoodException("微信订单查询失败2！" + record.getStr("err_code") + record.getStr("err_code_des"));
             }
             if (!record.getStr("trade_state").toUpperCase().equals("SUCCESS")) {
                 wxPayQueryExceptionDispose(record, "微信支付查询订单状态异常");
-                throw new CrmebException("微信订单支付失败3！" + record.getStr("trade_state"));
+                throw new OtterwoodException("微信订单支付失败3！" + record.getStr("trade_state"));
             }
 
             return record;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new CrmebException("查询微信订单mapToXml异常===》" + e.getMessage());
+            throw new OtterwoodException("查询微信订单mapToXml异常===》" + e.getMessage());
         }
     }
 
@@ -464,12 +464,12 @@ public class WechatNewServiceImpl implements WechatNewService {
         String result = restTemplateUtil.postJsonData(url, jsonData);
         JSONObject data = JSONObject.parseObject(result);
         if (ObjectUtil.isNull(data)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (data.containsKey("errcode") && !data.getString("errcode").equals("0")) {
             if (data.containsKey("errmsg")) {
                 wxExceptionDispose(data, "微信公众号发送模板消息异常");
-                throw new CrmebException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
+                throw new OtterwoodException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
             }
         }
         return Boolean.TRUE;
@@ -488,7 +488,7 @@ public class WechatNewServiceImpl implements WechatNewService {
         String result = restTemplateUtil.postJsonData(url, messAge);
         JSONObject data = JSONObject.parseObject(result);
         if (ObjectUtil.isNull(data)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (data.containsKey("errcode") && !data.getString("errcode").equals("0")) {
             if (data.getString("errcode").equals("40001")) {
@@ -501,7 +501,7 @@ public class WechatNewServiceImpl implements WechatNewService {
                 if (data2.containsKey("errcode") && !data2.getString("errcode").equals("0")) {
                     if (data2.containsKey("errmsg")) {
                         wxExceptionDispose(data2, "微信小程序发送订阅消息重试异常");
-                        throw new CrmebException("微信接口调用失败：" + data2.getString("errcode") + data2.getString("errmsg"));
+                        throw new OtterwoodException("微信接口调用失败：" + data2.getString("errcode") + data2.getString("errmsg"));
                     }
                 } else {
                     return Boolean.TRUE;
@@ -509,7 +509,7 @@ public class WechatNewServiceImpl implements WechatNewService {
             }
             if (data.containsKey("errmsg")) {
                 wxExceptionDispose(data, "微信小程序发送订阅消息异常");
-                throw new CrmebException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
+                throw new OtterwoodException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
             }
         }
         return Boolean.TRUE;
@@ -526,14 +526,14 @@ public class WechatNewServiceImpl implements WechatNewService {
         String url = StrUtil.format(WeChatConstants.WECHAT_PUBLIC_MENU_GET_URL, accessToken);
         JSONObject result = restTemplateUtil.getData(url);
         if (ObjectUtil.isNull(result)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (result.containsKey("errcode") && result.getString("errcode").equals("0")) {
             return result;
         }
         if (result.containsKey("errmsg")) {
             wxExceptionDispose(result, "微信公众号获取自定义菜单配置异常");
-            throw new CrmebException("微信接口调用失败：" + result.getString("errcode") + result.getString("errmsg"));
+            throw new OtterwoodException("微信接口调用失败：" + result.getString("errcode") + result.getString("errmsg"));
         }
         return result;
     }
@@ -551,14 +551,14 @@ public class WechatNewServiceImpl implements WechatNewService {
         logger.info("微信消息发送结果:" + result);
         JSONObject jsonObject = JSONObject.parseObject(result);
         if (ObjectUtil.isNull(jsonObject)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (jsonObject.containsKey("errcode") && jsonObject.getString("errcode").equals("0")) {
             return Boolean.TRUE;
         }
         if (jsonObject.containsKey("errmsg")) {
             wxExceptionDispose(jsonObject, "微信公众号创建自定义菜单异常");
-            throw new CrmebException("微信接口调用失败：" + jsonObject.getString("errcode") + jsonObject.getString("errmsg"));
+            throw new OtterwoodException("微信接口调用失败：" + jsonObject.getString("errcode") + jsonObject.getString("errmsg"));
         }
         return Boolean.TRUE;
     }
@@ -573,14 +573,14 @@ public class WechatNewServiceImpl implements WechatNewService {
         String url = StrUtil.format(WeChatConstants.WECHAT_PUBLIC_MENU_DELETE_URL, accessToken);
         JSONObject result = restTemplateUtil.getData(url);
         if (ObjectUtil.isNull(result)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (result.containsKey("errcode") && result.getString("errcode").equals("0")) {
             return Boolean.TRUE;
         }
         if (result.containsKey("errmsg")) {
             wxExceptionDispose(result, "微信公众号删除自定义菜单异常");
-            throw new CrmebException("微信接口调用失败：" + result.getString("errcode") + result.getString("errmsg"));
+            throw new OtterwoodException("微信接口调用失败：" + result.getString("errcode") + result.getString("errmsg"));
         }
         return Boolean.TRUE;
     }
@@ -613,21 +613,21 @@ public class WechatNewServiceImpl implements WechatNewService {
             map = XmlUtil.xmlToMap(xml);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new CrmebException("xmlToMap错误，xml = " + xml);
+            throw new OtterwoodException("xmlToMap错误，xml = " + xml);
         }
         if (null == map) {
-            throw new CrmebException("微信无信息返回，微信申请退款失败！");
+            throw new OtterwoodException("微信无信息返回，微信申请退款失败！");
         }
 
-        WxRefundResponseVo responseVo = CrmebUtil.mapToObj(map, WxRefundResponseVo.class);
+        WxRefundResponseVo responseVo = OtterwoodUtil.mapToObj(map, WxRefundResponseVo.class);
         if (responseVo.getReturnCode().toUpperCase().equals("FAIL")) {
             wxPayExceptionDispose(map, "微信申请退款异常1");
-            throw new CrmebException("微信申请退款失败1！" +  responseVo.getReturnMsg());
+            throw new OtterwoodException("微信申请退款失败1！" +  responseVo.getReturnMsg());
         }
 
         if (responseVo.getResultCode().toUpperCase().equals("FAIL")) {
             wxPayExceptionDispose(map, "微信申请退款业务异常");
-            throw new CrmebException("微信申请退款失败2！" + responseVo.getErrCodeDes());
+            throw new OtterwoodException("微信申请退款失败2！" + responseVo.getErrCodeDes());
         }
         System.out.println("================微信申请退款结束=========================");
         return responseVo;
@@ -643,13 +643,13 @@ public class WechatNewServiceImpl implements WechatNewService {
         String url = StrUtil.format(WeChatConstants.WECHAT_PUBLIC_GET_ALL_PRIVATE_TEMPLATE_URL, accessToken);
         JSONObject jsonObject = restTemplateUtil.getData(url);
         if (ObjectUtil.isNull(jsonObject)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (jsonObject.containsKey("errcode") && !jsonObject.getString("errcode").equals("0")) {
             if (jsonObject.containsKey("errmsg")) {
                 // 保存到微信异常表
                 wxExceptionDispose(jsonObject, StrUtil.format("获取我的公众号模板消息列表异常"));
-                throw new CrmebException("微信接口调用失败：" + jsonObject.getString("errcode") + jsonObject.getString("errmsg"));
+                throw new OtterwoodException("微信接口调用失败：" + jsonObject.getString("errcode") + jsonObject.getString("errmsg"));
             }
         }
         JSONArray templateList = jsonObject.getJSONArray("template_list");
@@ -672,12 +672,12 @@ public class WechatNewServiceImpl implements WechatNewService {
         String result = restTemplateUtil.postJsonData(url, jsonData);
         JSONObject data = JSONObject.parseObject(result);
         if (ObjectUtil.isNull(data)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (data.containsKey("errcode") && !data.getString("errcode").equals("0")) {
             if (data.containsKey("errmsg")) {
                 wxExceptionDispose(data, "删除微信公众号模板消息异常");
-                throw new CrmebException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
+                throw new OtterwoodException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
             }
         }
         return Boolean.TRUE;
@@ -698,12 +698,12 @@ public class WechatNewServiceImpl implements WechatNewService {
         String result = restTemplateUtil.postJsonData(url, jsonData);
         JSONObject data = JSONObject.parseObject(result);
         if (ObjectUtil.isNull(data)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (data.containsKey("errcode") && !data.getString("errcode").equals("0")) {
             if (data.containsKey("errmsg")) {
                 wxExceptionDispose(data, "添加公众号模板消息异常");
-                throw new CrmebException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
+                throw new OtterwoodException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
             }
         }
         return data.getString("template_id");
@@ -719,13 +719,13 @@ public class WechatNewServiceImpl implements WechatNewService {
         String url = StrUtil.format(WeChatConstants.WECHAT_MINI_GET_ALL_PRIVATE_TEMPLATE_URL, accessToken);
         JSONObject jsonObject = restTemplateUtil.getData(url);
         if (ObjectUtil.isNull(jsonObject)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (jsonObject.containsKey("errcode") && !jsonObject.getString("errcode").equals("0")) {
             if (jsonObject.containsKey("errmsg")) {
                 // 保存到微信异常表
                 wxExceptionDispose(jsonObject, StrUtil.format("获取小程序当前帐号下的个人模板列表异常"));
-                throw new CrmebException("微信接口调用失败：" + jsonObject.getString("errcode") + jsonObject.getString("errmsg"));
+                throw new OtterwoodException("微信接口调用失败：" + jsonObject.getString("errcode") + jsonObject.getString("errmsg"));
             }
         }
         JSONArray templateList = jsonObject.getJSONArray("data");
@@ -747,12 +747,12 @@ public class WechatNewServiceImpl implements WechatNewService {
         String result = restTemplateUtil.postJsonData(url, jsonData);
         JSONObject data = JSONObject.parseObject(result);
         if (ObjectUtil.isNull(data)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (data.containsKey("errcode") && !data.getString("errcode").equals("0")) {
             if (data.containsKey("errmsg")) {
                 wxExceptionDispose(data, "删除微信小程序订阅消息异常");
-                throw new CrmebException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
+                throw new OtterwoodException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
             }
         }
         return Boolean.TRUE;
@@ -769,13 +769,13 @@ public class WechatNewServiceImpl implements WechatNewService {
         String url = StrUtil.format(WeChatConstants.WECHAT_MINI_GET_TEMPLATE_URL, accessToken, tempKey);
         JSONObject jsonObject = restTemplateUtil.getData(url);
         if (ObjectUtil.isNull(jsonObject)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (jsonObject.containsKey("errcode") && !jsonObject.getString("errcode").equals("0")) {
             if (jsonObject.containsKey("errmsg")) {
                 // 保存到微信异常表
                 wxExceptionDispose(jsonObject, "获取小程序平台上的标准模板异常");
-                throw new CrmebException("微信接口调用失败：" + jsonObject.getString("errcode") + jsonObject.getString("errmsg"));
+                throw new OtterwoodException("微信接口调用失败：" + jsonObject.getString("errcode") + jsonObject.getString("errmsg"));
             }
         }
         JSONArray templateList = jsonObject.getJSONArray("data");
@@ -801,12 +801,12 @@ public class WechatNewServiceImpl implements WechatNewService {
         String result = restTemplateUtil.postJsonData(url, jsonData);
         JSONObject data = JSONObject.parseObject(result);
         if (ObjectUtil.isNull(data)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (data.containsKey("errcode") && !data.getString("errcode").equals("0")) {
             if (data.containsKey("errmsg")) {
                 wxExceptionDispose(data, "添加小程序订阅消息异常");
-                throw new CrmebException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
+                throw new OtterwoodException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
             }
         }
         return data.getString("priTmplId");
@@ -842,13 +842,13 @@ public class WechatNewServiceImpl implements WechatNewService {
         String url = StrUtil.format(WeChatConstants.WECHAT_PUBLIC_JS_TICKET_URL, accessToken);
         JSONObject data = restTemplateUtil.getData(url);
         if (ObjectUtil.isNull(data)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (data.containsKey("errcode") && !data.getString("errcode").equals("0")) {
             if (data.containsKey("errmsg")) {
                 // 保存到微信异常表
                 wxExceptionDispose(data, "微信获取JS-SDK的ticket异常");
-                throw new CrmebException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
+                throw new OtterwoodException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
             }
         }
         String ticket = data.getString("ticket");
@@ -867,13 +867,13 @@ public class WechatNewServiceImpl implements WechatNewService {
         String url = StrUtil.format(WeChatConstants.WECHAT_ACCESS_TOKEN_URL, appId, secret);
         JSONObject data = restTemplateUtil.getData(url);
         if (ObjectUtil.isNull(data)) {
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if (data.containsKey("errcode") && !data.getString("errcode").equals("0")) {
             if (data.containsKey("errmsg")) {
                 // 保存到微信异常表
                 wxExceptionDispose(data, StrUtil.format("微信获取accessToken异常，{}端", type));
-                throw new CrmebException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
+                throw new OtterwoodException("微信接口调用失败：" + data.getString("errcode") + data.getString("errmsg"));
             }
         }
         return JSONObject.parseObject(data.toJSONString(), WeChatAccessTokenVo.class);

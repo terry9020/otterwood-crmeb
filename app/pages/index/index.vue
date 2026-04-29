@@ -78,7 +78,7 @@
 						:isShowTitle="isShowTitle" @getRecommendLength="getRecommendLength"></recommend>
 					<view class='noCommodity' v-if="isNoCommodity&& navIndex > 0">
 						<view class='pictrue'>
-							<image :src="urlDomain+'crmebimage/perset/staticImg/noShopper.png'"></image>
+							<image :src="urlDomain+'otterwoodimage/perset/staticImg/noShopper.png'"></image>
 						</view>
 						<text class="text-ccc">暂无商品</text>
 					</view>
@@ -117,13 +117,13 @@
 
 <script>
 	// +----------------------------------------------------------------------
-	// | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+	// | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
 	// +----------------------------------------------------------------------
-	// | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+	// | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
 	// +----------------------------------------------------------------------
-	// | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+	// | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
 	// +----------------------------------------------------------------------
-	// | Author: CRMEB Team <admin@crmeb.com>
+	// | Author: OTTERWOOD Team <admin@otterwood.com>
 	// +----------------------------------------------------------------------
 	import tuiSkeleton from '@/components/base/tui-skeleton.vue';
 	import Cache from '../../utils/cache';
@@ -520,7 +520,7 @@
 			},
 			xieyiApp() {
 				uni.navigateTo({
-					url: '/pages/users/web_page/index?webUel=https://admin.java.crmeb.net/useragreement/xieyi.html&title=协议内容'
+					url: '/pages/users/web_page/index?webUel=https://admin.java.otterwood.net/useragreement/xieyi.html&title=协议内容'
 				})
 			},
 			// #ifdef APP-PLUS
@@ -528,7 +528,7 @@
 				uni.navigateTo({
 					animationType: animationType.type,
 					animationDuration: animationType.duration,
-					url: '/pages/users/web_page/index?webUel=https://admin.java.crmeb.net/useragreement/xieyi.html&title=协议内容'
+					url: '/pages/users/web_page/index?webUel=https://admin.java.otterwood.net/useragreement/xieyi.html&title=协议内容'
 				})
 			},
 			// #endif
@@ -555,7 +555,7 @@
 			getIndexConfig: function() {
 				let that = this;
 				getIndexData().then(res => {
-					let imgHost = res.data.logoUrl.split('crmebimage')[0];
+					let imgHost = res.data.logoUrl.split('otterwoodimage')[0];
 					that.imgHost = imgHost;
 					that.$Cache.set('imgHost', imgHost );
 					// #ifdef H5 || APP-PLUS

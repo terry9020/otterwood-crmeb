@@ -2,19 +2,19 @@ package com.otterwood.common.utils;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import org.apache.commons.codec.binary.Base64;
 
 /**
  *  微信工具类
  *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
  */
 public class WxUtil {
@@ -53,13 +53,13 @@ public class WxUtil {
      */
     public static JSONObject checkResult(JSONObject result){
         if(ObjectUtil.isNull(result)){
-            throw new CrmebException("微信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("微信平台接口异常，没任何数据返回！");
         }
         if(result.containsKey("errcode") && result.getString("errcode").equals("0")){
             return result;
         }
         if(result.containsKey("errmsg")){
-            throw new CrmebException("微信接口调用失败：" + result.getString("errcode") + result.getString("errmsg"));
+            throw new OtterwoodException("微信接口调用失败：" + result.getString("errcode") + result.getString("errmsg"));
         }
         return result;
     }

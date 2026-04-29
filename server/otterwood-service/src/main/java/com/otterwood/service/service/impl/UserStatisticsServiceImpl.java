@@ -8,7 +8,7 @@ import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.otterwood.common.constants.Constants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.user.User;
 import com.otterwood.common.response.*;
 import com.otterwood.service.service.*;
@@ -22,13 +22,13 @@ import java.util.stream.Collectors;
 /**
  * UserStatisticsService 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -58,7 +58,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     @Override
     public UserOverviewResponse getOverview(String dateLimit) {
         if (StrUtil.isBlank(dateLimit)) {
-            throw new CrmebException("日期参数不能为空");
+            throw new OtterwoodException("日期参数不能为空");
         }
         // 判断时间类型
         if (Constants.SEARCH_DATE_DAY.equals(dateLimit)) {
@@ -269,7 +269,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         // 自定义时间,切割时间
         String[] split = dateLimit.split(",");
         if (split.length < 2) {
-            throw new CrmebException("请选择正确的时间范围");
+            throw new OtterwoodException("请选择正确的时间范围");
         }
         DateTime startDate = DateUtil.parseDate(split[0]);
         DateTime endDate = DateUtil.parseDate(split[1]);
@@ -296,7 +296,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         }
         // 判断开始时间是否大于结束时间
         if (startDate.compareTo(endDate) >= 0) {
-            throw new CrmebException("请选择正确的时间范围");
+            throw new OtterwoodException("请选择正确的时间范围");
         }
         // 获取两个日期间隔了多少天
         long between = DateUtil.between(startDate, endDate, DateUnit.DAY);
@@ -351,7 +351,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
     @Override
     public List<UserOverviewDateResponse> getOverviewList(String dateLimit) {
         if (StrUtil.isBlank(dateLimit)) {
-            throw new CrmebException("日期参数不能为空");
+            throw new OtterwoodException("日期参数不能为空");
         }
         List<UserOverviewDateResponse> responsesList = CollUtil.newArrayList();
         // 判断时间类型
@@ -502,7 +502,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         // 自定义时间,切割时间
         String[] split = dateLimit.split(",");
         if (split.length < 2) {
-            throw new CrmebException("请选择正确的时间范围");
+            throw new OtterwoodException("请选择正确的时间范围");
         }
         DateTime startDate = DateUtil.parseDate(split[0]);
         DateTime endDate = DateUtil.parseDate(split[1]);
@@ -526,7 +526,7 @@ public class UserStatisticsServiceImpl implements UserStatisticsService {
         }
         // 判断开始时间是否大于结束时间
         if (startDate.compareTo(endDate) >= 0) {
-            throw new CrmebException("请选择正确的时间范围");
+            throw new OtterwoodException("请选择正确的时间范围");
         }
         // 获取两个日期间隔了多少天
         List<String> rangeDateList = getRangeDateList(startDate.toString("yyyy-MM-dd"), endDate.toString("yyyy-MM-dd"));

@@ -12,10 +12,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.constants.CategoryConstants;
 import com.otterwood.common.constants.Constants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.vo.CategoryTreeVo;
 import com.github.pagehelper.PageHelper;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.model.category.Category;
 import com.otterwood.common.request.CategoryRequest;
 import com.otterwood.common.request.CategorySearchRequest;
@@ -36,13 +36,13 @@ import java.util.stream.Collectors;
 /**
  * CategoryServiceImpl 接口实现
 *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
 */
 @Service
@@ -186,7 +186,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category> impl
      */
     private void updatePidStatusById(Integer id) {
         Category category = getById(id);
-        List<Integer> categoryIdList = CrmebUtil.stringToArrayByRegex(category.getPath(), "/");
+        List<Integer> categoryIdList = OtterwoodUtil.stringToArrayByRegex(category.getPath(), "/");
         categoryIdList.removeIf(i -> i.equals(0));
         ArrayList<Category> categoryArrayList = new ArrayList<>();
         if(categoryIdList.size() < 1){
@@ -343,7 +343,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category> impl
     public int delete(Integer id) {
         //查看是否有子类, 物理删除
         if(getChildCountByPid(id) > 0){
-            throw new CrmebException("当前分类下有子类，请先删除子类！");
+            throw new OtterwoodException("当前分类下有子类，请先删除子类！");
         }
 
         return dao.deleteById(id);
@@ -429,7 +429,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category> impl
     public Boolean create(CategoryRequest categoryRequest) {
         //检测标题是否存在
         if(checkName(categoryRequest.getName(), categoryRequest.getType(),getPathByPId(categoryRequest.getPid())) > 0){
-            throw new CrmebException("此分类已存在");
+            throw new OtterwoodException("此分类已存在");
         }
         Category category = new Category();
         BeanUtils.copyProperties(categoryRequest, category);

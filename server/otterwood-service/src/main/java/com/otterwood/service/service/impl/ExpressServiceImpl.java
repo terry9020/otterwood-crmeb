@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.constants.OnePassConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.github.pagehelper.PageHelper;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.model.express.Express;
@@ -35,13 +35,13 @@ import java.util.stream.Collectors;
 /**
  * ExpressServiceImpl 接口实现
  *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
 */
 @Service
@@ -80,16 +80,16 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
     @Override
     public Boolean updateExpress(ExpressUpdateRequest expressRequest) {
         Express temp = getById(expressRequest.getId());
-        if (ObjectUtil.isNull(temp)) throw new CrmebException("快递公司不存在!");
+        if (ObjectUtil.isNull(temp)) throw new OtterwoodException("快递公司不存在!");
 
         if (StrUtil.isBlank(expressRequest.getAccount()) && temp.getPartnerId().equals(true)) {
-            throw new CrmebException("请输入月结账号");
+            throw new OtterwoodException("请输入月结账号");
         }
         if (StrUtil.isBlank(expressRequest.getPassword()) && temp.getPartnerKey().equals(true)) {
-            throw new CrmebException("请输入月结密码");
+            throw new OtterwoodException("请输入月结密码");
         }
         if (StrUtil.isBlank(expressRequest.getNetName()) && temp.getNet().equals(true)) {
-            throw new CrmebException("请输入取件网点");
+            throw new OtterwoodException("请输入取件网点");
         }
         Express express = new Express();
         BeanUtils.copyProperties(expressRequest, express);
@@ -103,7 +103,7 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
     @Override
     public Boolean updateExpressShow(ExpressUpdateShowRequest expressRequest) {
         Express temp = getById(expressRequest.getId());
-        if (ObjectUtil.isNull(temp)) throw new CrmebException("编辑的记录不存在!");
+        if (ObjectUtil.isNull(temp)) throw new OtterwoodException("编辑的记录不存在!");
         if (temp.getIsShow().equals(expressRequest.getIsShow())) {
             return Boolean.TRUE;
         }
@@ -192,7 +192,7 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
     public Express getInfo(Integer id) {
         Express express = getById(id);
         if (ObjectUtil.isNull(express)) {
-            throw new CrmebException("快递公司不存在");
+            throw new OtterwoodException("快递公司不存在");
         }
         return express;
     }
@@ -247,7 +247,7 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
 
         if (CollUtil.isNotEmpty(expressList)) {
             boolean saveBatch = saveBatch(expressList);
-            if (!saveBatch) throw new CrmebException("同步物流公司失败");
+            if (!saveBatch) throw new OtterwoodException("同步物流公司失败");
         }
     }
 

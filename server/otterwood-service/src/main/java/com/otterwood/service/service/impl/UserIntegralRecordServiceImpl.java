@@ -12,12 +12,12 @@ import com.otterwood.common.request.AdminIntegralSearchRequest;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.IntegralRecordConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.response.UserIntegralRecordResponse;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.vo.DateLimitUtilVo;
 import com.otterwood.common.model.user.User;
 import com.otterwood.common.model.user.UserIntegralRecord;
@@ -38,13 +38,13 @@ import java.util.stream.Collectors;
 /**
  * 用户积分记录Service实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -150,11 +150,11 @@ public class UserIntegralRecordServiceImpl extends ServiceImpl<UserIntegralRecor
         }
         //时间范围
         if (StrUtil.isNotBlank(request.getDateLimit())) {
-            DateLimitUtilVo dateLimit = CrmebDateUtil.getDateLimit(request.getDateLimit());
+            DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(request.getDateLimit());
             //判断时间
-            int compareDateResult = CrmebDateUtil.compareDate(dateLimit.getEndTime(), dateLimit.getStartTime(), Constants.DATE_FORMAT);
+            int compareDateResult = OtterwoodDateUtil.compareDate(dateLimit.getEndTime(), dateLimit.getStartTime(), Constants.DATE_FORMAT);
             if (compareDateResult == -1) {
-                throw new CrmebException("开始时间不能大于结束时间！");
+                throw new OtterwoodException("开始时间不能大于结束时间！");
             }
 
             lqw.between(UserIntegralRecord::getUpdateTime, dateLimit.getStartTime(), dateLimit.getEndTime());
@@ -198,7 +198,7 @@ public class UserIntegralRecordServiceImpl extends ServiceImpl<UserIntegralRecor
         }
         queryWrapper.eq("status", IntegralRecordConstants.INTEGRAL_RECORD_STATUS_COMPLETE);
         if (StrUtil.isNotBlank(date)) {
-            DateLimitUtilVo dateLimit = CrmebDateUtil.getDateLimit(date);
+            DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(date);
             queryWrapper.between("update_time", dateLimit.getStartTime(), dateLimit.getEndTime());
         }
         UserIntegralRecord integralRecord = dao.selectOne(queryWrapper);

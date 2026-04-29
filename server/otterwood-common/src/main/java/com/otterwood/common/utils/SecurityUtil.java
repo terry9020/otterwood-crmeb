@@ -1,7 +1,7 @@
 package com.otterwood.common.utils;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.vo.LoginUserVo;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,13 +9,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 /**
  * security工具类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 public class SecurityUtil {
@@ -27,7 +27,7 @@ public class SecurityUtil {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUserVo loginUserVo = (LoginUserVo) authentication.getPrincipal();
         if (ObjectUtil.isNull(loginUserVo)) {
-            throw new CrmebException("登录信息已过期，请重新登录");
+            throw new OtterwoodException("登录信息已过期，请重新登录");
         }
         return loginUserVo;
     }

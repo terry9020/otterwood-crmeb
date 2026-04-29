@@ -1,6 +1,6 @@
-# CRMEB 相关配置
-crmeb:
-  version: CRMEB-JAVA-KY-v1.4 # 当前代码版本
+# OTTERWOOD 相关配置
+otterwood:
+  version: OTTERWOOD-JAVA-KY-v1.4 # 当前代码版本
   domain: #配合swagger使用 # 待部署域名
   wechat-api-url:  #请求微信接口中专服务器
   wechat-js-api-debug: false #微信js api系列是否开启调试模式
@@ -47,11 +47,11 @@ debug: true
 logging:
   level:
     io.swagger.*: error
-    com.otterwood.crmeb: debug
+    com.otterwood.otterwood: debug
     org.springframework.boot.autoconfigure: ERROR
   config: classpath:logback-spring.xml
   file:
-    path: ./crmeb_log
+    path: ./otterwood_log
 
 # mybatis 配置
 mybatis-plus:
@@ -64,5 +64,5 @@ swagger:
   basic:
     enable: true #是否开启界面
     check: false #是否打开验证
-    username: crmeb #访问swagger的账号
-    password: crmeb.com #访问swagger的密码
+    username: otterwood #访问swagger的账号
+    password: otterwood.com #访问swagger的密码

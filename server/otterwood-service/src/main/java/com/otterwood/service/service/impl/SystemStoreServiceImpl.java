@@ -5,13 +5,13 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.system.SystemStore;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.request.StoreNearRequest;
 import com.otterwood.common.request.SystemStoreRequest;
 import com.otterwood.common.response.StoreNearResponse;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.vo.SystemStoreNearVo;
 import com.otterwood.service.dao.SystemStoreDao;
 import com.otterwood.service.service.SystemAttachmentService;
@@ -30,13 +30,13 @@ import java.util.List;
 /**
  * SystemStoreServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -98,7 +98,7 @@ public class SystemStoreServiceImpl extends ServiceImpl<SystemStoreDao, SystemSt
     public Boolean updateStatus(Integer id, Boolean status) {
         SystemStore systemStore = getById(id);
         if (ObjectUtil.isNull(systemStore)) {
-            throw new CrmebException("门店自提点不存在");
+            throw new OtterwoodException("门店自提点不存在");
         }
         if (systemStore.getIsShow().equals(status)) {
             return true;
@@ -196,7 +196,7 @@ public class SystemStoreServiceImpl extends ServiceImpl<SystemStoreDao, SystemSt
         if (StringUtils.isNotBlank(request.getLatitude()) && StringUtils.isNotBlank(request.getLongitude())) {
             if (!request.getLatitude().matches("^(90(\\.0+)?|([1-8]?\\d)(\\.\\d+)?)$")
                     || !request.getLongitude().matches("^(180(\\.0+)?|(1[0-7]?\\d|[1-9]?\\d)(\\.\\d+)?)$")) {
-                throw new CrmebException("经纬度坐标输入有误");
+                throw new OtterwoodException("经纬度坐标输入有误");
             }
             storeNearVoArrayList = dao.getNearList(request);
         } else {
@@ -251,7 +251,7 @@ public class SystemStoreServiceImpl extends ServiceImpl<SystemStoreDao, SystemSt
     @Override
     public Boolean completeLyDelete(Integer id) {
         SystemStore systemStore = getById(id);
-        if (ObjectUtil.isNull(systemStore)) throw new CrmebException("提货点不存在!");
+        if (ObjectUtil.isNull(systemStore)) throw new OtterwoodException("提货点不存在!");
         int delete = dao.deleteById(id);
         return delete > 0;
     }
@@ -264,7 +264,7 @@ public class SystemStoreServiceImpl extends ServiceImpl<SystemStoreDao, SystemSt
     @Override
     public Boolean recovery(Integer id) {
         SystemStore systemStore = getById(id);
-        if (ObjectUtil.isNull(systemStore)) throw new CrmebException("提货点不存在!");
+        if (ObjectUtil.isNull(systemStore)) throw new OtterwoodException("提货点不存在!");
         if (!systemStore.getIsDel()) return Boolean.TRUE;
         systemStore.setIsDel(false);
         systemStore.setUpdateTime(DateUtil.date());
@@ -280,7 +280,7 @@ public class SystemStoreServiceImpl extends ServiceImpl<SystemStoreDao, SystemSt
     public SystemStore getInfo(Integer id) {
         SystemStore systemStore = getById(id);
         if (ObjectUtil.isNull(systemStore)) {
-            throw new CrmebException("门店自提点不存在");
+            throw new OtterwoodException("门店自提点不存在");
         }
         systemStore.setLatitude(systemStore.getLatitude() + "," + systemStore.getLongitude());
         return systemStore;
@@ -300,7 +300,7 @@ public class SystemStoreServiceImpl extends ServiceImpl<SystemStoreDao, SystemSt
      */
     private void splitLat(SystemStore systemStore) {
         if (!StringUtils.isBlank(systemStore.getLatitude())) {
-            List<String> list = CrmebUtil.stringToArrayStr(systemStore.getLatitude());
+            List<String> list = OtterwoodUtil.stringToArrayStr(systemStore.getLatitude());
             systemStore.setLongitude(list.get(0));
             systemStore.setLatitude(list.get(1));
         }

@@ -9,7 +9,7 @@ import com.otterwood.common.result.IResultEnum;
  * @Date 2023/2/22 12:34
  * @Version 1.0
  */
-public class BusinessException extends CrmebException {
+public class BusinessException extends OtterwoodException {
 
     private static final long serialVersionUID = 1L;
 

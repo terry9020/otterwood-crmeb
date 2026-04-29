@@ -5,7 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.otterwood.common.constants.DateConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.vo.DateLimitUtilVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,20 +18,20 @@ import java.util.*;
 /**
  * Date工具类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  **/
-public final class CrmebDateUtil {
+public final class OtterwoodDateUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CrmebDateUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OtterwoodDateUtil.class);
 
-    private CrmebDateUtil() {
+    private OtterwoodDateUtil() {
         throw new IllegalStateException("Utility class");
     }
 
@@ -483,9 +483,9 @@ public final class CrmebDateUtil {
     public static DateLimitUtilVo getDateLimit(String data) {
         //时间计算
         String startTime = null;
-        String endTime = CrmebDateUtil.nowDateTime(DateConstants.DATE_FORMAT);
-        String day = CrmebDateUtil.nowDateTime(DateConstants.DATE_FORMAT_START);
-        String end = CrmebDateUtil.nowDateTime(DateConstants.DATE_FORMAT_END);
+        String endTime = OtterwoodDateUtil.nowDateTime(DateConstants.DATE_FORMAT);
+        String day = OtterwoodDateUtil.nowDateTime(DateConstants.DATE_FORMAT_START);
+        String end = OtterwoodDateUtil.nowDateTime(DateConstants.DATE_FORMAT_END);
 
         if (StrUtil.isNotBlank(data)) {
             switch (data) {
@@ -493,11 +493,11 @@ public final class CrmebDateUtil {
                     startTime = day;
                     break;
                 case DateConstants.SEARCH_DATE_YESTERDAY:
-                    startTime = CrmebDateUtil.addDay(day, -1, DateConstants.DATE_FORMAT_START);
-                    endTime = CrmebDateUtil.addDay(end, -1, DateConstants.DATE_FORMAT_END);
+                    startTime = OtterwoodDateUtil.addDay(day, -1, DateConstants.DATE_FORMAT_START);
+                    endTime = OtterwoodDateUtil.addDay(end, -1, DateConstants.DATE_FORMAT_END);
                     break;
                 case DateConstants.SEARCH_DATE_LATELY_7:
-                    startTime = CrmebDateUtil.addDay(day, -6, DateConstants.DATE_FORMAT_START);
+                    startTime = OtterwoodDateUtil.addDay(day, -6, DateConstants.DATE_FORMAT_START);
                     break;
                 case DateConstants.SEARCH_DATE_WEEK:
                     startTime = getWeekStartDay();
@@ -508,16 +508,16 @@ public final class CrmebDateUtil {
                     endTime = getLastWeekEndDay();
                     break;
                 case DateConstants.SEARCH_DATE_LATELY_30:
-                    startTime = CrmebDateUtil.addDay(day, -30, DateConstants.DATE_FORMAT_START);
+                    startTime = OtterwoodDateUtil.addDay(day, -30, DateConstants.DATE_FORMAT_START);
                     break;
                 case DateConstants.SEARCH_DATE_LATELY_90:
-                    startTime = CrmebDateUtil.addDay(day, -90, DateConstants.DATE_FORMAT_START);
+                    startTime = OtterwoodDateUtil.addDay(day, -90, DateConstants.DATE_FORMAT_START);
                     break;
                 case DateConstants.SEARCH_DATE_LATELY_180:
-                    startTime = CrmebDateUtil.addDay(day, -180, DateConstants.DATE_FORMAT_START);
+                    startTime = OtterwoodDateUtil.addDay(day, -180, DateConstants.DATE_FORMAT_START);
                     break;
                 case DateConstants.SEARCH_DATE_MONTH:
-                    startTime = CrmebDateUtil.nowDateTime(DateConstants.DATE_FORMAT_MONTH_START);
+                    startTime = OtterwoodDateUtil.nowDateTime(DateConstants.DATE_FORMAT_MONTH_START);
                     endTime = getMonthEndDay();
                     break;
                 case DateConstants.SEARCH_DATE_PRE_MONTH:
@@ -525,17 +525,17 @@ public final class CrmebDateUtil {
                     endTime = getLastMonthEndDay();
                     break;
                 case DateConstants.SEARCH_DATE_YEAR:
-                    startTime = CrmebDateUtil.nowDateTime(DateConstants.DATE_FORMAT_YEAR_START);
-                    endTime = CrmebDateUtil.nowDateTime(DateConstants.DATE_FORMAT_YEAR_END);
+                    startTime = OtterwoodDateUtil.nowDateTime(DateConstants.DATE_FORMAT_YEAR_START);
+                    endTime = OtterwoodDateUtil.nowDateTime(DateConstants.DATE_FORMAT_YEAR_END);
                     break;
                 case DateConstants.SEARCH_DATE_PRE_YEAR:
                     startTime = getLastYearStartDay();
                     endTime = getLastYearEndDay();
                     break;
                 default:
-                    List<String> list = CrmebUtil.stringToArrayStr(data);
+                    List<String> list = OtterwoodUtil.stringToArrayStr(data);
                     if (list.size() == 1) {
-                        throw new CrmebException("选择时间参数格式错误，请在 " +
+                        throw new OtterwoodException("选择时间参数格式错误，请在 " +
                                 DateConstants.SEARCH_DATE_DAY + "|" +
                                 DateConstants.SEARCH_DATE_YESTERDAY + "|" +
                                 DateConstants.SEARCH_DATE_LATELY_7 + "|" +
@@ -547,8 +547,8 @@ public final class CrmebDateUtil {
                     endTime = list.get(1);
 
 //                    if (startTime.equals(endTime)) {
-                    startTime = CrmebDateUtil.appointedDayStrToFormatStr(startTime, DateConstants.DATE_FORMAT_DATE, DateConstants.DATE_FORMAT_START);
-                    endTime = CrmebDateUtil.appointedDayStrToFormatStr(endTime, DateConstants.DATE_FORMAT_DATE, DateConstants.DATE_FORMAT_END);
+                    startTime = OtterwoodDateUtil.appointedDayStrToFormatStr(startTime, DateConstants.DATE_FORMAT_DATE, DateConstants.DATE_FORMAT_START);
+                    endTime = OtterwoodDateUtil.appointedDayStrToFormatStr(endTime, DateConstants.DATE_FORMAT_DATE, DateConstants.DATE_FORMAT_END);
 //                    }
                     break;
             }
@@ -563,14 +563,14 @@ public final class CrmebDateUtil {
      * @return dateLimitUtilVo
      */
     public static DateLimitUtilVo getMonthLimit(String data) {
-        List<String> monthList = CrmebUtil.stringToArrayStr(data);
+        List<String> monthList = OtterwoodUtil.stringToArrayStr(data);
         if (monthList.size() != 2) {
-            throw new CrmebException("选择时间参数格式错误范围（格式：yyyy-MM，两个时间范围用逗号分割）");
+            throw new OtterwoodException("选择时间参数格式错误范围（格式：yyyy-MM，两个时间范围用逗号分割）");
         }
         String startMonth = monthList.get(0);
         String endMonth = monthList.get(1);
         if (!isValidMonth(startMonth) || !isValidMonth(endMonth)) {
-            throw new CrmebException("时间参数格式错误，格式yyyy-MM");
+            throw new OtterwoodException("时间参数格式错误，格式yyyy-MM");
         }
         return new DateLimitUtilVo(startMonth, endMonth);
     }
@@ -599,20 +599,20 @@ public final class CrmebDateUtil {
     public static List<String> getListDate(String data) {
 
         //获取30天的开始结束日期
-        DateLimitUtilVo dateLimit = CrmebDateUtil.getDateLimit(data);
+        DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(data);
 
         //定义日期集合
         List<String> date = new ArrayList<>();
 
         //开始日期
-        Date startDate = CrmebDateUtil.strToDate(dateLimit.getStartTime(), DateConstants.DATE_FORMAT);
+        Date startDate = OtterwoodDateUtil.strToDate(dateLimit.getStartTime(), DateConstants.DATE_FORMAT);
 
         //结束日期
-        Date endDate = CrmebDateUtil.strToDate(dateLimit.getEndTime(), DateConstants.DATE_FORMAT);
+        Date endDate = OtterwoodDateUtil.strToDate(dateLimit.getEndTime(), DateConstants.DATE_FORMAT);
 
         while (endDate.after(startDate)) {
-            date.add(CrmebDateUtil.dateToStr(startDate, DateConstants.DATE_FORMAT_DATE)); // 放入集合
-            startDate = CrmebDateUtil.strToDate(CrmebDateUtil.addDay(startDate, 1, DateConstants.DATE_FORMAT), DateConstants.DATE_FORMAT); //循环一次 加一天
+            date.add(OtterwoodDateUtil.dateToStr(startDate, DateConstants.DATE_FORMAT_DATE)); // 放入集合
+            startDate = OtterwoodDateUtil.strToDate(OtterwoodDateUtil.addDay(startDate, 1, DateConstants.DATE_FORMAT), DateConstants.DATE_FORMAT); //循环一次 加一天
         }
 
         return date;
@@ -652,8 +652,8 @@ public final class CrmebDateUtil {
      * @throws ParseException
      */
     public static String appointedDayStrToFormatStr(String dateStr, String STR_DATE_FORMAT, String DATE_FORMAT) {
-        Date date = CrmebDateUtil.strToDate(dateStr, STR_DATE_FORMAT);
-        return CrmebDateUtil.dateToStr(date, DATE_FORMAT);
+        Date date = OtterwoodDateUtil.strToDate(dateStr, STR_DATE_FORMAT);
+        return OtterwoodDateUtil.dateToStr(date, DATE_FORMAT);
     }
 
     /**

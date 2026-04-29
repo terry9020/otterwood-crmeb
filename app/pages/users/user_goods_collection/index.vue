@@ -62,7 +62,7 @@
 		</view>
 		<view class='noCommodity' v-else-if="!collectProductList.length && page > 1">
 			<view class='pictrue'>
-				<image :src="urlDomain+'crmebimage/perset/usersImg/noCollection.png'"></image>
+				<image :src="urlDomain+'otterwoodimage/perset/usersImg/noCollection.png'"></image>
 			</view>
 			<recommend ref="recommendIndex"></recommend>
 		</view>

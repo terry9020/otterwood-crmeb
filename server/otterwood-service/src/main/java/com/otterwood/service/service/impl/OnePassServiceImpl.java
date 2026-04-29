@@ -12,8 +12,8 @@ import com.otterwood.common.request.onepass.OnePassShipmentCancelOrderRequest;
 import com.otterwood.common.request.onepass.OnePassShipmentCreateOrderRequest;
 import com.otterwood.common.vo.MyRecord;
 import com.otterwood.common.constants.OnePassConstants;
-import com.otterwood.common.exception.CrmebException;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.exception.OtterwoodException;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.utils.ValidateFormUtil;
 import com.otterwood.common.model.express.Express;
@@ -41,13 +41,13 @@ import java.util.concurrent.TimeUnit;
  * OnePassService 接口实现
  * 一号通
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2022 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -226,7 +226,7 @@ public class OnePassServiceImpl implements OnePassService {
 
         String accessToken = OnePassConstants.ONE_PASS_USER_TOKEN_PREFIX.concat(jsonObject.getJSONObject("data").getString("access_token"));
         Long expiresIn = jsonObject.getJSONObject("data").getLong("expires_in");
-        expiresIn = expiresIn - CrmebDateUtil.getTime();
+        expiresIn = expiresIn - OtterwoodDateUtil.getTime();
         redisUtil.set(StrUtil.format(OnePassConstants.ONE_PASS_TOKEN_KEY_PREFIX, request.getAccessKey()), accessToken, expiresIn, TimeUnit.SECONDS);
         return true;
     }
@@ -268,11 +268,11 @@ public class OnePassServiceImpl implements OnePassService {
      */
     @Override
     public Boolean serviceOpen(ServiceOpenRequest request) {
-        if (!validateMealType(request.getType())) throw new CrmebException("请选择正确的服务类型");
+        if (!validateMealType(request.getType())) throw new OtterwoodException("请选择正确的服务类型");
         Boolean open = false;
         switch (request.getType()) {
             case OnePassConstants.ONE_PASS_MEAL_TYPE_SMS:// 短信开通
-                if (StrUtil.isBlank(request.getSign())) throw new CrmebException("签名不能为空");
+                if (StrUtil.isBlank(request.getSign())) throw new OtterwoodException("签名不能为空");
                 open = smsOpen(request);
                 break;
             case OnePassConstants.ONE_PASS_MEAL_TYPE_EXPR:// 物流开通
@@ -370,22 +370,22 @@ public class OnePassServiceImpl implements OnePassService {
      */
     private void expressOpenValidate(ServiceOpenRequest request) {
         if (StrUtil.isBlank(request.getCom())) {
-            throw new CrmebException("请选择快递公司");
+            throw new OtterwoodException("请选择快递公司");
         }
         if (StrUtil.isBlank(request.getTempId())) {
-            throw new CrmebException("请选择快递模板");
+            throw new OtterwoodException("请选择快递模板");
         }
         if (StrUtil.isBlank(request.getToName())) {
-            throw new CrmebException("请填写寄件人姓名");
+            throw new OtterwoodException("请填写寄件人姓名");
         }
         if (StrUtil.isBlank(request.getToTel())) {
-            throw new CrmebException("请输入寄件人手机号码");
+            throw new OtterwoodException("请输入寄件人手机号码");
         }
         if (StrUtil.isBlank(request.getToAddress())) {
-            throw new CrmebException("请填写寄件人详细地址");
+            throw new OtterwoodException("请填写寄件人详细地址");
         }
         if (StrUtil.isBlank(request.getSiid())) {
-            throw new CrmebException("请填写云打印机编号");
+            throw new OtterwoodException("请填写云打印机编号");
         }
         ValidateFormUtil.isPhoneException(request.getToTel());
     }
@@ -414,7 +414,7 @@ public class OnePassServiceImpl implements OnePassService {
 
         // 电子面单
         Express express = expressService.getByCode(request.getCom());
-        if (ObjectUtil.isNull(express)) throw new CrmebException("没有找到对应的快递公司");
+        if (ObjectUtil.isNull(express)) throw new OtterwoodException("没有找到对应的快递公司");
 
         // 保存平台电子面单打印信息
         Boolean execute = transactionTemplate.execute(e -> {
@@ -434,7 +434,7 @@ public class OnePassServiceImpl implements OnePassService {
             systemConfigService.updateOrSaveValueByName("config_export_siid", request.getSiid());
             return Boolean.TRUE;
         });
-        if (Boolean.FALSE.equals(execute)) throw new CrmebException("保存平台电子面单打印信息失败");
+        if (Boolean.FALSE.equals(execute)) throw new OtterwoodException("保存平台电子面单打印信息失败");
 
         // 查询是否已经开通
         JSONObject info = info();
@@ -481,7 +481,7 @@ public class OnePassServiceImpl implements OnePassService {
         boolean tokenResult = systemConfigService.updateOrSaveValueByName(OnePassConstants.ONE_PASS_SECRET_KEY, secretKey);
 
         if (!accountResult || !tokenResult) {
-            throw new CrmebException("数据更新失败！");
+            throw new OtterwoodException("数据更新失败！");
         }
     }
 

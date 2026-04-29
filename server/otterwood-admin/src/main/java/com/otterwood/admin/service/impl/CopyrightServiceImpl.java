@@ -6,10 +6,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.otterwood.admin.copyright.CopyrightInfoResponse;
 import com.otterwood.admin.copyright.CopyrightUpdateInfoRequest;
 import com.otterwood.admin.service.CopyrightService;
-import com.otterwood.common.config.CrmebConfig;
+import com.otterwood.common.config.OtterwoodConfig;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.SysConfigConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.utils.RestTemplateUtil;
 import com.otterwood.service.service.SystemAttachmentService;
 import com.otterwood.service.service.SystemConfigService;
@@ -20,13 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * 版权服务实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -35,16 +35,16 @@ public class CopyrightServiceImpl implements CopyrightService {
     @Autowired
     private SystemConfigService systemConfigService;
     @Autowired
-    private CrmebConfig crmebConfig;
+    private OtterwoodConfig otterwoodConfig;
     @Autowired
     private RestTemplateUtil restTemplateUtil;
 
 
-    private static final String CRMEB_COPYRIGHT_URL = "https://authorize.crmeb.net/api/auth_cert_query?domain_name={}&label={}&version={}";
-    private static final String CRMEB_COPYRIGHT_URL_DATA = "data";
-    private static final String CRMEB_COPYRIGHT_URL_STATUS = "status";
-    private static final String CRMEB_COPYRIGHT_URL_COPYRIGHT = "copyright";
-    private static final String CRMEB_COPYRIGHT_URL_AUTHCODE = "auth_code";
+    private static final String OTTERWOOD_COPYRIGHT_URL = "https://authorize.otterwood.net/api/auth_cert_query?domain_name={}&label={}&version={}";
+    private static final String OTTERWOOD_COPYRIGHT_URL_DATA = "data";
+    private static final String OTTERWOOD_COPYRIGHT_URL_STATUS = "status";
+    private static final String OTTERWOOD_COPYRIGHT_URL_COPYRIGHT = "copyright";
+    private static final String OTTERWOOD_COPYRIGHT_URL_AUTHCODE = "auth_code";
 
 
     /**
@@ -59,27 +59,27 @@ public class CopyrightServiceImpl implements CopyrightService {
             return response;
         }
         String label = systemConfigService.getValueByKey(SysConfigConstants.CONFIG_COPYRIGHT_LABEL);
-        String version = crmebConfig.getVersion();
+        String version = otterwoodConfig.getVersion();
         if (StrUtil.isBlank(version)) {
-            throw new CrmebException("请先在yml中配置版本号");
+            throw new OtterwoodException("请先在yml中配置版本号");
         }
         response.setDomainUrl(domainName);
         response.setLabel(Integer.parseInt(label));
         response.setVersion(version);
 
-        JSONObject jsonObject = restTemplateUtil.post(StrUtil.format(CRMEB_COPYRIGHT_URL, domainName, label, version));
+        JSONObject jsonObject = restTemplateUtil.post(StrUtil.format(OTTERWOOD_COPYRIGHT_URL, domainName, label, version));
         if (ObjectUtil.isNull(jsonObject.getInteger("status")) || !jsonObject.getInteger("status").equals(200)) {
-            throw new CrmebException("CRMEB版权接口调用失败," + jsonObject);
+            throw new OtterwoodException("OTTERWOOD版权接口调用失败," + jsonObject);
         }
         System.out.println("==================================== " + jsonObject.toString());
-        JSONObject dataJson = jsonObject.getJSONObject(CRMEB_COPYRIGHT_URL_DATA);
+        JSONObject dataJson = jsonObject.getJSONObject(OTTERWOOD_COPYRIGHT_URL_DATA);
 
-        response.setStatus(dataJson.getInteger(CRMEB_COPYRIGHT_URL_STATUS));
-        response.setCopyright(dataJson.getString(CRMEB_COPYRIGHT_URL_COPYRIGHT));
-        if (!dataJson.getInteger(CRMEB_COPYRIGHT_URL_STATUS).equals(1)) {
+        response.setStatus(dataJson.getInteger(OTTERWOOD_COPYRIGHT_URL_STATUS));
+        response.setCopyright(dataJson.getString(OTTERWOOD_COPYRIGHT_URL_COPYRIGHT));
+        if (!dataJson.getInteger(OTTERWOOD_COPYRIGHT_URL_STATUS).equals(1)) {
             return response;
         }
-        response.setAuthCode(dataJson.getString(CRMEB_COPYRIGHT_URL_AUTHCODE));
+        response.setAuthCode(dataJson.getString(OTTERWOOD_COPYRIGHT_URL_AUTHCODE));
         response.setCompanyName(systemConfigService.getValueByKey(SysConfigConstants.CONFIG_COPYRIGHT_COMPANY_INFO));
         response.setCompanyImage(systemConfigService.getValueByKey(SysConfigConstants.CONFIG_COPYRIGHT_COMPANY_IMAGE));
         return response;

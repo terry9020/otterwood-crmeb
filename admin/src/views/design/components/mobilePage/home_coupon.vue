@@ -78,13 +78,13 @@
 
 <script>
 // +----------------------------------------------------------------------
-// | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+// | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
 // +----------------------------------------------------------------------
-// | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+// | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
 // +----------------------------------------------------------------------
-// | Author: CRMEB Team <admin@crmeb.com>
+// | Author: OTTERWOOD Team <admin@otterwood.com>
 // +----------------------------------------------------------------------
 import { mapState, mapGetters } from 'vuex';
 export default {
@@ -273,7 +273,7 @@ export default {
           tabTitle: '图标设置',
           title: '上传图标',
           tips: '建议：124px*32px',
-          url: localStorage.getItem('mediaDomain') + '/crmebimage/perset/202412/yhq.png',
+          url: localStorage.getItem('mediaDomain') + '/otterwoodimage/perset/202412/yhq.png',
         },
         linkConfig: {
           title: '更多链接',

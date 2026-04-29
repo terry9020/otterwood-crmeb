@@ -7,12 +7,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.otterwood.common.request.PageParamRequest;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.request.UserCollectAllRequest;
 import com.otterwood.common.request.UserCollectRequest;
 import com.otterwood.common.response.UserRelationResponse;
 import com.github.pagehelper.PageHelper;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.model.product.StoreProductRelation;
 import com.otterwood.service.dao.StoreProductRelationDao;
 import com.otterwood.service.service.StoreProductRelationService;
@@ -29,13 +29,13 @@ import java.util.List;
 /**
  * StoreProductRelationServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -57,10 +57,10 @@ public class StoreProductRelationServiceImpl extends ServiceImpl<StoreProductRel
     public Boolean all(UserCollectAllRequest request) {
         Integer[] arr = request.getProductId();
         if(arr.length < 1){
-            throw new CrmebException("请选择产品");
+            throw new OtterwoodException("请选择产品");
         }
 
-        List<Integer> list = CrmebUtil.arrayUnique(arr);
+        List<Integer> list = OtterwoodUtil.arrayUnique(arr);
 
         Integer uid = userService.getUserIdException();
         deleteAll(request, uid, "collect");  //先删除所有已存在的
@@ -85,11 +85,11 @@ public class StoreProductRelationServiceImpl extends ServiceImpl<StoreProductRel
     public Boolean delete(String requestJson) {
         JSONObject jsonObject = JSONObject.parseObject(requestJson);
         if (StrUtil.isBlank(jsonObject.getString("ids"))) {
-            throw new CrmebException("收藏id不能为空");
+            throw new OtterwoodException("收藏id不能为空");
         }
-        List<Integer> idList = CrmebUtil.stringToArray(jsonObject.getString("ids"));
+        List<Integer> idList = OtterwoodUtil.stringToArray(jsonObject.getString("ids"));
         if (CollUtil.isEmpty(idList)) {
-            throw new CrmebException("收藏id不能为空");
+            throw new OtterwoodException("收藏id不能为空");
         }
         Integer userId = userService.getUserIdException();
         LambdaQueryWrapper<StoreProductRelation> lqw = Wrappers.lambdaQuery();

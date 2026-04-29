@@ -2,7 +2,7 @@ package com.otterwood.service.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.otterwood.common.constants.Constants;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.model.finance.UserRecharge;
 import com.otterwood.common.model.user.User;
 import com.otterwood.common.model.user.UserBill;
@@ -20,13 +20,13 @@ import java.math.BigDecimal;
 /**
  * 支付类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -52,7 +52,7 @@ public class RechargePayServiceImpl implements RechargePayService {
     @Override
     public Boolean paySuccess(UserRecharge userRecharge) {
         userRecharge.setPaid(true);
-        userRecharge.setPayTime(CrmebDateUtil.nowDateTime());
+        userRecharge.setPayTime(OtterwoodDateUtil.nowDateTime());
 
         User user = userService.getById(userRecharge.getUid());
 
@@ -70,7 +70,7 @@ public class RechargePayServiceImpl implements RechargePayService {
         userBill.setBalance(balance);
         userBill.setMark(StrUtil.format("余额增加了{}元", payPrice));
         userBill.setStatus(1);
-        userBill.setCreateTime(CrmebDateUtil.nowDateTime());
+        userBill.setCreateTime(OtterwoodDateUtil.nowDateTime());
 
         Boolean execute = transactionTemplate.execute(e -> {
             // 订单变动

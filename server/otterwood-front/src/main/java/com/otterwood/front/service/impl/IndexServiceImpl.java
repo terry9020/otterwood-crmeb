@@ -15,8 +15,8 @@ import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.SysConfigConstants;
 import com.otterwood.common.constants.SysGroupDataConstants;
-import com.otterwood.common.exception.CrmebException;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.exception.OtterwoodException;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.model.record.UserVisitRecord;
 import com.otterwood.common.model.product.StoreProduct;
 import com.otterwood.common.model.system.SystemConfig;
@@ -35,13 +35,13 @@ import java.util.List;
 /**
 * IndexServiceImpl 接口实现
 *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
 */
 @Service
@@ -121,7 +121,7 @@ public class IndexServiceImpl implements IndexService {
         HashMap<String, String> map = new HashMap<>();
         HashMap<String, String> info = systemConfigService.info(Constants.CONFIG_FORM_ID_PUBLIC);
         if(info == null) {
-            throw new CrmebException("请配置公众号分享信息！");
+            throw new OtterwoodException("请配置公众号分享信息！");
         }
         map.put("img", info.get(SysConfigConstants.CONFIG_KEY_ADMIN_WECHAT_SHARE_IMAGE));
         map.put("title", info.get(SysConfigConstants.CONFIG_KEY_ADMIN_WECHAT_SHARE_TITLE));
@@ -153,7 +153,7 @@ public class IndexServiceImpl implements IndexService {
         List<IndexProductResponse> productResponseArrayList = new ArrayList<>();
         for (StoreProduct storeProduct : storeProductList) {
             IndexProductResponse productResponse = new IndexProductResponse();
-            List<Integer> activityList = CrmebUtil.stringToArrayInt(storeProduct.getActivity());
+            List<Integer> activityList = OtterwoodUtil.stringToArrayInt(storeProduct.getActivity());
             // 活动类型默认：直接跳过
             if (activityList.get(0).equals(Constants.PRODUCT_TYPE_NORMAL)) {
                 BeanUtils.copyProperties(storeProduct, productResponse);

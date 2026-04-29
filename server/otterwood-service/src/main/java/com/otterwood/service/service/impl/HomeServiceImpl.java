@@ -2,7 +2,7 @@ package com.otterwood.service.service.impl;
 
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.response.HomeOperatingDataResponse;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.response.HomeRateResponse;
 import com.otterwood.common.model.order.StoreOrder;
 import com.otterwood.service.service.*;
@@ -15,13 +15,13 @@ import java.util.*;
 /**
  * 用户表 服务实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -128,7 +128,7 @@ public class HomeServiceImpl implements HomeService {
      */
     private Map<Object, Object> dataFormat(Map<Object, Object> countGroupDate, String dateLimit) {
         Map<Object, Object> map = new LinkedHashMap<>();
-        List<String> listDate = CrmebDateUtil.getListDate(dateLimit);
+        List<String> listDate = OtterwoodDateUtil.getListDate(dateLimit);
 
         String[] weekList = new String[]{"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
 
@@ -173,11 +173,11 @@ public class HomeServiceImpl implements HomeService {
         List<Object> listDate = new ArrayList<>();
         String year = "";
         if (dateLimit.equals(Constants.SEARCH_DATE_YEAR)) {
-            year = CrmebDateUtil.nowYear();
+            year = OtterwoodDateUtil.nowYear();
         }
 
         if (dateLimit.equals(Constants.SEARCH_DATE_PRE_YEAR)) {
-            year = CrmebDateUtil.lastYear();
+            year = OtterwoodDateUtil.lastYear();
         }
 
         //处理年

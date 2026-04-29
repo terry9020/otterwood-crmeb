@@ -3,7 +3,7 @@ package com.otterwood.common.utils;
 import cn.hutool.core.util.RandomUtil;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.UploadConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -12,13 +12,13 @@ import java.io.IOException;
 /**
  * 上传工具类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 public class UploadUtil {
@@ -95,14 +95,14 @@ public class UploadUtil {
         if (!file.isDirectory()) {
             //创建失败返回null
             if (!file.mkdirs()) {
-                throw new CrmebException("文件目录创建失败...");
+                throw new OtterwoodException("文件目录创建失败...");
             }
         }
         // 判断这个文件是否存在，不存在就创建
         file = new File(filePath);
         if (!file.exists()) {
             if (!file.createNewFile()) {
-                throw new CrmebException("目标文件创建失败...");
+                throw new OtterwoodException("目标文件创建失败...");
             }
         }
         return file;
@@ -120,7 +120,7 @@ public class UploadUtil {
     }
 
     public static String fileName(String extName){
-        return CrmebUtil.getUuid() + RandomUtil.randomString(10) + "." + extName;
+        return OtterwoodUtil.getUuid() + RandomUtil.randomString(10) + "." + extName;
     }
 
     /**
@@ -140,7 +140,7 @@ public class UploadUtil {
      */
     public static String getWebPath() {
         // 文件分隔符转化为当前系统的格式
-        return getModelPath() + CrmebDateUtil.nowDate(Constants.DATE_FORMAT_DATE).replace("-", "/") + "/";
+        return getModelPath() + OtterwoodDateUtil.nowDate(Constants.DATE_FORMAT_DATE).replace("-", "/") + "/";
 
 //        return getType() + getModelPath() + DateUtil.nowDate(Constants.DATE_FORMAT_DATE).replace("-", "/") + "/";
     }

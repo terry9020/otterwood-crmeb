@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.otterwood.common.constants.Constants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.product.StoreProduct;
 import com.otterwood.common.model.product.StoreProductAttr;
 import com.otterwood.common.model.product.StoreProductAttrValue;
@@ -22,8 +22,8 @@ import com.otterwood.common.model.user.User;
 import com.otterwood.common.page.CommonPage;
 import com.otterwood.common.request.*;
 import com.otterwood.common.response.*;
-import com.otterwood.common.utils.CrmebUtil;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -45,13 +45,13 @@ import java.util.stream.Collectors;
 /**
  * StoreSeckillService 实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -145,7 +145,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
             StoreSeckillResponse storeProductResponse = new StoreSeckillResponse();
             BeanUtils.copyProperties(product, storeProductResponse);
             storeProductResponse.setStatusName(getStatusName(product, currentSkillTimeId));
-            storeProductResponse.setImages(CrmebUtil.stringToArrayStr(product.getImages()));
+            storeProductResponse.setImages(OtterwoodUtil.stringToArrayStr(product.getImages()));
 
             StoreProductAttr storeProductAttrPram = new StoreProductAttr();
             storeProductAttrPram.setProductId(product.getId()).setType(Constants.PRODUCT_TYPE_SECKILL);
@@ -232,12 +232,12 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
     public Boolean saveSeckill(StoreSeckillAddRequest request) {
         request.getAttrValue().forEach(e -> {
             if ((ObjectUtil.isNull(e.getQuota()) || e.getQuota() <= 0)) {
-                throw new CrmebException("请正确输入限量");
+                throw new OtterwoodException("请正确输入限量");
             }
         });
 
         if (isExistTile(request.getTitle())) {
-            throw new CrmebException("活动标题已经存在");
+            throw new OtterwoodException("活动标题已经存在");
         }
 
         StoreSeckill storeSeckill = new StoreSeckill();
@@ -247,8 +247,8 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
         // 轮播图
         storeSeckill.setImages(systemAttachmentService.clearPrefix(storeSeckill.getImages()));
         // 设置秒杀开始时间和结束时间
-        storeSeckill.setStartTime(CrmebDateUtil.strToDate(request.getStartTime(), Constants.DATE_FORMAT_DATE));
-        storeSeckill.setStopTime(CrmebDateUtil.strToDate(request.getStopTime(), Constants.DATE_FORMAT_DATE));
+        storeSeckill.setStartTime(OtterwoodDateUtil.strToDate(request.getStartTime(), Constants.DATE_FORMAT_DATE));
+        storeSeckill.setStopTime(OtterwoodDateUtil.strToDate(request.getStopTime(), Constants.DATE_FORMAT_DATE));
 
         //计算价格
         List<StoreProductAttrValueAddRequest> attrValueAddRequestList = request.getAttrValue();
@@ -329,18 +329,18 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
 
         StoreSeckill storeSeckill = getById(request.getId());
         if (ObjectUtil.isNull(storeSeckill) || storeSeckill.getIsDel()) {
-            throw new CrmebException("秒杀商品不存在");
+            throw new OtterwoodException("秒杀商品不存在");
         }
 
         if (storeSeckill.getStatus().equals(1)) {
-            throw new CrmebException("请先关闭秒杀商品，再修改商品信息");
+            throw new OtterwoodException("请先关闭秒杀商品，再修改商品信息");
         }
 
 
         StoreSeckill seckill = new StoreSeckill();
         BeanUtils.copyProperties(request, seckill);
-        seckill.setStartTime(CrmebDateUtil.strToDate(request.getStartTime(),Constants.DATE_FORMAT_DATE));
-        seckill.setStopTime(CrmebDateUtil.strToDate(request.getStopTime(),Constants.DATE_FORMAT_DATE));
+        seckill.setStartTime(OtterwoodDateUtil.strToDate(request.getStartTime(),Constants.DATE_FORMAT_DATE));
+        seckill.setStopTime(OtterwoodDateUtil.strToDate(request.getStopTime(),Constants.DATE_FORMAT_DATE));
 
         //主图
         seckill.setImage(systemAttachmentService.clearPrefix(seckill.getImage()));
@@ -443,13 +443,13 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
     public Boolean updateSecKillStatus(int secKillId, boolean status) {
         StoreSeckill seckill = getById(secKillId);
         if (ObjectUtil.isNull(seckill) || seckill.getIsDel()) {
-            throw new CrmebException("秒杀商品不存在");
+            throw new OtterwoodException("秒杀商品不存在");
         }
         if (status) {
             // 判断商品是否存在
             StoreProduct product = storeProductService.getById(seckill.getProductId());
             if (ObjectUtil.isNull(product)) {
-                throw new CrmebException("关联的商品已删除，无法开启活动");
+                throw new OtterwoodException("关联的商品已删除，无法开启活动");
             }
         }
 
@@ -468,10 +468,10 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
         // 获取秒杀商品信息
         StoreSeckill storeSeckill = dao.selectById(skillId);
         if (ObjectUtil.isNull(storeSeckill) || storeSeckill.getIsDel()) {
-            throw new CrmebException("未找到对应秒杀商品信息");
+            throw new OtterwoodException("未找到对应秒杀商品信息");
         }
         if (storeSeckill.getStatus().equals(0)) {
-            throw new CrmebException("秒杀商品已下架");
+            throw new OtterwoodException("秒杀商品已下架");
         }
         StoreSeckillDetailResponse productDetailResponse = new StoreSeckillDetailResponse();
 
@@ -507,7 +507,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
 
         StoreSeckillManger seckillManger = storeSeckillMangerService.getById(storeSeckill.getTimeId());
         if (ObjectUtil.isNotNull(seckillManger)) {
-            int secKillEndSecondTimestamp = CrmebDateUtil.getSecondTimestamp(CrmebDateUtil.nowDateTime("yyyy-MM-dd " + seckillManger.getEndTime() + ":00:00"));
+            int secKillEndSecondTimestamp = OtterwoodDateUtil.getSecondTimestamp(OtterwoodDateUtil.nowDateTime("yyyy-MM-dd " + seckillManger.getEndTime() + ":00:00"));
             detailH5Response.setTimeSwap(secKillEndSecondTimestamp + "");
         }
         Integer seckillStatus = getSeckillStatus(storeSeckill, seckillManger);
@@ -570,7 +570,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
             String ymdStart = cn.hutool.core.date.DateUtil.date(storeSeckill.getStartTime()).toString(Constants.DATE_FORMAT_DATE);
             String startTimeStr = seckillManger.getStartTime() < 10 ? "0" + seckillManger.getStartTime() : seckillManger.getStartTime().toString();
             DateTime startTime = cn.hutool.core.date.DateUtil.parse(ymdStart + " " + startTimeStr + ":00:00");
-            Date nowDateTime = CrmebDateUtil.nowDateTime();
+            Date nowDateTime = OtterwoodDateUtil.nowDateTime();
             if (nowDateTime.compareTo(startTime) <= 0) {
                 // 即将开始
                 return 1;
@@ -601,7 +601,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
     public StoreProductInfoResponse getDetailAdmin(Integer skillId) {
         StoreSeckill storeSeckill = dao.selectById(skillId);
         if (ObjectUtil.isNull(storeSeckill) || storeSeckill.getIsDel()) {
-            throw new CrmebException("未找到对应商品信息");
+            throw new OtterwoodException("未找到对应商品信息");
         }
         StoreProductInfoResponse infoResponse = new StoreProductInfoResponse();
         BeanUtils.copyProperties(storeSeckill, infoResponse);
@@ -657,7 +657,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
     @Override
     public List<SecKillResponse> getForH5Index() {
         List<SecKillResponse> response = new ArrayList<>();
-        int currentHour = CrmebDateUtil.getCurrentHour();
+        int currentHour = OtterwoodDateUtil.getCurrentHour();
         // 获取所有的秒杀配置
         List<StoreSeckillManagerResponse> skillManagerList = storeSeckillMangerService.getH5List();
         // 根据当前时间过滤 仅处理正在进行和马上开始的秒杀
@@ -665,7 +665,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
             // 根据当前秒杀配置id查询是否有商品正在参与次时间段
             Integer proNum = getCountByTimeId(e.getId());
             if (proNum > 0) {
-                int secKillEndSecondTimestamp = CrmebDateUtil.getSecondTimestamp(CrmebDateUtil.nowDateTime("yyyy-MM-dd " + e.getEndTime() + ":00:00"));
+                int secKillEndSecondTimestamp = OtterwoodDateUtil.getSecondTimestamp(OtterwoodDateUtil.nowDateTime("yyyy-MM-dd " + e.getEndTime() + ":00:00"));
                 SecKillResponse r = new SecKillResponse(e.getId(),e.getSilderImgs(),e.getStatusName(),
                         e.getTime(),e.getKillStatus(),secKillEndSecondTimestamp+"");
                 if (e.getStartTime() <= currentHour && currentHour < e.getEndTime()) {
@@ -689,7 +689,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
         lqw.eq(StoreSeckill::getIsDel,false);
         lqw.eq(StoreSeckill::getIsShow,true);
         lqw.eq(StoreSeckill::getTimeId,timeId);
-        String currentDate = CrmebDateUtil.nowDate(Constants.DATE_FORMAT_DATE);
+        String currentDate = OtterwoodDateUtil.nowDate(Constants.DATE_FORMAT_DATE);
         lqw.le(StoreSeckill::getStartTime, currentDate);
         lqw.ge(StoreSeckill::getStopTime, currentDate);
         lqw.orderByDesc(StoreSeckill::getId);
@@ -705,7 +705,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
     @Override
     public List<StoreSecKillH5Response> getKillListByTimeId(String timeId, PageParamRequest pageParamRequest) {
         PageHelper.startPage(pageParamRequest.getPage(), pageParamRequest.getLimit());
-        String currentDate = CrmebDateUtil.nowDate(Constants.DATE_FORMAT_DATE);
+        String currentDate = OtterwoodDateUtil.nowDate(Constants.DATE_FORMAT_DATE);
         LambdaQueryWrapper<StoreSeckill> lqw = Wrappers.lambdaQuery();
         lqw.eq(StoreSeckill::getStatus,1);
         lqw.eq(StoreSeckill::getIsDel,false);
@@ -722,7 +722,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
         storeSeckills.forEach(e->{
             StoreSecKillH5Response response = new StoreSecKillH5Response();
             BeanUtils.copyProperties(e, response);
-            response.setPercent(CrmebUtil.percentInstanceIntVal(e.getQuotaShow() - e.getQuota(), e.getQuotaShow()));
+            response.setPercent(OtterwoodUtil.percentInstanceIntVal(e.getQuotaShow() - e.getQuota(), e.getQuotaShow()));
             responses.add(response);
         });
         return responses;
@@ -818,7 +818,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
         lqw.eq(StoreSeckill::getIsDel, false);
         lqw.eq(StoreSeckill::getIsShow, true);
         StoreSeckill storeSeckill = dao.selectOne(lqw);
-        if (ObjectUtil.isNull(storeSeckill) || storeSeckill.getIsDel()) throw new CrmebException("秒杀商品不存在或以删除");
+        if (ObjectUtil.isNull(storeSeckill) || storeSeckill.getIsDel()) throw new OtterwoodException("秒杀商品不存在或以删除");
         return storeSeckill;
     }
 
@@ -847,7 +847,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
         updateWrapper.eq("id", id);
         boolean update = update(updateWrapper);
         if (!update) {
-            throw new CrmebException("更新商品库存失败！商品id = " + id);
+            throw new OtterwoodException("更新商品库存失败！商品id = " + id);
         }
         return update;
     }
@@ -872,7 +872,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
         }
 
         // 查询当前时段秒杀商品
-        String currentDate = CrmebDateUtil.nowDate(Constants.DATE_FORMAT_DATE);
+        String currentDate = OtterwoodDateUtil.nowDate(Constants.DATE_FORMAT_DATE);
         LambdaQueryWrapper<StoreSeckill> lqw = Wrappers.lambdaQuery();
         lqw.select(StoreSeckill::getId, StoreSeckill::getProductId, StoreSeckill::getImage, StoreSeckill::getTitle, StoreSeckill::getPrice, StoreSeckill::getOtPrice);
         lqw.eq(StoreSeckill::getStatus,1);
@@ -898,7 +898,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
         String startTime = pStartTime.length() == 1 ? "0" + pStartTime:pStartTime;
         String endTime = pEndTime.length() == 1 ? "0" + pEndTime : pEndTime;
         managerResponse.setTime(startTime + ":00," + endTime + ":00");
-        int secKillEndSecondTimestamp = CrmebDateUtil.getSecondTimestamp(CrmebDateUtil.nowDateTime("yyyy-MM-dd " + seckillManger.getEndTime() + ":00:00"));
+        int secKillEndSecondTimestamp = OtterwoodDateUtil.getSecondTimestamp(OtterwoodDateUtil.nowDateTime("yyyy-MM-dd " + seckillManger.getEndTime() + ":00:00"));
         SecKillResponse secKillResponse = new SecKillResponse(seckillManger.getId(),seckillManger.getSilderImgs(),managerResponse.getStatusName(),
                 managerResponse.getTime(),managerResponse.getKillStatus(),secKillEndSecondTimestamp+"");
         response.setSecKillResponse(secKillResponse);

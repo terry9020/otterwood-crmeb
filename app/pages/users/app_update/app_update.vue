@@ -1,8 +1,8 @@
 <template>
 	<view class="app_update">
 		<view class="logo_box">
-			<image :src="urlDomain+'crmebimage/perset/staticImg/crmeb_java.png'"></image>
-			<view class="title">crmeb</view>
+			<image :src="urlDomain+'otterwoodimage/perset/staticImg/otterwood_java.png'"></image>
+			<view class="title">otterwood</view>
 			<view class="version">Version {{appUpdate.versionCode}}</view> 
 		</view>
 		<view class="jiancha" @click="appVersionConfig()">

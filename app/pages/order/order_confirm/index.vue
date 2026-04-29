@@ -47,7 +47,7 @@
 					</block>
 				</view>
 				<view class='line'>
-					<image :src="urlDomain+'crmebimage/perset/staticImg/line.jpg'"></image>
+					<image :src="urlDomain+'otterwoodimage/perset/staticImg/line.jpg'"></image>
 				</view>
 			</view>
 			<view class="pad30">

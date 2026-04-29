@@ -13,13 +13,13 @@ import java.util.Arrays;
 
 /**
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  * 所有的前端controller层的拦截业务，方法的执行时间长度，
  */
@@ -29,7 +29,7 @@ public class ControllerAspect {
 
     Logger logger = LoggerFactory.getLogger(ControllerAspect.class);
 
-    @Pointcut("execution(* com.otterwood.crmeb.system.controller.*.*(..))")
+    @Pointcut("execution(* com.otterwood.otterwood.system.controller.*.*(..))")
     private void pointCutMethodController() {
 
     }

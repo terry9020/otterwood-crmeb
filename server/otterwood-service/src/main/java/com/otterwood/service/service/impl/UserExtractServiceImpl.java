@@ -14,7 +14,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.otterwood.common.constants.BrokerageRecordConstants;
 import com.otterwood.common.constants.Constants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.finance.UserExtract;
 import com.otterwood.common.model.user.User;
 import com.otterwood.common.model.user.UserBrokerageRecord;
@@ -25,7 +25,7 @@ import com.otterwood.common.request.UserExtractSearchRequest;
 import com.otterwood.common.response.BalanceResponse;
 import com.otterwood.common.response.UserExtractRecordResponse;
 import com.otterwood.common.response.UserExtractResponse;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.vo.DateLimitUtilVo;
 import com.otterwood.service.dao.UserExtractDao;
 import com.otterwood.service.service.*;
@@ -48,13 +48,13 @@ import static java.math.BigDecimal.ZERO;
 /**
  * UserExtractServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -117,7 +117,7 @@ public class UserExtractServiceImpl extends ServiceImpl<UserExtractDao, UserExtr
 
         //时间范围
         if (StringUtils.isNotBlank(request.getDateLimit())) {
-            DateLimitUtilVo dateLimit = CrmebDateUtil.getDateLimit(request.getDateLimit());
+            DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(request.getDateLimit());
             lambdaQueryWrapper.between(UserExtract::getCreateTime, dateLimit.getStartTime(), dateLimit.getEndTime());
         }
 
@@ -153,7 +153,7 @@ public class UserExtractServiceImpl extends ServiceImpl<UserExtractDao, UserExtr
         String startTime = "";
         String endTime = "";
         if (StringUtils.isNotBlank(dateLimit)) {
-            DateLimitUtilVo dateRage = CrmebDateUtil.getDateLimit(dateLimit);
+            DateLimitUtilVo dateRage = OtterwoodDateUtil.getDateLimit(dateLimit);
             startTime = dateRage.getStartTime();
             endTime = dateRage.getEndTime();
         }
@@ -256,20 +256,20 @@ public class UserExtractServiceImpl extends ServiceImpl<UserExtractDao, UserExtr
     @Override
     public Boolean updateStatus(Integer id, Integer status, String backMessage) {
         if (status == -1 && StringUtils.isBlank(backMessage))
-            throw new CrmebException("驳回时请填写驳回原因");
+            throw new OtterwoodException("驳回时请填写驳回原因");
 
         UserExtract userExtract = getById(id);
         if (ObjectUtil.isNull(userExtract)) {
-            throw new CrmebException("提现申请记录不存在");
+            throw new OtterwoodException("提现申请记录不存在");
         }
         if (userExtract.getStatus() != 0) {
-            throw new CrmebException("提现申请已处理过");
+            throw new OtterwoodException("提现申请已处理过");
         }
         userExtract.setStatus(status);
 
         User user = userService.getById(userExtract.getUid());
         if (ObjectUtil.isNull(user)) {
-            throw new CrmebException("提现用户数据异常");
+            throw new OtterwoodException("提现用户数据异常");
         }
 
         Boolean execute = false;
@@ -289,7 +289,7 @@ public class UserExtractServiceImpl extends ServiceImpl<UserExtractDao, UserExtr
             brokerageRecord.setBalance(user.getBrokeragePrice().add(userExtract.getExtractPrice()));
             brokerageRecord.setMark(StrUtil.format("提现申请拒绝返还佣金{}", userExtract.getExtractPrice()));
             brokerageRecord.setStatus(BrokerageRecordConstants.BROKERAGE_RECORD_STATUS_COMPLETE);
-            brokerageRecord.setCreateTime(CrmebDateUtil.nowDateTime());
+            brokerageRecord.setCreateTime(OtterwoodDateUtil.nowDateTime());
 
             execute = transactionTemplate.execute(e -> {
                 // 返还佣金
@@ -306,7 +306,7 @@ public class UserExtractServiceImpl extends ServiceImpl<UserExtractDao, UserExtr
             // 获取佣金提现记录
             UserBrokerageRecord brokerageRecord = userBrokerageRecordService.getByLinkIdAndLinkType(userExtract.getId().toString(), BrokerageRecordConstants.BROKERAGE_RECORD_LINK_TYPE_WITHDRAW);
             if (ObjectUtil.isNull(brokerageRecord)) {
-                throw new CrmebException("对应的佣金记录不存在");
+                throw new OtterwoodException("对应的佣金记录不存在");
             }
             execute = transactionTemplate.execute(e -> {
                 userExtract.setUpdateTime(DateUtil.date());
@@ -341,7 +341,7 @@ public class UserExtractServiceImpl extends ServiceImpl<UserExtractDao, UserExtr
         }
         ArrayList<UserExtractRecordResponse> userExtractRecordResponseList = CollectionUtil.newArrayList();
         for (UserExtract userExtract : list) {
-            String date = CrmebDateUtil.dateToStr(userExtract.getCreateTime(), Constants.DATE_FORMAT_MONTH);
+            String date = OtterwoodDateUtil.dateToStr(userExtract.getCreateTime(), Constants.DATE_FORMAT_MONTH);
             userExtractRecordResponseList.add(new UserExtractRecordResponse(date, getListByMonth(userId, date)));
         }
 
@@ -380,20 +380,20 @@ public class UserExtractServiceImpl extends ServiceImpl<UserExtractDao, UserExtr
         String value = systemConfigService.getValueByKeyException(Constants.CONFIG_EXTRACT_MIN_PRICE);
         BigDecimal ten = new BigDecimal(value);
         if (request.getExtractPrice().compareTo(ten) < 0) {
-            throw new CrmebException(StrUtil.format("最低提现金额{}元", ten));
+            throw new OtterwoodException(StrUtil.format("最低提现金额{}元", ten));
         }
 
         User user = userService.getInfo();
         if (ObjectUtil.isNull(user)) {
-            throw new CrmebException("提现用户信息异常");
+            throw new OtterwoodException("提现用户信息异常");
         }
         BigDecimal money = user.getBrokeragePrice();//可提现总金额
         if (money.compareTo(ZERO) < 1) {
-            throw new CrmebException("您当前没有金额可以提现");
+            throw new OtterwoodException("您当前没有金额可以提现");
         }
 
         if (money.compareTo(request.getExtractPrice()) < 0) {
-            throw new CrmebException("你当前最多可提现 " + money + "元");
+            throw new OtterwoodException("你当前最多可提现 " + money + "元");
         }
 
         UserExtract userExtract = new UserExtract();
@@ -415,7 +415,7 @@ public class UserExtractServiceImpl extends ServiceImpl<UserExtractDao, UserExtr
         brokerageRecord.setBalance(money.subtract(userExtract.getExtractPrice()));
         brokerageRecord.setMark(StrUtil.format("提现申请扣除佣金{}", userExtract.getExtractPrice()));
         brokerageRecord.setStatus(BrokerageRecordConstants.BROKERAGE_RECORD_STATUS_WITHDRAW);
-        brokerageRecord.setCreateTime(CrmebDateUtil.nowDateTime());
+        brokerageRecord.setCreateTime(OtterwoodDateUtil.nowDateTime());
 
         Boolean execute = transactionTemplate.execute(e -> {
             // 保存提现记录

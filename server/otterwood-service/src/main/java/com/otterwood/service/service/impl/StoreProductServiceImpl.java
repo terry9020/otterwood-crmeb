@@ -19,7 +19,7 @@ import com.github.pagehelper.PageInfo;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.ProductConstants;
 import com.otterwood.common.enums.MethodType;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.category.Category;
 import com.otterwood.common.model.coupon.StoreCoupon;
 import com.otterwood.common.model.product.*;
@@ -29,8 +29,8 @@ import com.otterwood.common.request.*;
 import com.otterwood.common.response.*;
 import com.otterwood.common.result.CommonResultCode;
 import com.otterwood.common.result.ProductResultCode;
-import com.otterwood.common.utils.CrmebUtil;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.vo.MyRecord;
 import com.otterwood.service.dao.StoreProductDao;
@@ -51,13 +51,13 @@ import java.util.stream.Stream;
 
 /**
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -237,7 +237,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
                 storeProductResponse.setContent(null == sd.getDescription()?"":sd.getDescription());
             }
             // 处理分类中文
-            List<Category> cg = categoryService.getByIds(CrmebUtil.stringToArray(product.getCateId()));
+            List<Category> cg = categoryService.getByIds(OtterwoodUtil.stringToArray(product.getCateId()));
             if (CollUtil.isEmpty(cg)) {
                 storeProductResponse.setCateValues("");
             } else {
@@ -275,14 +275,14 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
         // 多规格需要校验规格参数
         if (!request.getSpecType()) {
             if (request.getAttrValue().size() > 1) {
-                throw new CrmebException("单规格商品属性值不能大于1");
+                throw new OtterwoodException("单规格商品属性值不能大于1");
             }
         }
 
         StoreProduct storeProduct = new StoreProduct();
         BeanUtils.copyProperties(request, storeProduct);
         storeProduct.setId(null);
-        storeProduct.setAddTime(CrmebDateUtil.getNowTime());
+        storeProduct.setAddTime(OtterwoodDateUtil.getNowTime());
         storeProduct.setIsShow(false);
 
         // 设置Acticity活动
@@ -372,7 +372,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
             if (CollUtil.isNotEmpty(request.getCouponIds())) {
                 List<StoreProductCoupon> couponList = new ArrayList<>();
                 for (Integer couponId : request.getCouponIds()) {
-                    StoreProductCoupon spc = new StoreProductCoupon(storeProduct.getId(), couponId, CrmebDateUtil.getNowTime());
+                    StoreProductCoupon spc = new StoreProductCoupon(storeProduct.getId(), couponId, OtterwoodDateUtil.getNowTime());
                     couponList.add(spc);
                 }
                 storeProductCouponService.saveBatch(couponList);
@@ -390,7 +390,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
      */
     private String getSku(String attrValue) {
         if (StrUtil.isEmpty(attrValue)) {
-            throw new CrmebException("商品属性值不能为空");
+            throw new OtterwoodException("商品属性值不能为空");
         }
         LinkedHashMap<String, String> linkedHashMap = JSONObject.parseObject(attrValue, LinkedHashMap.class, Feature.OrderedField);
         Iterator<Map.Entry<String, String>> iterator = linkedHashMap.entrySet().iterator();
@@ -440,34 +440,34 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
     @Override
     public Boolean update(StoreProductAddRequest storeProductRequest) {
         if (ObjectUtil.isNull(storeProductRequest.getId())) {
-            throw new CrmebException("商品ID不能为空");
+            throw new OtterwoodException("商品ID不能为空");
         }
 
         if (!storeProductRequest.getSpecType()) {
             if (storeProductRequest.getAttrValue().size() > 1) {
-                throw new CrmebException("单规格商品属性值不能大于1");
+                throw new OtterwoodException("单规格商品属性值不能大于1");
             }
         }
 
         StoreProduct tempProduct = getById(storeProductRequest.getId());
         if (ObjectUtil.isNull(tempProduct)) {
-            throw new CrmebException("商品不存在");
+            throw new OtterwoodException("商品不存在");
         }
         if (tempProduct.getIsRecycle() || tempProduct.getIsDel()) {
-            throw new CrmebException("商品已删除");
+            throw new OtterwoodException("商品已删除");
         }
         if (tempProduct.getIsShow()) {
-            throw new CrmebException("请先下架商品，再进行修改");
+            throw new OtterwoodException("请先下架商品，再进行修改");
         }
         // 如果商品是活动商品主商品不允许修改
 //        if (storeSeckillService.isExistByProductId(storeProductRequest.getId())) {
-//            throw new CrmebException("商品作为秒杀商品的主商品，需要修改请先删除对应秒杀商品");
+//            throw new OtterwoodException("商品作为秒杀商品的主商品，需要修改请先删除对应秒杀商品");
 //        }
 //        if (storeBargainService.isExistByProductId(storeProductRequest.getId())) {
-//            throw new CrmebException("商品作为砍价商品的主商品，需要修改请先删除对应砍价商品");
+//            throw new OtterwoodException("商品作为砍价商品的主商品，需要修改请先删除对应砍价商品");
 //        }
 //        if (storeCombinationService.isExistByProductId(storeProductRequest.getId())) {
-//            throw new CrmebException("商品作为拼团商品的主商品，需要修改请先删除对应拼团商品");
+//            throw new OtterwoodException("商品作为拼团商品的主商品，需要修改请先删除对应拼团商品");
 //        }
 
         StoreProduct storeProduct = new StoreProduct();
@@ -562,7 +562,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
                 storeProductCouponService.deleteByProductId(storeProduct.getId());
                 List<StoreProductCoupon> couponList = new ArrayList<>();
                 for (Integer couponId : storeProductRequest.getCouponIds()) {
-                    StoreProductCoupon spc = new StoreProductCoupon(storeProduct.getId(), couponId, CrmebDateUtil.getNowTime());
+                    StoreProductCoupon spc = new StoreProductCoupon(storeProduct.getId(), couponId, OtterwoodDateUtil.getNowTime());
                     couponList.add(spc);
                 }
                 storeProductCouponService.saveBatch(couponList);
@@ -584,7 +584,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
     @Override
     public StoreProductResponse getByProductId(Integer id) {
         StoreProduct storeProduct = dao.selectById(id);
-        if (null == storeProduct) throw new CrmebException("未找到对应商品信息");
+        if (null == storeProduct) throw new OtterwoodException("未找到对应商品信息");
         StoreProductResponse storeProductResponse = new StoreProductResponse();
         BeanUtils.copyProperties(storeProduct, storeProductResponse);
         StoreProductAttr spaPram = new StoreProductAttr();
@@ -605,7 +605,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
             sparPram.setProductId(storeProduct.getId()).setType(Constants.PRODUCT_TYPE_NORMAL);
             List<StoreProductAttrResult> attrResults = storeProductAttrResultService.getByEntity(sparPram);
             if (null == attrResults || attrResults.size() == 0) {
-                throw new CrmebException("未找到对应属性值");
+                throw new OtterwoodException("未找到对应属性值");
             }
             StoreProductAttrResult attrResult = attrResults.get(0);
             //PC 端生成skuAttrInfo
@@ -692,7 +692,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
     public StoreProductInfoResponse getInfo(Integer id) {
         StoreProduct storeProduct = dao.selectById(id);
         if (ObjectUtil.isNull(storeProduct)) {
-            throw new CrmebException("未找到对应商品信息");
+            throw new OtterwoodException("未找到对应商品信息");
         }
 
         StoreProductInfoResponse storeProductResponse = new StoreProductInfoResponse();
@@ -890,7 +890,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
                     break;
             }
         } catch (Exception e) {
-            throw new CrmebException("确认URL和平台是否正确，以及平台费用是否足额"+e.getMessage());
+            throw new OtterwoodException("确认URL和平台是否正确，以及平台费用是否足额"+e.getMessage());
         }
         return productRequest;
     }
@@ -905,10 +905,10 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
     public Boolean deleteProduct(Integer productId, String type) {
         StoreProduct product = getById(productId);
         if (ObjectUtil.isNull(product)) {
-            throw new CrmebException("商品不存在");
+            throw new OtterwoodException("商品不存在");
         }
         if (StrUtil.isNotBlank(type) && "recycle".equals(type) && product.getIsDel()) {
-            throw new CrmebException("商品已存在回收站");
+            throw new OtterwoodException("商品已存在回收站");
         }
 
         LambdaUpdateWrapper<StoreProduct> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
@@ -934,17 +934,17 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
         // 秒杀活动判断
         existActivity = storeSeckillService.isExistActivity(productId);
         if (existActivity) {
-            throw new CrmebException("有商品关联的秒杀商品活动开启中，不能删除");
+            throw new OtterwoodException("有商品关联的秒杀商品活动开启中，不能删除");
         }
         // 砍价活动判断
         existActivity = storeBargainService.isExistActivity(productId);
         if (existActivity) {
-            throw new CrmebException("有商品关联的砍价商品活动开启中，不能删除");
+            throw new OtterwoodException("有商品关联的砍价商品活动开启中，不能删除");
         }
         // 拼团活动判断
         existActivity = storeCombinationService.isExistActivity(productId);
         if (existActivity) {
-            throw new CrmebException("有商品关联的拼团商品活动开启中，不能删除");
+            throw new OtterwoodException("有商品关联的拼团商品活动开启中，不能删除");
         }
     }
 
@@ -1006,7 +1006,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
     public MyRecord copyConfig() {
         String copyType = systemConfigService.getValueByKey("system_product_copy_type");
         if (StrUtil.isBlank(copyType)) {
-            throw new CrmebException("请先进行采集商品配置");
+            throw new OtterwoodException("请先进行采集商品配置");
         }
         int copyNum = 0;
         if (copyType.equals("1")) {// 一号通
@@ -1059,7 +1059,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
 //        updateWrapper.eq("version", version);
         boolean update = update(updateWrapper);
         if (!update) {
-            throw new CrmebException("更新普通商品库存失败,商品id = " + id);
+            throw new OtterwoodException("更新普通商品库存失败,商品id = " + id);
         }
         return update;
     }
@@ -1072,7 +1072,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
     public Boolean offShelf(Integer id) {
         StoreProduct storeProduct = getById(id);
         if (ObjectUtil.isNull(storeProduct)) {
-            throw new CrmebException("商品不存在");
+            throw new OtterwoodException("商品不存在");
         }
         if (!storeProduct.getIsShow()) {
             return true;
@@ -1099,7 +1099,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
     public Boolean putOnShelf(Integer id) {
         StoreProduct storeProduct = getById(id);
         if (ObjectUtil.isNull(storeProduct)) {
-            throw new CrmebException("商品不存在");
+            throw new OtterwoodException("商品不存在");
         }
         if (storeProduct.getIsShow()) {
             return true;
@@ -1187,11 +1187,11 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
             List<Category> childVoListByPids = categoryService.getByPIds(cidList);
             List<Integer> categoryIdList = childVoListByPids.stream().map(Category::getId).collect(Collectors.toList());
             categoryIdList.addAll(cidList);
-            lqw.apply(CrmebUtil.getFindInSetSql("cate_id", (ArrayList<Integer>) categoryIdList));
+            lqw.apply(OtterwoodUtil.getFindInSetSql("cate_id", (ArrayList<Integer>) categoryIdList));
         }
 
         if (StrUtil.isNotBlank(request.getKeyword())) {
-//            if (CrmebUtil.isString2Num(request.getKeyword())) {
+//            if (OtterwoodUtil.isString2Num(request.getKeyword())) {
 //                Integer productId = Integer.valueOf(request.getKeyword());
 //                lqw.like(StoreProduct::getId, productId);
 //            } else {
@@ -1245,7 +1245,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
         lqw.eq(StoreProduct::getIsShow, true);
         StoreProduct storeProduct = dao.selectOne(lqw);
         if (ObjectUtil.isNull(storeProduct)) {
-            throw new CrmebException(StrUtil.format("未找到编号为{}的商品", id));
+            throw new OtterwoodException(StrUtil.format("未找到编号为{}的商品", id));
         }
 
         StoreProductDescription sd = storeProductDescriptionService.getOne(
@@ -1409,7 +1409,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
         }
         //把所有的分类id写入集合
         for (StoreProduct storeProduct : productList) {
-            List<Integer> categoryIdList = CrmebUtil.stringToArray(storeProduct.getCateId());
+            List<Integer> categoryIdList = OtterwoodUtil.stringToArray(storeProduct.getCateId());
             idList.addAll(categoryIdList);
         }
 
@@ -1422,7 +1422,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
         }
 
         for (Category category: categoryList) {
-            List<Integer> parentIdList = CrmebUtil.stringToArrayByRegex(category.getPath(), "/");
+            List<Integer> parentIdList = OtterwoodUtil.stringToArrayByRegex(category.getPath(), "/");
             if (CollUtil.isNotEmpty(parentIdList)) {
                 for (Integer parentId : parentIdList) {
                     if (parentId > 0) {
@@ -1445,16 +1445,16 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
     public Boolean quickAddStock(ProductAddStockRequest request) {
         StoreProduct storeProduct = dao.selectById(request.getId());
         if (storeProduct == null) {
-            throw new CrmebException(ProductResultCode.PRODUCT_NOT_EXIST);
+            throw new OtterwoodException(ProductResultCode.PRODUCT_NOT_EXIST);
         }
         List<ProductAttrValueAddStockRequest> valueStockList = request.getAttrValueList();
         List<Integer> attrIdList = valueStockList.stream().map(ProductAttrValueAddStockRequest::getId).distinct().collect(Collectors.toList());
         if (attrIdList.size() != valueStockList.size()) {
-            throw new CrmebException(CommonResultCode.VALIDATE_FAILED, "有重复的商品规格属性ID");
+            throw new OtterwoodException(CommonResultCode.VALIDATE_FAILED, "有重复的商品规格属性ID");
         }
         List<StoreProductAttrValue> valueList = storeProductAttrValueService.getByProductIdAndAttrIdList(request.getId(), attrIdList);
         if (CollUtil.isEmpty(valueList) || valueList.size() != attrIdList.size()) {
-            throw new CrmebException(CommonResultCode.VALIDATE_FAILED, "商品规格属性ID数组数据异常，请刷新后再试");
+            throw new OtterwoodException(CommonResultCode.VALIDATE_FAILED, "商品规格属性ID数组数据异常，请刷新后再试");
         }
         for (ProductAttrValueAddStockRequest value : valueStockList) {
             for (StoreProductAttrValue attrValue : valueList) {

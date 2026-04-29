@@ -4,7 +4,7 @@ import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.UploadConstants;
 import com.otterwood.common.interceptor.SwaggerInterceptor;
 import com.otterwood.admin.filter.ResponseFilter;
-import com.otterwood.common.config.CrmebConfig;
+import com.otterwood.common.config.OtterwoodConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -21,13 +21,13 @@ import java.io.File;
 /**
  * token验证拦截器
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Configuration
@@ -37,7 +37,7 @@ public class WebConfig implements WebMvcConfigurer {
     // 但是觉得这样更优雅
 
     @Autowired
-    CrmebConfig crmebConfig;
+    OtterwoodConfig otterwoodConfig;
 
     @Bean
     public ResponseFilter responseFilter(){ return new ResponseFilter(); }
@@ -94,10 +94,10 @@ public class WebConfig implements WebMvcConfigurer {
 
         /** 本地文件上传路径 */
         registry.addResourceHandler(UploadConstants.UPLOAD_FILE_KEYWORD + "/**")
-                .addResourceLocations("file:" + crmebConfig.getImagePath() + "/" + UploadConstants.UPLOAD_FILE_KEYWORD + "/");
+                .addResourceLocations("file:" + otterwoodConfig.getImagePath() + "/" + UploadConstants.UPLOAD_FILE_KEYWORD + "/");
 
         registry.addResourceHandler(UploadConstants.UPLOAD_AFTER_FILE_KEYWORD + "/**")
-                .addResourceLocations("file:" +crmebConfig.getImagePath() + "/" + UploadConstants.UPLOAD_AFTER_FILE_KEYWORD + "/" );
+                .addResourceLocations("file:" +otterwoodConfig.getImagePath() + "/" + UploadConstants.UPLOAD_AFTER_FILE_KEYWORD + "/" );
 
     }
 

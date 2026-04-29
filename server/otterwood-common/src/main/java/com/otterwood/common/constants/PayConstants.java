@@ -3,13 +3,13 @@ package com.otterwood.common.constants;
 /**
  *  支付相关常量类
  *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
  */
 public class PayConstants {
@@ -48,7 +48,7 @@ public class PayConstants {
     public static final String WX_PAY_SIGN_TYPE_MD5 = "MD5";
     public static final String WX_PAY_SIGN_TYPE_SHA256 = "HMAC-SHA256";
 
-    public static final String PAY_BODY = "Crmeb支付中心-订单支付";
+    public static final String PAY_BODY = "Otterwood支付中心-订单支付";
     public static final String FIELD_SIGN = "sign";
 
     // 公共号退款

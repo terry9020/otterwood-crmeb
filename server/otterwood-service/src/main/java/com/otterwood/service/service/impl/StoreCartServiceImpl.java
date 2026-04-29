@@ -16,7 +16,7 @@ import com.otterwood.common.request.CartResetRequest;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.RedisConstatns;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.response.CartInfoResponse;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -44,13 +44,13 @@ import java.util.stream.Collectors;
 /**
  * StoreCartServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -173,11 +173,11 @@ public class StoreCartServiceImpl extends ServiceImpl<StoreCartDao, StoreCart> i
         // 判断商品正常
         StoreProduct product = storeProductService.getById(storeCartRequest.getProductId());
         if (ObjectUtil.isNull(product) || product.getIsDel() || !product.getIsShow()) {
-            throw new CrmebException("未找到对应商品");
+            throw new OtterwoodException("未找到对应商品");
         }
         List<StoreProductAttrValue> attrValues = storeProductAttrValueService.getListByProductIdAndAttrId(product.getId(), storeCartRequest.getProductAttrUnique(), Constants.PRODUCT_TYPE_NORMAL);
         if (CollUtil.isEmpty(attrValues)) {
-            throw new CrmebException("未找到对应的商品SKU");
+            throw new OtterwoodException("未找到对应的商品SKU");
         }
 
         // 普通商品部分(只有普通商品才能添加购物车)
@@ -193,7 +193,7 @@ public class StoreCartServiceImpl extends ServiceImpl<StoreCartDao, StoreCart> i
             forUpdateStoreCart.setCartNum(forUpdateStoreCart.getCartNum() + storeCartRequest.getCartNum());
             forUpdateStoreCart.setUpdateTime(DateUtil.date());
             boolean updateResult = updateById(forUpdateStoreCart);
-            if (!updateResult) throw new CrmebException("添加购物车失败");
+            if (!updateResult) throw new OtterwoodException("添加购物车失败");
 
             // 商品加购量统计(每日/商城)
             redisUtil.incrAndCreate(RedisConstatns.PRO_ADD_CART_KEY + todayStr);
@@ -205,7 +205,7 @@ public class StoreCartServiceImpl extends ServiceImpl<StoreCartDao, StoreCart> i
             BeanUtils.copyProperties(storeCartRequest, storeCart);
             storeCart.setUid(currentUser.getUid());
             storeCart.setType("product");
-            if (dao.insert(storeCart) <= 0) throw new CrmebException("添加购物车失败");
+            if (dao.insert(storeCart) <= 0) throw new OtterwoodException("添加购物车失败");
             // 商品加购量统计(每日/商城)
             redisUtil.incrAndCreate(RedisConstatns.PRO_ADD_CART_KEY + todayStr);
             // 商品加购量统计(每日/个体)
@@ -260,14 +260,14 @@ public class StoreCartServiceImpl extends ServiceImpl<StoreCartDao, StoreCart> i
         LambdaQueryWrapper<StoreCart> lqw = new LambdaQueryWrapper<>();
         lqw.eq(StoreCart::getId, resetRequest.getId());
         StoreCart storeCart = dao.selectOne(lqw);
-        if (ObjectUtil.isNull(storeCart)) throw new CrmebException("购物车不存在");
+        if (ObjectUtil.isNull(storeCart)) throw new OtterwoodException("购物车不存在");
         if (ObjectUtil.isNull(resetRequest.getNum()) || resetRequest.getNum() <= 0 || resetRequest.getNum() >= 999)
-            throw new CrmebException("数量不合法");
+            throw new OtterwoodException("数量不合法");
         storeCart.setCartNum(resetRequest.getNum());
         storeCart.setProductAttrUnique(resetRequest.getUnique() + "");
         storeCart.setUpdateTime(DateUtil.date());
         boolean updateResult = dao.updateById(storeCart) > 0;
-        if (!updateResult) throw new CrmebException("重选添加购物车失败");
+        if (!updateResult) throw new OtterwoodException("重选添加购物车失败");
         productStatusEnableFlag(resetRequest.getId(), true);
         return updateResult;
     }
@@ -345,10 +345,10 @@ public class StoreCartServiceImpl extends ServiceImpl<StoreCartDao, StoreCart> i
      */
     @Override
     public Boolean updateCartNum(Integer id, Integer number) {
-        if (ObjectUtil.isNull(number)) throw new CrmebException("商品数量不合法");
-        if (number <=0 || number > 99) throw new CrmebException("商品数量不能小于1大于99");
+        if (ObjectUtil.isNull(number)) throw new OtterwoodException("商品数量不合法");
+        if (number <=0 || number > 99) throw new OtterwoodException("商品数量不能小于1大于99");
         StoreCart storeCart = getById(id);
-        if (ObjectUtil.isNull(storeCart)) throw new CrmebException("当前购物车不存在");
+        if (ObjectUtil.isNull(storeCart)) throw new OtterwoodException("当前购物车不存在");
         if (storeCart.getCartNum().equals(number)) return true;
         storeCart.setCartNum(number);
         storeCart.setUpdateTime(DateUtil.date());

@@ -9,7 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.TaskConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.combination.StoreCombination;
 import com.otterwood.common.model.combination.StorePink;
 import com.otterwood.common.model.finance.UserRecharge;
@@ -17,8 +17,8 @@ import com.otterwood.common.model.order.StoreOrder;
 import com.otterwood.common.model.user.User;
 import com.otterwood.common.model.wechat.WechatPayInfo;
 
-import com.otterwood.common.utils.CrmebUtil;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.utils.WxPayUtil;
 import com.otterwood.common.vo.AttachVo;
@@ -44,13 +44,13 @@ import java.util.*;
 /**
  * 订单支付回调 CallbackService 实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -125,20 +125,20 @@ public class CallbackServiceImpl implements CallbackService {
             }
 
             //解析xml
-            CallbackVo callbackVo = CrmebUtil.mapToObj(map, CallbackVo.class);
+            CallbackVo callbackVo = OtterwoodUtil.mapToObj(map, CallbackVo.class);
             AttachVo attachVo = JSONObject.toJavaObject(JSONObject.parseObject(callbackVo.getAttach()), AttachVo.class);
 
             //判断openid
             User user = userService.getById(attachVo.getUserId());
             if (ObjectUtil.isNull(user)) {
                 //用户信息错误
-                throw new CrmebException("用户信息错误！");
+                throw new OtterwoodException("用户信息错误！");
             }
 
             //根据类型判断是订单或者充值
             if (!Constants.SERVICE_PAY_TYPE_ORDER.equals(attachVo.getType()) && !Constants.SERVICE_PAY_TYPE_RECHARGE.equals(attachVo.getType())) {
                 logger.error("wechat pay err : 未知的支付类型==》" + callbackVo.getOutTradeNo());
-                throw new CrmebException("未知的支付类型！");
+                throw new OtterwoodException("未知的支付类型！");
             }
             // 订单
             if (Constants.SERVICE_PAY_TYPE_ORDER.equals(attachVo.getType())) {
@@ -149,7 +149,7 @@ public class CallbackServiceImpl implements CallbackService {
                 StoreOrder storeOrder = storeOrderService.getInfoByEntity(orderParam);
                 if (ObjectUtil.isNull(storeOrder)) {
                     logger.error("wechat pay error : 订单信息不存在==》" + callbackVo.getOutTradeNo());
-                    throw new CrmebException("wechat pay error : 订单信息不存在==》" + callbackVo.getOutTradeNo());
+                    throw new OtterwoodException("wechat pay error : 订单信息不存在==》" + callbackVo.getOutTradeNo());
                 }
                 if (storeOrder.getPaid()) {
                     logger.error("wechat pay error : 订单已处理==》" + callbackVo.getOutTradeNo());
@@ -161,7 +161,7 @@ public class CallbackServiceImpl implements CallbackService {
                 WechatPayInfo wechatPayInfo = wechatPayInfoService.getByNo(storeOrder.getOutTradeNo());
                 if (ObjectUtil.isNull(wechatPayInfo)) {
                     logger.error("wechat pay error : 微信订单信息不存在==》" + callbackVo.getOutTradeNo());
-                    throw new CrmebException("wechat pay error : 微信订单信息不存在==》" + callbackVo.getOutTradeNo());
+                    throw new OtterwoodException("wechat pay error : 微信订单信息不存在==》" + callbackVo.getOutTradeNo());
                 }
                 wechatPayInfo.setIsSubscribe(callbackVo.getIsSubscribe());
                 wechatPayInfo.setBankType(callbackVo.getBankType());
@@ -173,7 +173,7 @@ public class CallbackServiceImpl implements CallbackService {
                 // 添加支付成功redis队列
                 Boolean execute = transactionTemplate.execute(e -> {
                     storeOrder.setPaid(true);
-                    storeOrder.setPayTime(CrmebDateUtil.nowDateTime());
+                    storeOrder.setPayTime(OtterwoodDateUtil.nowDateTime());
                     storeOrder.setUpdateTime(DateUtil.date());
                     storeOrderService.updateById(storeOrder);
                     if (storeOrder.getUseIntegral() > 0) {
@@ -252,7 +252,7 @@ public class CallbackServiceImpl implements CallbackService {
             if (Constants.SERVICE_PAY_TYPE_RECHARGE.equals(attachVo.getType())) {
                 UserRecharge userRecharge = userRechargeService.getByOutTradeNo(callbackVo.getOutTradeNo());
                 if(ObjectUtil.isNull(userRecharge)){
-                    throw new CrmebException("没有找到订单信息");
+                    throw new OtterwoodException("没有找到订单信息");
                 }
                 if(userRecharge.getPaid()){
                     sb.append("<return_code><![CDATA[SUCCESS]]></return_code>");
@@ -264,7 +264,7 @@ public class CallbackServiceImpl implements CallbackService {
                 Boolean rechargePayAfter = rechargePayService.paySuccess(userRecharge);
                 if (!rechargePayAfter) {
                     logger.error("wechat pay error : 数据保存失败==》" + callbackVo.getOutTradeNo());
-                    throw new CrmebException("wechat pay error : 数据保存失败==》" + callbackVo.getOutTradeNo());
+                    throw new OtterwoodException("wechat pay error : 数据保存失败==》" + callbackVo.getOutTradeNo());
                 }
             }
             sb.append("<return_code><![CDATA[SUCCESS]]></return_code>");
@@ -407,7 +407,7 @@ public class CallbackServiceImpl implements CallbackService {
         String appAppid = systemConfigService.getValueByKey(Constants.CONFIG_KEY_PAY_WE_CHAT_APP_APP_ID);
         String signKey = "";
         if (StrUtil.isBlank(publicAppid) && StrUtil.isBlank(miniAppid) && StrUtil.isBlank(appAppid)) {
-            throw new CrmebException("pay_weixin_appid或pay_routine_appid不能都为空");
+            throw new OtterwoodException("pay_weixin_appid或pay_routine_appid不能都为空");
         }
         if (StrUtil.isNotBlank(publicAppid) && appid.equals(publicAppid)) {
             signKey = systemConfigService.getValueByKeyException(Constants.CONFIG_KEY_PAY_WE_CHAT_APP_KEY);

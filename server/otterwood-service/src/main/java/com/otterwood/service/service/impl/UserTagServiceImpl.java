@@ -4,11 +4,11 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.user.UserTag;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.request.UserTagRequest;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.service.dao.UserTagDao;
 import com.otterwood.service.service.UserService;
 import com.otterwood.service.service.UserTagService;
@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 /**
  * UserTagServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -60,7 +60,7 @@ public class UserTagServiceImpl extends ServiceImpl<UserTagDao, UserTag> impleme
     @Override
     public String getGroupNameInId(String tagIdValue) {
         LambdaQueryWrapper<UserTag> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.in(UserTag::getId, CrmebUtil.stringToArray(tagIdValue)).orderByDesc(UserTag::getId);
+        lambdaQueryWrapper.in(UserTag::getId, OtterwoodUtil.stringToArray(tagIdValue)).orderByDesc(UserTag::getId);
         List<UserTag> userTags = dao.selectList(lambdaQueryWrapper);
         if (null == userTags){
             return "无";
@@ -76,7 +76,7 @@ public class UserTagServiceImpl extends ServiceImpl<UserTagDao, UserTag> impleme
     @Override
     public Boolean create(UserTagRequest userTagRequest) {
         if (isExistName(userTagRequest.getName(), null)) {
-            throw new CrmebException("标签名称已存在");
+            throw new OtterwoodException("标签名称已存在");
         }
         UserTag userTag = new UserTag();
         BeanUtils.copyProperties(userTagRequest, userTag);
@@ -121,7 +121,7 @@ public class UserTagServiceImpl extends ServiceImpl<UserTagDao, UserTag> impleme
     @Override
     public Boolean updateTag(Integer id, UserTagRequest userTagRequest) {
         if (isExistName(userTagRequest.getName(), id)) {
-            throw new CrmebException("标签名称已存在");
+            throw new OtterwoodException("标签名称已存在");
         }
         UserTag userTag = new UserTag();
         BeanUtils.copyProperties(userTagRequest, userTag);

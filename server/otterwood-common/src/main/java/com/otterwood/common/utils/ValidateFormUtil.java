@@ -2,7 +2,7 @@ package com.otterwood.common.utils;
 
 import cn.hutool.core.util.ReUtil;
 import com.otterwood.common.constants.RegularConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.system.SystemConfig;
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,13 +12,13 @@ import java.util.regex.Pattern;
 /**
  * 表单验证类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 public class ValidateFormUtil {
@@ -34,10 +34,10 @@ public class ValidateFormUtil {
         }
 
         //required:true,min:0,max:100,number:true
-        List<String> list = CrmebUtil.stringToArrayStr(rule);
+        List<String> list = OtterwoodUtil.stringToArrayStr(rule);
 
         for (String value : list) {
-            List<String> val = CrmebUtil.stringToArrayStrRegex(value, ":");
+            List<String> val = OtterwoodUtil.stringToArrayStrRegex(value, ":");
 
             ////必填
             if(val.get(0).equals("required") && val.get(1).equals("true")){
@@ -105,7 +105,7 @@ public class ValidateFormUtil {
      */
     public static void isRequire(String value, String info){
         if(StringUtils.isBlank(value) ){
-            throw new CrmebException("请填写/选择" + info);
+            throw new OtterwoodException("请填写/选择" + info);
         }
     }
 
@@ -144,7 +144,7 @@ public class ValidateFormUtil {
         isNumber(value, info);
         int number = Integer.parseInt(value);
         if(number > max ){
-            throw new CrmebException(info + "不在取值范围内，最大不能大于" + max);
+            throw new OtterwoodException(info + "不在取值范围内，最大不能大于" + max);
         }
     }
 
@@ -159,7 +159,7 @@ public class ValidateFormUtil {
         isNumber(value, info);
         int number = Integer.parseInt(value);
         if(number > min ){
-            throw new CrmebException(info + "不在取值范围内，最小不能小于" + min);
+            throw new OtterwoodException(info + "不在取值范围内，最小不能小于" + min);
         }
     }
 
@@ -174,7 +174,7 @@ public class ValidateFormUtil {
     public static void regularException(String value, String info, String regular, String title){
         if(!regular(value, info, regular)){
             //正则验证
-            throw new CrmebException(info + " 格式必须为 " + title);
+            throw new OtterwoodException(info + " 格式必须为 " + title);
         }
     }
 
@@ -200,7 +200,7 @@ public class ValidateFormUtil {
     public static void isPhoneException(String phone, String errMsg) {
         boolean match = ReUtil.isMatch(RegularConstants.PHONE_TWO, phone);
         if (!match) {
-            throw new CrmebException(errMsg);
+            throw new OtterwoodException(errMsg);
         }
     }
 
@@ -211,7 +211,7 @@ public class ValidateFormUtil {
     public static void isPhoneException(String phone) {
         boolean match = ReUtil.isMatch(RegularConstants.PHONE_TWO, phone);
         if (!match) {
-            throw new CrmebException("请输入正确的手机号");
+            throw new OtterwoodException("请输入正确的手机号");
         }
     }
 }

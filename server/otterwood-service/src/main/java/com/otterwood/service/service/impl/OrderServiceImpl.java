@@ -9,7 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.otterwood.common.constants.*;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.bargain.StoreBargain;
 import com.otterwood.common.model.bargain.StoreBargainUser;
 import com.otterwood.common.model.cat.StoreCart;
@@ -37,8 +37,8 @@ import com.otterwood.common.model.user.UserAddress;
 import com.otterwood.common.page.CommonPage;
 import com.otterwood.common.request.*;
 import com.otterwood.common.response.*;
-import com.otterwood.common.utils.CrmebUtil;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.vo.*;
 import com.otterwood.service.delete.OrderUtils;
@@ -63,13 +63,13 @@ import java.util.stream.Collectors;
 /**
  * H5端订单操作
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -213,20 +213,20 @@ public class OrderServiceImpl implements OrderService {
         StoreOrder storeOrder = storeOrderService.getById(id);
         Integer userId = userService.getUserIdException();
         if (ObjectUtil.isNull(storeOrder) || !userId.equals(storeOrder.getUid())) {
-            throw new CrmebException("没有找到相关订单信息!");
+            throw new OtterwoodException("没有找到相关订单信息!");
         }
         if (storeOrder.getIsDel() || storeOrder.getIsSystemDel()) {
-            throw new CrmebException("订单已删除!");
+            throw new OtterwoodException("订单已删除!");
         }
         if (storeOrder.getPaid()) {
             if (storeOrder.getRefundStatus() > 0 && !storeOrder.getRefundStatus().equals(2)) {
-                throw new CrmebException("订单在退款流程中无法删除!");
+                throw new OtterwoodException("订单在退款流程中无法删除!");
             }
             if (storeOrder.getRefundStatus().equals(0) && !storeOrder.getStatus().equals(3)) {
-                throw new CrmebException("只能删除已完成订单!");
+                throw new OtterwoodException("只能删除已完成订单!");
             }
         } else {
-            throw new CrmebException("未支付订单无法删除!");
+            throw new OtterwoodException("未支付订单无法删除!");
         }
 
         //可以删除
@@ -250,7 +250,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Boolean reply(StoreProductReplyAddRequest request) {
         if (StrUtil.isBlank(request.getOrderNo())) {
-            throw new CrmebException("订单号参数不能为空");
+            throw new OtterwoodException("订单号参数不能为空");
         }
         return storeProductReplyService.create(request);
     }
@@ -264,7 +264,7 @@ public class OrderServiceImpl implements OrderService {
     public Boolean take(Integer id) {
         StoreOrder storeOrder = orderUtils.getInfoById(id);
         if (!storeOrder.getStatus().equals(Constants.ORDER_STATUS_INT_SPIKE)) {
-            throw new CrmebException("订单状态错误");
+            throw new OtterwoodException("订单状态错误");
         }
 
         //已收货，待评价
@@ -309,21 +309,21 @@ public class OrderServiceImpl implements OrderService {
         storeOrderPram.setIsDel(false);
         storeOrderPram.setPaid(true);
         StoreOrder existStoreOrder = storeOrderService.getByEntityOne(storeOrderPram);
-        if (null == existStoreOrder) throw new CrmebException("支付订单不存在");
+        if (null == existStoreOrder) throw new OtterwoodException("支付订单不存在");
         if (existStoreOrder.getRefundStatus() == 1) {
-            throw new CrmebException("正在申请退款中");
+            throw new OtterwoodException("正在申请退款中");
         }
 
         if (existStoreOrder.getRefundStatus() == 2) {
-            throw new CrmebException("订单已退款");
+            throw new OtterwoodException("订单已退款");
         }
 
         if (existStoreOrder.getRefundStatus() == 3) {
-            throw new CrmebException("订单退款中");
+            throw new OtterwoodException("订单退款中");
         }
 
         existStoreOrder.setRefundStatus(1);
-        existStoreOrder.setRefundReasonTime(CrmebDateUtil.nowDateTime());
+        existStoreOrder.setRefundReasonTime(OtterwoodDateUtil.nowDateTime());
         existStoreOrder.setRefundReasonWap(request.getText());
         existStoreOrder.setRefundReasonWapExplain(request.getExplain());
         existStoreOrder.setRefundReasonWapImg(systemAttachmentService.clearPrefix(request.getReasonImage()));
@@ -352,7 +352,7 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
         }
-        if (!execute) throw new CrmebException("申请退款失败");
+        if (!execute) throw new OtterwoodException("申请退款失败");
         return execute;
     }
 
@@ -399,7 +399,7 @@ public class OrderServiceImpl implements OrderService {
             storeOrder.setRefundReasonWapExplain(request.getExplain());
             storeOrder.setRefundReason(request.getText());
             storeOrder.setRefundPrice(BigDecimal.ZERO);
-            storeOrder.setRefundReasonTime(CrmebDateUtil.nowDateTime());
+            storeOrder.setRefundReasonTime(OtterwoodDateUtil.nowDateTime());
             storeOrder.setUpdateTime(DateUtil.date());
             orderList.add(storeOrder);
 
@@ -530,10 +530,10 @@ public class OrderServiceImpl implements OrderService {
         // 查询订单
         StoreOrder storeOrder = storeOrderService.getByOderId(orderId);
         if (ObjectUtil.isNull(storeOrder) || storeOrder.getIsDel() || storeOrder.getIsSystemDel()) {
-            throw new CrmebException("订单不存在");
+            throw new OtterwoodException("订单不存在");
         }
         if (!storeOrder.getUid().equals(currentUser.getUid())) {
-            throw new CrmebException("订单不存在");
+            throw new OtterwoodException("订单不存在");
         }
 
         BeanUtils.copyProperties(storeOrder, storeOrderDetailResponse);
@@ -587,8 +587,8 @@ public class OrderServiceImpl implements OrderService {
                 orderCancelTime = systemConfigService.getValueByKey("order_activity_time");
             }
             Date timeSpace;
-            timeSpace = CrmebDateUtil.addSecond(storeOrder.getCreateTime(), Double.valueOf(orderCancelTime).intValue() * 3600);
-            record.set("msg", "请在" + CrmebDateUtil.dateToStr(timeSpace, Constants.DATE_FORMAT) + "前完成支付");
+            timeSpace = OtterwoodDateUtil.addSecond(storeOrder.getCreateTime(), Double.valueOf(orderCancelTime).intValue() * 3600);
+            record.set("msg", "请在" + OtterwoodDateUtil.dateToStr(timeSpace, Constants.DATE_FORMAT) + "前完成支付");
         } else if (storeOrder.getRefundStatus() == 1) {
             record.set("type", -1);
             record.set("title", "申请退款中");
@@ -724,7 +724,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<String> getRefundReason() {
         String reasonString = systemConfigService.getValueByKey(SysConfigConstants.CONFIG_KEY_STOR_REASON);
-        reasonString = CrmebUtil.UnicodeToCN(reasonString);
+        reasonString = OtterwoodUtil.UnicodeToCN(reasonString);
         reasonString = reasonString.replace("rn", "n");
         return Arrays.asList(reasonString.split("\\n"));
     }
@@ -740,9 +740,9 @@ public class OrderServiceImpl implements OrderService {
         StoreOrder storeOrderPram = new StoreOrder();
         storeOrderPram.setOrderId(orderId);
         StoreOrder existOrder = storeOrderService.getByEntityOne(storeOrderPram);
-        if (ObjectUtil.isNull(existOrder)) throw new CrmebException("未找到该订单信息");
+        if (ObjectUtil.isNull(existOrder)) throw new OtterwoodException("未找到该订单信息");
         if (!existOrder.getDeliveryType().equals(Constants.ORDER_LOG_EXPRESS) || StringUtils.isBlank(existOrder.getDeliveryType()))
-            throw new CrmebException("该订单不存在快递订单号");
+            throw new OtterwoodException("该订单不存在快递订单号");
 
         if (existOrder.getType().equals(1)) {// 视频号订单
             Express express = expressService.getByName(existOrder.getDeliveryName());
@@ -829,7 +829,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public MyRecord preOrder(PreOrderRequest request) {
         if (CollUtil.isEmpty(request.getOrderDetails())) {
-            throw new CrmebException("预下单订单详情列表不能为空");
+            throw new OtterwoodException("预下单订单详情列表不能为空");
         }
         User user = userService.getInfoException();
         // 校验预下单商品信息
@@ -866,7 +866,7 @@ public class OrderServiceImpl implements OrderService {
         orderInfoVo.setUserIntegral(user.getIntegral());
         orderInfoVo.setUserBalance(user.getNowMoney());
         // 缓存订单
-        String key = user.getUid() + CrmebDateUtil.getNowTime().toString() + CrmebUtil.getUuid();
+        String key = user.getUid() + OtterwoodDateUtil.getNowTime().toString() + OtterwoodUtil.getUuid();
         redisUtil.set("user_order:" + key, JSONObject.toJSONString(orderInfoVo), Constants.ORDER_CASH_CONFIRM, TimeUnit.MINUTES);
         MyRecord record = new MyRecord();
         record.set("preOrderNo", key);
@@ -885,7 +885,7 @@ public class OrderServiceImpl implements OrderService {
         String key = "user_order:" + preOrderNo;
         boolean exists = redisUtil.exists(key);
         if (!exists) {
-            throw new CrmebException("预下单订单不存在");
+            throw new OtterwoodException("预下单订单不存在");
         }
         String orderVoString = redisUtil.get(key).toString();
         OrderInfoVo orderInfoVo = JSONObject.parseObject(orderVoString, OrderInfoVo.class);
@@ -922,7 +922,7 @@ public class OrderServiceImpl implements OrderService {
         String key = "user_order:" + request.getPreOrderNo();
         boolean exists = redisUtil.exists(key);
         if (!exists) {
-            throw new CrmebException("预下单订单不存在");
+            throw new OtterwoodException("预下单订单不存在");
         }
         String orderVoString = redisUtil.get(key).toString();
         OrderInfoVo orderInfoVo = JSONObject.parseObject(orderVoString, OrderInfoVo.class);
@@ -943,7 +943,7 @@ public class OrderServiceImpl implements OrderService {
         String key = "user_order:" + request.getPreOrderNo();
         boolean exists = redisUtil.exists(key);
         if (!exists) {
-            throw new CrmebException("预下单订单不存在");
+            throw new OtterwoodException("预下单订单不存在");
         }
         String orderVoString = redisUtil.get(key).toString();
         OrderInfoVo orderInfoVo = JSONObject.parseObject(orderVoString, OrderInfoVo.class);
@@ -955,28 +955,28 @@ public class OrderServiceImpl implements OrderService {
         String verifyCode = "";
         String userAddressStr = "";
         if (request.getShippingType() == 1) { // 快递配送
-            if (request.getAddressId() <= 0) throw new CrmebException("请选择收货地址");
+            if (request.getAddressId() <= 0) throw new OtterwoodException("请选择收货地址");
             UserAddress userAddress = userAddressService.getById(request.getAddressId());
             if (ObjectUtil.isNull(userAddress) || userAddress.getIsDel()) {
-                throw new CrmebException("收货地址有误");
+                throw new OtterwoodException("收货地址有误");
             }
             request.setRealName(userAddress.getRealName());
             request.setPhone(userAddress.getPhone());
             userAddressStr = userAddress.getProvince() + userAddress.getCity() + userAddress.getDistrict() + userAddress.getDetail();
         } else if (request.getShippingType() == 2) { // 到店自提
             if (StringUtils.isBlank(request.getRealName()) || StringUtils.isBlank(request.getPhone())) {
-                throw new CrmebException("请填写姓名和电话");
+                throw new OtterwoodException("请填写姓名和电话");
             }
             // 自提开关是否打开
             String storeSelfMention = systemConfigService.getValueByKey(SysConfigConstants.CONFIG_KEY_STORE_SELF_MENTION);
             if (storeSelfMention.equals("false")) {
-                throw new CrmebException("请先联系管理员开启门店自提");
+                throw new OtterwoodException("请先联系管理员开启门店自提");
             }
             SystemStore systemStore = systemStoreService.getById(request.getStoreId());
             if (ObjectUtil.isNull(systemStore) || systemStore.getIsDel() || !systemStore.getIsShow()) {
-                throw new CrmebException("暂无门店无法选择门店自提");
+                throw new OtterwoodException("暂无门店无法选择门店自提");
             }
-            verifyCode = CrmebUtil.randomCount(1111111111, 999999999) + "";
+            verifyCode = OtterwoodUtil.randomCount(1111111111, 999999999) + "";
             userAddressStr = systemStore.getName();
         }
 
@@ -985,12 +985,12 @@ public class OrderServiceImpl implements OrderService {
         if (ObjectUtil.isNotNull(orderInfoVo.getSeckillId()) && orderInfoVo.getSeckillId() > 0) {
             StoreSeckill storeSeckill = storeSeckillService.getByIdException(orderInfoVo.getSeckillId());
             if (storeSeckill.getStatus().equals(0)) {
-                throw new CrmebException("秒杀商品已关闭");
+                throw new OtterwoodException("秒杀商品已关闭");
             }
             OrderInfoDetailVo detailVo = orderInfoVo.getOrderDetailList().get(0);
             StoreProductAttrValue seckillAttrValue = storeProductAttrValueService.getByIdAndProductIdAndType(detailVo.getAttrValueId(), orderInfoVo.getSeckillId(), Constants.PRODUCT_TYPE_SECKILL);
             if (ObjectUtil.isNull(seckillAttrValue)) {
-                throw new CrmebException("秒杀商品规格不存在");
+                throw new OtterwoodException("秒杀商品规格不存在");
             }
             commonValidateSeckill(storeSeckill, seckillAttrValue, user, detailVo.getPayNum());
         }
@@ -1004,7 +1004,7 @@ public class OrderServiceImpl implements OrderService {
         ComputedOrderPriceResponse computedOrderPriceResponse = computedPrice(orderComputedPriceRequest, orderInfoVo, user);
 
         // 生成订单号
-        String orderNo = CrmebUtil.getOrderNo("order");
+        String orderNo = OtterwoodUtil.getOrderNo("order");
 
         // 购买赠送的积分
         int gainIntegral = 0;
@@ -1092,7 +1092,7 @@ public class OrderServiceImpl implements OrderService {
         storeOrder.setSeckillId(orderInfoVo.getSeckillId());
         storeOrder.setBargainId(orderInfoVo.getBargainId());
         storeOrder.setBargainUserId(orderInfoVo.getBargainUserId());
-        storeOrder.setCreateTime(CrmebDateUtil.nowDateTime());
+        storeOrder.setCreateTime(OtterwoodDateUtil.nowDateTime());
         storeOrder.setShippingType(request.getShippingType());
 //        storeOrder.setIsChannel(isChannel);
         storeOrder.setPaid(false);
@@ -1172,7 +1172,7 @@ public class OrderServiceImpl implements OrderService {
             return Boolean.TRUE;
         });
         if (!execute) {
-            throw new CrmebException("订单生成失败");
+            throw new OtterwoodException("订单生成失败");
         }
 
         // 删除缓存订单
@@ -1231,7 +1231,7 @@ public class OrderServiceImpl implements OrderService {
             StoreSeckill storeSeckill = storeSeckillService.getByIdException(seckillId);
             StoreProductAttrValue seckillAttrValue = storeProductAttrValueService.getByIdAndProductIdAndType(detailVo.getAttrValueId(), seckillId, Constants.PRODUCT_TYPE_SECKILL);
             if (ObjectUtil.isNull(seckillAttrValue)) {
-                throw new CrmebException("秒杀商品规格不存在");
+                throw new OtterwoodException("秒杀商品规格不存在");
             }
             MyRecord seckillRecord = commonValidateSeckill(storeSeckill, seckillAttrValue, user, detailVo.getPayNum());
             // 主商品sku
@@ -1256,11 +1256,11 @@ public class OrderServiceImpl implements OrderService {
             OrderInfoDetailVo detailVo = orderInfoVo.getOrderDetailList().get(0);
             StoreBargain storeBargain = storeBargainService.getByIdException(bargainId);
             if (storeBargain.getStock().equals(0) || detailVo.getPayNum() > storeBargain.getStock()) {
-                throw new CrmebException("砍价商品库存不足");
+                throw new OtterwoodException("砍价商品库存不足");
             }
             StoreProductAttrValue bargainAttrValue = storeProductAttrValueService.getByIdAndProductIdAndType(detailVo.getAttrValueId(), bargainId, Constants.PRODUCT_TYPE_BARGAIN);
             if (ObjectUtil.isNull(bargainAttrValue)) {
-                throw new CrmebException("砍价商品规格不存在");
+                throw new OtterwoodException("砍价商品规格不存在");
             }
             MyRecord bargainRecord = commonValidateBargain(storeBargain, bargainAttrValue, orderInfoVo.getBargainUserId(), user, detailVo.getPayNum());
             StoreProductAttrValue productAttrValue = bargainRecord.get("productAttrValue");
@@ -1285,7 +1285,7 @@ public class OrderServiceImpl implements OrderService {
             StoreCombination storeCombination = storeCombinationService.getByIdException(combinationId);
             StoreProductAttrValue combinationAttrValue = storeProductAttrValueService.getByIdAndProductIdAndType(detailVo.getAttrValueId(), combinationId, Constants.PRODUCT_TYPE_PINGTUAN);
             if (ObjectUtil.isNull(combinationAttrValue)) {
-                throw new CrmebException("拼团商品规格不存在");
+                throw new OtterwoodException("拼团商品规格不存在");
             }
             MyRecord combinationRecord = commonValidateCombination(storeCombination, combinationAttrValue, user, detailVo.getPayNum());
             StoreProductAttrValue productAttrValue = combinationRecord.get("productAttrValue");
@@ -1310,24 +1310,24 @@ public class OrderServiceImpl implements OrderService {
             // 查询商品信息
             StoreProduct storeProduct = storeProductService.getById(e.getProductId());
             if (ObjectUtil.isNull(storeProduct)) {
-                throw new CrmebException("购买的商品信息不存在");
+                throw new OtterwoodException("购买的商品信息不存在");
             }
             if (storeProduct.getIsDel()) {
-                throw new CrmebException("购买的商品已删除");
+                throw new OtterwoodException("购买的商品已删除");
             }
             if (!storeProduct.getIsShow()) {
-                throw new CrmebException("购买的商品已下架");
+                throw new OtterwoodException("购买的商品已下架");
             }
             if (storeProduct.getStock().equals(0) || e.getPayNum() > storeProduct.getStock()) {
-                throw new CrmebException("购买的商品库存不足");
+                throw new OtterwoodException("购买的商品库存不足");
             }
             // 查询商品规格属性值信息
             StoreProductAttrValue attrValue = attrValueService.getByIdAndProductIdAndType(e.getAttrValueId(), e.getProductId(), Constants.PRODUCT_TYPE_NORMAL);
             if (ObjectUtil.isNull(attrValue)) {
-                throw new CrmebException("购买的商品规格信息不存在");
+                throw new OtterwoodException("购买的商品规格信息不存在");
             }
             if (attrValue.getStock() < e.getPayNum()) {
-                throw new CrmebException("购买的商品库存不足");
+                throw new OtterwoodException("购买的商品库存不足");
             }
             MyRecord record = new MyRecord();
             record.set("productId", e.getProductId());
@@ -1372,35 +1372,35 @@ public class OrderServiceImpl implements OrderService {
             } else {
                 // 普通商品
                 if (ObjectUtil.isNull(detailRequest.getProductId())) {
-                    throw new CrmebException("商品编号不能为空");
+                    throw new OtterwoodException("商品编号不能为空");
                 }
                 if (ObjectUtil.isNull(detailRequest.getAttrValueId())) {
-                    throw new CrmebException("商品规格属性值不能为空");
+                    throw new OtterwoodException("商品规格属性值不能为空");
                 }
                 if (ObjectUtil.isNull(detailRequest.getProductNum()) || detailRequest.getProductNum() < 0) {
-                    throw new CrmebException("购买数量必须大于0");
+                    throw new OtterwoodException("购买数量必须大于0");
                 }
                 // 查询商品信息
                 StoreProduct storeProduct = storeProductService.getById(detailRequest.getProductId());
                 if (ObjectUtil.isNull(storeProduct)) {
-                    throw new CrmebException("商品信息不存在，请刷新后重新选择");
+                    throw new OtterwoodException("商品信息不存在，请刷新后重新选择");
                 }
                 if (storeProduct.getIsDel()) {
-                    throw new CrmebException("商品已删除，请刷新后重新选择");
+                    throw new OtterwoodException("商品已删除，请刷新后重新选择");
                 }
                 if (!storeProduct.getIsShow()) {
-                    throw new CrmebException("商品已下架，请刷新后重新选择");
+                    throw new OtterwoodException("商品已下架，请刷新后重新选择");
                 }
                 if (storeProduct.getStock() < detailRequest.getProductNum()) {
-                    throw new CrmebException("商品库存不足，请刷新后重新选择");
+                    throw new OtterwoodException("商品库存不足，请刷新后重新选择");
                 }
                 // 查询商品规格属性值信息
                 StoreProductAttrValue attrValue = attrValueService.getByIdAndProductIdAndType(detailRequest.getAttrValueId(), detailRequest.getProductId(), Constants.PRODUCT_TYPE_NORMAL);
                 if (ObjectUtil.isNull(attrValue)) {
-                    throw new CrmebException("商品规格信息不存在，请刷新后重新选择");
+                    throw new OtterwoodException("商品规格信息不存在，请刷新后重新选择");
                 }
                 if (attrValue.getStock() < detailRequest.getProductNum()) {
-                    throw new CrmebException("商品规格库存不足，请刷新后重新选择");
+                    throw new OtterwoodException("商品规格库存不足，请刷新后重新选择");
                 }
                 SystemUserLevel userLevel = null;
                 if (user.getLevel() > 0) {
@@ -1452,33 +1452,33 @@ public class OrderServiceImpl implements OrderService {
         SystemUserLevel finalUserLevel = userLevel;
         request.getOrderDetails().forEach(e -> {
             if (ObjectUtil.isNull(e.getShoppingCartId())) {
-                throw new CrmebException("购物车编号不能为空");
+                throw new OtterwoodException("购物车编号不能为空");
             }
             StoreCart storeCart = storeCartService.getByIdAndUid(e.getShoppingCartId(), user.getUid());
             if (ObjectUtil.isNull(storeCart)) {
-                throw new CrmebException("未找到对应的购物车信息");
+                throw new OtterwoodException("未找到对应的购物车信息");
             }
             // 查询商品信息
             StoreProduct storeProduct = storeProductService.getById(storeCart.getProductId());
             if (ObjectUtil.isNull(storeProduct)) {
-                throw new CrmebException("商品信息不存在，请刷新后重新选择");
+                throw new OtterwoodException("商品信息不存在，请刷新后重新选择");
             }
             if (storeProduct.getIsDel()) {
-                throw new CrmebException("商品已删除，请刷新后重新选择");
+                throw new OtterwoodException("商品已删除，请刷新后重新选择");
             }
             if (!storeProduct.getIsShow()) {
-                throw new CrmebException("商品已下架，请刷新后重新选择");
+                throw new OtterwoodException("商品已下架，请刷新后重新选择");
             }
             if (storeProduct.getStock() < storeCart.getCartNum()) {
-                throw new CrmebException("商品库存不足，请刷新后重新选择");
+                throw new OtterwoodException("商品库存不足，请刷新后重新选择");
             }
             // 查询商品规格属性值信息
             StoreProductAttrValue attrValue = attrValueService.getByIdAndProductIdAndType(Integer.valueOf(storeCart.getProductAttrUnique()), storeCart.getProductId(), Constants.PRODUCT_TYPE_NORMAL);
             if (ObjectUtil.isNull(attrValue)) {
-                throw new CrmebException("商品规格信息不存在，请刷新后重新选择");
+                throw new OtterwoodException("商品规格信息不存在，请刷新后重新选择");
             }
             if (attrValue.getStock() < storeCart.getCartNum()) {
-                throw new CrmebException("商品规格库存不足，请刷新后重新选择");
+                throw new OtterwoodException("商品规格库存不足，请刷新后重新选择");
             }
             OrderInfoDetailVo detailVo = new OrderInfoDetailVo();
             detailVo.setProductId(storeProduct.getId());
@@ -1515,11 +1515,11 @@ public class OrderServiceImpl implements OrderService {
         Integer seckillId = detailRequest.getSeckillId();
         StoreSeckill storeSeckill = storeSeckillService.getByIdException(seckillId);
         if (storeSeckill.getStatus().equals(0)) {
-            throw new CrmebException("秒杀商品已关闭");
+            throw new OtterwoodException("秒杀商品已关闭");
         }
         StoreProductAttrValue seckillAttrValue = storeProductAttrValueService.getByIdAndProductIdAndType(detailRequest.getAttrValueId(), seckillId, Constants.PRODUCT_TYPE_SECKILL);
         if (ObjectUtil.isNull(seckillAttrValue)) {
-            throw new CrmebException("秒杀商品规格不存在");
+            throw new OtterwoodException("秒杀商品规格不存在");
         }
         commonValidateSeckill(storeSeckill, seckillAttrValue, user, detailRequest.getProductNum());
 
@@ -1548,44 +1548,44 @@ public class OrderServiceImpl implements OrderService {
      */
     private MyRecord commonValidateSeckill(StoreSeckill storeSeckill, StoreProductAttrValue seckillAttrValue, User user, Integer productNum) {
         if (storeSeckill.getStock().equals(0) || productNum > storeSeckill.getStock()) {
-            throw new CrmebException("秒杀商品库存不足");
+            throw new OtterwoodException("秒杀商品库存不足");
         }
         if (seckillAttrValue.getStock() <= 0 || seckillAttrValue.getQuota() <= 0 || productNum > seckillAttrValue.getStock()) {
-            throw new CrmebException("秒杀商品规格库存不足");
+            throw new OtterwoodException("秒杀商品规格库存不足");
         }
         // 普通商品部分判断
         StoreProduct product = storeProductService.getById(storeSeckill.getProductId());
         if (ObjectUtil.isNull(product) || product.getIsDel()) {
-            throw new CrmebException("秒杀主商品不存在");
+            throw new OtterwoodException("秒杀主商品不存在");
         }
         if (product.getStock().equals(0) || productNum > product.getStock()) {
-            throw new CrmebException("秒杀主商品库存不足");
+            throw new OtterwoodException("秒杀主商品库存不足");
         }
         // 主商品sku
         StoreProductAttrValue productAttrValue = storeProductAttrValueService.getByProductIdAndSkuAndType(storeSeckill.getProductId(), seckillAttrValue.getSuk(), Constants.PRODUCT_TYPE_NORMAL);
         if (ObjectUtil.isNull(productAttrValue)) {
-            throw new CrmebException("秒杀主商品规格不存在");
+            throw new OtterwoodException("秒杀主商品规格不存在");
         }
         if (productAttrValue.getStock() <= 0 || productNum > productAttrValue.getStock()) {
-            throw new CrmebException("秒杀主商品规格库存不足");
+            throw new OtterwoodException("秒杀主商品规格库存不足");
         }
 
         // 判断秒杀是否过期 1:日期是否在范围内 2：时间是否在每天的时间段内
         StoreSeckillManger seckillManger = storeSeckillMangerService.getById(storeSeckill.getTimeId());
         if (ObjectUtil.isNull(seckillManger)) {
-            throw new CrmebException("秒杀时段不存在");
+            throw new OtterwoodException("秒杀时段不存在");
         }
         // 判断日期是否过期
         DateTime nowDateTime = cn.hutool.core.date.DateUtil.date();
-        String stopTimeStr = CrmebDateUtil.dateToStr(storeSeckill.getStopTime(), Constants.DATE_FORMAT_DATE);
-        Date stopDate = CrmebDateUtil.strToDate(stopTimeStr + " " + seckillManger.getEndTime() + ":00:00", Constants.DATE_FORMAT);
+        String stopTimeStr = OtterwoodDateUtil.dateToStr(storeSeckill.getStopTime(), Constants.DATE_FORMAT_DATE);
+        Date stopDate = OtterwoodDateUtil.strToDate(stopTimeStr + " " + seckillManger.getEndTime() + ":00:00", Constants.DATE_FORMAT);
         if (nowDateTime.getTime() - stopDate.getTime() >= 0) {
-            throw new CrmebException("秒杀商品已过期");
+            throw new OtterwoodException("秒杀商品已过期");
         }
         // 判断是否在秒杀时段内（小时）,秒杀开始时间 <= 当前时间 <= 秒杀结束时间
         int hour = nowDateTime.getField(Calendar.HOUR_OF_DAY);// 现在的小时
         if (seckillManger.getStartTime() > hour || seckillManger.getEndTime() < hour) {
-            throw new CrmebException("秒杀商品已过期");
+            throw new OtterwoodException("秒杀商品已过期");
         }
 
         // 判断秒杀购买次数
@@ -1595,12 +1595,12 @@ public class OrderServiceImpl implements OrderService {
             // 判断是否有待支付订单
             List<StoreOrder> unPayOrders = userCurrentDaySecKillOrders.stream().filter(e -> !e.getPaid()).collect(Collectors.toList());
             if (unPayOrders.size() > 0) {
-                throw new CrmebException("您有秒杀待支付订单，请支付后再购买");
+                throw new OtterwoodException("您有秒杀待支付订单，请支付后再购买");
             }
 
             // 判断是否达到上限
             if (userCurrentDaySecKillOrders.size() >= storeSeckill.getNum()) {
-                throw new CrmebException("您已经达到当前秒杀活动上限");
+                throw new OtterwoodException("您已经达到当前秒杀活动上限");
             }
         }
 
@@ -1619,14 +1619,14 @@ public class OrderServiceImpl implements OrderService {
      */
     private OrderInfoDetailVo validatePreOrderBargain(PreOrderDetailRequest detailRequest, User user) {
         if (detailRequest.getBargainUserId() <= 0) {
-            throw new CrmebException("用户砍价活动id必须大于0");
+            throw new OtterwoodException("用户砍价活动id必须大于0");
         }
         // 砍价部分判断
         Integer bargainId = detailRequest.getBargainId();
         StoreBargain storeBargain = storeBargainService.getByIdException(bargainId);
         StoreProductAttrValue bargainAttrValue = storeProductAttrValueService.getByIdAndProductIdAndType(detailRequest.getAttrValueId(), bargainId, Constants.PRODUCT_TYPE_BARGAIN);
         if (ObjectUtil.isNull(bargainAttrValue)) {
-            throw new CrmebException("砍价商品规格不存在");
+            throw new OtterwoodException("砍价商品规格不存在");
         }
         commonValidateBargain(storeBargain, bargainAttrValue, detailRequest.getBargainUserId(), user, detailRequest.getProductNum());
 
@@ -1658,63 +1658,63 @@ public class OrderServiceImpl implements OrderService {
      */
     private MyRecord commonValidateBargain(StoreBargain storeBargain, StoreProductAttrValue bargainAttrValue, Integer bargainUserId, User user, Integer productNum) {
         if (storeBargain.getStock().equals(0) || productNum > storeBargain.getStock()) {
-            throw new CrmebException("砍价商品库存不足");
+            throw new OtterwoodException("砍价商品库存不足");
         }
         long currentTimeMillis = System.currentTimeMillis();
         if (currentTimeMillis > storeBargain.getStopTime()) {
-            throw new CrmebException("砍价活动已结束");
+            throw new OtterwoodException("砍价活动已结束");
         }
         StoreBargainUser bargainUser = storeBargainUserService.getById(bargainUserId);
         if (ObjectUtil.isNull(bargainUser)) {
-            throw new CrmebException("用户砍价活动不存在");
+            throw new OtterwoodException("用户砍价活动不存在");
         }
         if (bargainUser.getIsDel()) {
-            throw new CrmebException("用户砍价活动已取消");
+            throw new OtterwoodException("用户砍价活动已取消");
         }
         if (!bargainUser.getStatus().equals(3)) {
             if (bargainUser.getBargainPriceMin().compareTo(bargainUser.getBargainPrice().subtract(bargainUser.getPrice())) != 0) {
-                throw new CrmebException("请先完成砍价活动");
+                throw new OtterwoodException("请先完成砍价活动");
             }
         }
         // 判断是否有订单
         StoreOrder bargainOrder = storeOrderService.getByBargainOrder(bargainUser.getBargainId(), bargainUser.getId());
         if (ObjectUtil.isNotNull(bargainOrder)) {
             if (!bargainOrder.getPaid()) {
-                throw new CrmebException("订单已创建，尚未支付");
+                throw new OtterwoodException("订单已创建，尚未支付");
             }
-            throw new CrmebException("该砍价活动已创建了订单");
+            throw new OtterwoodException("该砍价活动已创建了订单");
         }
         // 参与活动次数 -根据用户和秒杀信息查询当天订单判断订单数量
         List<StoreOrder> userCurrentBargainOrders = storeOrderService.getUserCurrentBargainOrders(user.getUid(), storeBargain.getId());
         if (CollUtil.isNotEmpty(userCurrentBargainOrders)) {
             // 判断是否有待支付订单
             List<StoreOrder> unPayOrders = userCurrentBargainOrders.stream().filter(e -> !e.getPaid()).collect(Collectors.toList());
-            if (unPayOrders.size() > 0) throw new CrmebException("您有砍价待支付订单，请支付后再购买");
+            if (unPayOrders.size() > 0) throw new OtterwoodException("您有砍价待支付订单，请支付后再购买");
 
             // 判断是否达到上限
             if (CollUtil.isNotEmpty(userCurrentBargainOrders) && userCurrentBargainOrders.size() >= storeBargain.getNum()) {
-                throw new CrmebException("您已经达到当前砍价活动上限");
+                throw new OtterwoodException("您已经达到当前砍价活动上限");
             }
         }
 
         if (bargainAttrValue.getStock() <= 0 || bargainAttrValue.getQuota() <= 0 || productNum > bargainAttrValue.getStock()) {
-            throw new CrmebException("砍价商品规格库存不足");
+            throw new OtterwoodException("砍价商品规格库存不足");
         }
         // 普通商品部分判断
         StoreProduct product = storeProductService.getById(storeBargain.getProductId());
         if (ObjectUtil.isNull(product) || product.getIsDel()) {
-            throw new CrmebException("砍价主商品不存在");
+            throw new OtterwoodException("砍价主商品不存在");
         }
         if (product.getStock().equals(0) || productNum > product.getStock()) {
-            throw new CrmebException("砍价主商品库存不足");
+            throw new OtterwoodException("砍价主商品库存不足");
         }
         // 主商品sku
         StoreProductAttrValue productAttrValue = storeProductAttrValueService.getByProductIdAndSkuAndType(storeBargain.getProductId(), bargainAttrValue.getSuk(), Constants.PRODUCT_TYPE_NORMAL);
         if (ObjectUtil.isNull(productAttrValue)) {
-            throw new CrmebException("砍价主商品规格不存在");
+            throw new OtterwoodException("砍价主商品规格不存在");
         }
         if (productAttrValue.getStock() <= 0 || productNum > productAttrValue.getStock()) {
-            throw new CrmebException("砍价主商品规格库存不足");
+            throw new OtterwoodException("砍价主商品规格库存不足");
         }
 
         MyRecord record = new MyRecord();
@@ -1735,11 +1735,11 @@ public class OrderServiceImpl implements OrderService {
         Integer combinationId = detailRequest.getCombinationId();
         StoreCombination storeCombination = storeCombinationService.getByIdException(combinationId);
         if (storeCombination.getStock().equals(0) || detailRequest.getProductNum() > storeCombination.getStock()) {
-            throw new CrmebException("拼团商品库存不足");
+            throw new OtterwoodException("拼团商品库存不足");
         }
         StoreProductAttrValue combinationAttrValue = storeProductAttrValueService.getByIdAndProductIdAndType(detailRequest.getAttrValueId(), combinationId, Constants.PRODUCT_TYPE_PINGTUAN);
         if (ObjectUtil.isNull(combinationAttrValue)) {
-            throw new CrmebException("拼团商品规格不存在");
+            throw new OtterwoodException("拼团商品规格不存在");
         }
         commonValidateCombination(storeCombination, combinationAttrValue, user, detailRequest.getProductNum());
 
@@ -1771,34 +1771,34 @@ public class OrderServiceImpl implements OrderService {
         // 判断拼团时间段
         long timeMillis = System.currentTimeMillis();
         if (timeMillis < storeCombination.getStartTime()) {
-            throw new CrmebException("拼团商品活动未开始");
+            throw new OtterwoodException("拼团商品活动未开始");
         }
         if (timeMillis >= storeCombination.getStopTime()) {
-            throw new CrmebException("拼团商品已过期");
+            throw new OtterwoodException("拼团商品已过期");
         }
         // 判断购买数量
         if (productNum > storeCombination.getOnceNum()) {
-            throw new CrmebException("购买数量超过单次拼团购买上限");
+            throw new OtterwoodException("购买数量超过单次拼团购买上限");
         }
 
         if (combinationAttrValue.getStock() <= 0 || combinationAttrValue.getQuota() <= 0 || productNum > combinationAttrValue.getStock()) {
-            throw new CrmebException("拼团商品规格库存不足");
+            throw new OtterwoodException("拼团商品规格库存不足");
         }
         // 普通商品部分判断
         StoreProduct product = storeProductService.getById(storeCombination.getProductId());
         if (ObjectUtil.isNull(product) || product.getIsDel()) {
-            throw new CrmebException("拼团主商品不存在");
+            throw new OtterwoodException("拼团主商品不存在");
         }
         if (product.getStock().equals(0) || productNum > product.getStock()) {
-            throw new CrmebException("拼团主商品库存不足");
+            throw new OtterwoodException("拼团主商品库存不足");
         }
         // 主商品sku
         StoreProductAttrValue productAttrValue = storeProductAttrValueService.getByProductIdAndSkuAndType(storeCombination.getProductId(), combinationAttrValue.getSuk(), Constants.PRODUCT_TYPE_NORMAL);
         if (ObjectUtil.isNull(productAttrValue)) {
-            throw new CrmebException("拼团主商品规格不存在");
+            throw new OtterwoodException("拼团主商品规格不存在");
         }
         if (productAttrValue.getStock() <= 0 || productNum > productAttrValue.getStock()) {
-            throw new CrmebException("拼团主商品规格库存不足");
+            throw new OtterwoodException("拼团主商品规格库存不足");
         }
 
         // 用户参与活动的次数
@@ -1806,13 +1806,13 @@ public class OrderServiceImpl implements OrderService {
         if (CollUtil.isNotEmpty(userCombinationOrders)) {
             // 判断是否有待支付订单
             List<StoreOrder> unPayOrders = userCombinationOrders.stream().filter(e -> !e.getPaid()).collect(Collectors.toList());
-            if (unPayOrders.size() > 0) throw new CrmebException("您有拼团待支付订单，请支付后再购买");
+            if (unPayOrders.size() > 0) throw new OtterwoodException("您有拼团待支付订单，请支付后再购买");
             int payNum = userCombinationOrders.stream().mapToInt(StoreOrder::getTotalNum).sum();
             if (storeCombination.getNum() <= payNum) {
-                throw new CrmebException("您已达到该商品拼团活动上限");
+                throw new OtterwoodException("您已达到该商品拼团活动上限");
             }
             if ((payNum + productNum) > storeCombination.getNum()) {
-                throw new CrmebException("超过该商品拼团活动您的购买上限");
+                throw new OtterwoodException("超过该商品拼团活动您的购买上限");
             }
         }
 
@@ -1831,22 +1831,22 @@ public class OrderServiceImpl implements OrderService {
     private List<OrderInfoDetailVo> validatePreOrderAgain(PreOrderDetailRequest detailRequest, User user) {
         List<OrderInfoDetailVo> detailVoList = CollUtil.newArrayList();
         if (StrUtil.isBlank(detailRequest.getOrderNo())) {
-            throw new CrmebException("再次购买订单编号不能为空");
+            throw new OtterwoodException("再次购买订单编号不能为空");
         }
         StoreOrder storeOrder = getByOrderIdException(detailRequest.getOrderNo());
         if (storeOrder.getRefundStatus() > 0 || storeOrder.getStatus() != 3) {
-            throw new CrmebException("只有已完成状态订单才能再次购买");
+            throw new OtterwoodException("只有已完成状态订单才能再次购买");
         }
         if (storeOrder.getSeckillId() > 0 || storeOrder.getBargainId() > 0 || storeOrder.getCombinationId() > 0) {
-            throw new CrmebException("活动商品订单不能再次购买");
+            throw new OtterwoodException("活动商品订单不能再次购买");
         }
         if (storeOrder.getType().equals(1)) {
-            throw new CrmebException("视频订单不能再次购买");
+            throw new OtterwoodException("视频订单不能再次购买");
         }
         // 获取订单详情
         List<StoreOrderInfoVo> infoVoList = storeOrderInfoService.getVoListByOrderId(storeOrder.getId());
         if (CollUtil.isEmpty(infoVoList)) {
-            throw new CrmebException("订单详情未找到");
+            throw new OtterwoodException("订单详情未找到");
         }
         SystemUserLevel userLevel = null;
         if (user.getLevel() > 0) {
@@ -1858,24 +1858,24 @@ public class OrderServiceImpl implements OrderService {
             // 查询商品信息
             StoreProduct storeProduct = storeProductService.getById(detailVo.getProductId());
             if (ObjectUtil.isNull(storeProduct)) {
-                throw new CrmebException("商品信息不存在，请刷新后重新选择");
+                throw new OtterwoodException("商品信息不存在，请刷新后重新选择");
             }
             if (storeProduct.getIsDel()) {
-                throw new CrmebException("商品已删除，请刷新后重新选择");
+                throw new OtterwoodException("商品已删除，请刷新后重新选择");
             }
             if (!storeProduct.getIsShow()) {
-                throw new CrmebException("商品已下架，请刷新后重新选择");
+                throw new OtterwoodException("商品已下架，请刷新后重新选择");
             }
             if (storeProduct.getStock() < detailVo.getPayNum()) {
-                throw new CrmebException("商品库存不足，请刷新后重新选择");
+                throw new OtterwoodException("商品库存不足，请刷新后重新选择");
             }
             // 查询商品规格属性值信息
             StoreProductAttrValue attrValue = attrValueService.getByIdAndProductIdAndType(detailVo.getAttrValueId(), detailVo.getProductId(), Constants.PRODUCT_TYPE_NORMAL);
             if (ObjectUtil.isNull(attrValue)) {
-                throw new CrmebException("商品规格信息不存在，请刷新后重新选择");
+                throw new OtterwoodException("商品规格信息不存在，请刷新后重新选择");
             }
             if (attrValue.getStock() < detailVo.getPayNum()) {
-                throw new CrmebException("商品规格库存不足，请刷新后重新选择");
+                throw new OtterwoodException("商品规格库存不足，请刷新后重新选择");
             }
             OrderInfoDetailVo tempDetailVo = new OrderInfoDetailVo();
             tempDetailVo.setProductId(storeProduct.getId());
@@ -1904,10 +1904,10 @@ public class OrderServiceImpl implements OrderService {
     private StoreOrder getByOrderIdException(String orderId) {
         StoreOrder storeOrder = storeOrderService.getByOderId(orderId);
         if (ObjectUtil.isNull(storeOrder)) {
-            throw new CrmebException("订单不存在");
+            throw new OtterwoodException("订单不存在");
         }
         if (storeOrder.getIsDel() || storeOrder.getIsSystemDel()) {
-            throw new CrmebException("订单不存在");
+            throw new OtterwoodException("订单不存在");
         }
         return storeOrder;
     }
@@ -2087,7 +2087,7 @@ public class OrderServiceImpl implements OrderService {
         } else {// 快递配送，有地址
             UserAddress userAddress = userAddressService.getById(request.getAddressId());
             if (ObjectUtil.isNull(userAddress)) {
-                throw new CrmebException("用户地址不存在");
+                throw new OtterwoodException("用户地址不存在");
             } else {
                 getFreightFee(orderInfoVo, userAddress);
                 priceResponse.setFreightFee(orderInfoVo.getFreightFee());
@@ -2097,32 +2097,32 @@ public class OrderServiceImpl implements OrderService {
         if (ObjectUtil.isNull(request.getCouponId()) || request.getCouponId() <= 0) {
             priceResponse.setCouponFee(BigDecimal.ZERO);
         } else if (orderInfoVo.getSeckillId() > 0 || orderInfoVo.getBargainId() > 0 || orderInfoVo.getCombinationId() > 0) {
-            throw new CrmebException("营销活动商品无法使用优惠券");
+            throw new OtterwoodException("营销活动商品无法使用优惠券");
         } else if (orderInfoVo.getIsVideo()) {
-            throw new CrmebException("视频号商品无法使用优惠券");
+            throw new OtterwoodException("视频号商品无法使用优惠券");
         } else {
             // 判断优惠券是否可以使用
             StoreCouponUser storeCouponUser = storeCouponUserService.getById(request.getCouponId());
             if (ObjectUtil.isNull(storeCouponUser) || !storeCouponUser.getUid().equals(user.getUid())) {
-                throw new CrmebException("优惠券领取记录不存在！");
+                throw new OtterwoodException("优惠券领取记录不存在！");
             }
             if (storeCouponUser.getStatus() == 1) {
-                throw new CrmebException("此优惠券已使用！");
+                throw new OtterwoodException("此优惠券已使用！");
             }
 
             if (storeCouponUser.getStatus() == 2) {
-                throw new CrmebException("此优惠券已失效！");
+                throw new OtterwoodException("此优惠券已失效！");
             }
             //判断是否在使用时间内
-            Date date = CrmebDateUtil.nowDateTime();
+            Date date = OtterwoodDateUtil.nowDateTime();
             if (storeCouponUser.getStartTime().compareTo(date) > 0) {
-                throw new CrmebException("此优惠券还未到达使用时间范围之内！");
+                throw new OtterwoodException("此优惠券还未到达使用时间范围之内！");
             }
             if (date.compareTo(storeCouponUser.getEndTime()) > 0) {
-                throw new CrmebException("此优惠券已经失效了");
+                throw new OtterwoodException("此优惠券已经失效了");
             }
             if (storeCouponUser.getMinPrice().compareTo(orderInfoVo.getProTotalFee()) > 0) {
-                throw new CrmebException("总金额小于优惠券最小使用金额");
+                throw new OtterwoodException("总金额小于优惠券最小使用金额");
             }
             //检测优惠券信息
             if (storeCouponUser.getUseType().equals(1)) {
@@ -2142,10 +2142,10 @@ public class OrderServiceImpl implements OrderService {
                 List<OrderInfoDetailVo> orderDetailList = orderInfoVo.getOrderDetailList();
                 List<Integer> productIdList = orderDetailList.stream().map(OrderInfoDetailVo::getProductId).collect(Collectors.toList());
                 if (CollUtil.isEmpty(productIdList)) {
-                    throw new CrmebException("没有找到商品");
+                    throw new OtterwoodException("没有找到商品");
                 }
                 //设置优惠券所提供的集合
-                List<Integer> primaryKeyIdList = CrmebUtil.stringToArray(storeCouponUser.getPrimaryKey());
+                List<Integer> primaryKeyIdList = OtterwoodUtil.stringToArray(storeCouponUser.getPrimaryKey());
 
                 //取两个集合的交集，如果是false则证明没有相同的值
                 //oldList.retainAll(newList)返回值代表oldList是否保持原样，如果old和new完全相同，那old保持原样并返回false。
@@ -2153,7 +2153,7 @@ public class OrderServiceImpl implements OrderService {
                 if (storeCouponUser.getUseType() == 2) {
                     primaryKeyIdList.retainAll(productIdList);
                     if (CollUtil.isEmpty(primaryKeyIdList)) {
-                        throw new CrmebException("此优惠券为商品券，请购买相关商品之后再使用！");
+                        throw new OtterwoodException("此优惠券为商品券，请购买相关商品之后再使用！");
                     }
                     List<OrderInfoDetailVo> proOrderDetailList = orderDetailList.stream().filter(e -> primaryKeyIdList.contains(e.getProductId())).collect(Collectors.toList());
                     BigDecimal productTotalPrice = proOrderDetailList.stream().map(e -> e.getVipPrice().multiply(new BigDecimal(e.getPayNum().toString()))).reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -2179,12 +2179,12 @@ public class OrderServiceImpl implements OrderService {
                     Integer primaryKey = primaryKeyIdList.get(0);
                     primaryKeyIdList.retainAll(categoryIdList);
                     if (!categoryIdList.contains(primaryKey)) {
-                        throw new CrmebException("此优惠券为分类券，请购买相关分类下的商品之后再使用！");
+                        throw new OtterwoodException("此优惠券为分类券，请购买相关分类下的商品之后再使用！");
                     }
                     List<Integer> containsIdList = new ArrayList<>();
                     List<StoreProduct> storeProductList = storeProductService.getListInIds(productIdList);
                     for (StoreProduct product : storeProductList) {
-                        List<Integer> cateIdList = CrmebUtil.stringToArray(product.getCateId());
+                        List<Integer> cateIdList = OtterwoodUtil.stringToArray(product.getCateId());
                         if (cateIdList.contains(primaryKey)) {
                             containsIdList.add(product.getId());
                             continue;
@@ -2192,7 +2192,7 @@ public class OrderServiceImpl implements OrderService {
                         List<Category> categoryList = categoryService.getByIds(cateIdList);
                         List<Integer> parentCIdList = new ArrayList<>();
                         for (Category category: categoryList) {
-                            List<Integer> parentIdList = CrmebUtil.stringToArrayByRegex(category.getPath(), "/");
+                            List<Integer> parentIdList = OtterwoodUtil.stringToArrayByRegex(category.getPath(), "/");
                             parentCIdList.addAll(parentIdList);
                         }
                         parentCIdList = parentCIdList.stream().distinct().collect(Collectors.toList());

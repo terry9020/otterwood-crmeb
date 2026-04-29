@@ -1,8 +1,8 @@
 package com.otterwood.service.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.otterwood.common.exception.CrmebException;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.exception.OtterwoodException;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.utils.UploadWeChatMediaUtil;
 import com.otterwood.service.service.WechatMediaService;
 import com.otterwood.service.service.WechatNewService;
@@ -50,7 +50,7 @@ public class WechatMediaServiceImpl implements WechatMediaService {
             JSONObject response = UploadWeChatMediaUtil.uploadFile(url, file.getResource().getInputStream(), file.getOriginalFilename());
             if (null == response || !response.containsKey("media_id")) {
                 assert response != null;
-                throw new CrmebException("素材上传失败" + response.getString("errmsg"));
+                throw new OtterwoodException("素材上传失败" + response.getString("errmsg"));
             }
 
             Map<String, String> map = new HashMap<>();
@@ -60,7 +60,7 @@ public class WechatMediaServiceImpl implements WechatMediaService {
 
             return map;
         }catch (Exception e) {
-            throw new CrmebException(e.getMessage());
+            throw new OtterwoodException(e.getMessage());
         }
 
 
@@ -75,17 +75,17 @@ public class WechatMediaServiceImpl implements WechatMediaService {
     private void isValidPic(long size, String suffixName, String type) {
         JSONObject config = getConfig();
         if (!config.containsKey(type)) {
-            throw new CrmebException("不支持此类型");
+            throw new OtterwoodException("不支持此类型");
         }
 
         long supportSize = config.getJSONObject(type).getLong("size");
         if (supportSize < size) {
-            throw new CrmebException("文件大小不能超过" + supportSize);
+            throw new OtterwoodException("文件大小不能超过" + supportSize);
         }
         String supportNameSuffix = config.getJSONObject(type).getString("suffix");
-        List<String> suffixNameList = CrmebUtil.stringToArrayStr(supportNameSuffix);
+        List<String> suffixNameList = OtterwoodUtil.stringToArrayStr(supportNameSuffix);
         if (!suffixNameList.contains(suffixName)) {
-            throw new CrmebException("文件格式必须是" + supportSize);
+            throw new OtterwoodException("文件格式必须是" + supportSize);
         }
     }
 

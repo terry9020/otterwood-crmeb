@@ -6,7 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.express.ShippingTemplates;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.request.ShippingTemplatesRegionRequest;
@@ -32,13 +32,13 @@ import java.util.List;
 /**
  * ShippingTemplatesServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -89,11 +89,11 @@ public class ShippingTemplatesServiceImpl extends ServiceImpl<ShippingTemplatesD
     public Boolean create(ShippingTemplatesRequest request) {
         // 判断模板名称是否重复
         if (isExistName(request.getName())) {
-            throw new CrmebException("模板名称已存在,请更换模板名称!");
+            throw new OtterwoodException("模板名称已存在,请更换模板名称!");
         }
         List<ShippingTemplatesRegionRequest> shippingTemplatesRegionRequestList = request.getShippingTemplatesRegionRequestList();
         if (request.getAppoint().equals(2) && CollUtil.isEmpty(shippingTemplatesRegionRequestList)) {
-            throw new CrmebException("不包邮，最少需要一条公共区域运费数据");
+            throw new OtterwoodException("不包邮，最少需要一条公共区域运费数据");
         }
 
         ShippingTemplates shippingTemplates = new ShippingTemplates();
@@ -160,11 +160,11 @@ public class ShippingTemplatesServiceImpl extends ServiceImpl<ShippingTemplatesD
         ShippingTemplates shippingTemplates = getByIdException(id);
         List<ShippingTemplatesRegionRequest> shippingTemplatesRegionRequestList = request.getShippingTemplatesRegionRequestList();
         if (request.getAppoint().equals(2) && CollUtil.isEmpty(shippingTemplatesRegionRequestList)) {
-            throw new CrmebException("不包邮，最少需要一条公共区域运费数据");
+            throw new OtterwoodException("不包邮，最少需要一条公共区域运费数据");
         }
         if (!shippingTemplates.getName().equals(request.getName())) {
             if (isExistName(request.getName())) {
-                throw new CrmebException("模板名称已存在,请更换模板名称!");
+                throw new OtterwoodException("模板名称已存在,请更换模板名称!");
             }
         }
 
@@ -214,7 +214,7 @@ public class ShippingTemplatesServiceImpl extends ServiceImpl<ShippingTemplatesD
     public Boolean remove(Integer id) {
         getByIdException(id);
         if (storeProductService.isUseShippingTemplateId(id)) {
-            throw new CrmebException("有商品使用此运费模板，无法删除");
+            throw new OtterwoodException("有商品使用此运费模板，无法删除");
         }
         return transactionTemplate.execute(e -> {
             shippingTemplatesRegionService.deleteByTempId(id);
@@ -258,7 +258,7 @@ public class ShippingTemplatesServiceImpl extends ServiceImpl<ShippingTemplatesD
     private ShippingTemplates getByIdException(Integer id) {
         ShippingTemplates shippingTemplates = getById(id);
         if (ObjectUtil.isNull(shippingTemplates)) {
-            throw new CrmebException("运费模板不存在");
+            throw new OtterwoodException("运费模板不存在");
         }
         return shippingTemplates;
     }

@@ -9,7 +9,7 @@ import com.otterwood.common.request.ProductListRequest;
 import com.otterwood.common.request.ProductRequest;
 import com.otterwood.common.response.*;
 import com.otterwood.common.result.CommonResult;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.vo.CategoryTreeVo;
 import com.otterwood.front.service.ProductService;
 import com.otterwood.service.service.CategoryService;
@@ -26,13 +26,13 @@ import java.util.List;
 /**
  * 用户 -- 用户中心
  *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
  */
 @Slf4j
@@ -158,7 +158,7 @@ public class ProductController {
     @ApiOperation(value = "根据商品id集合查询对应商品")
     @RequestMapping(value = "/product/byids/{ids}", method = RequestMethod.GET)
     public CommonResult<List<IndexProductResponse>> getProductByIds(@PathVariable String ids) {
-        return CommonResult.success(productService.getProductByIds(CrmebUtil.stringToArray(ids)));
+        return CommonResult.success(productService.getProductByIds(OtterwoodUtil.stringToArray(ids)));
     }
 }
 

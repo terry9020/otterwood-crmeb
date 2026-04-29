@@ -1,7 +1,7 @@
 package com.otterwood.common.utils;
 
 import com.otterwood.common.constants.Constants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.vo.ImageMergeUtilVo;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -17,13 +17,13 @@ import java.util.List;
 
 /**
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  * 图片工具类
  */
@@ -86,7 +86,7 @@ public class ImageMergeUtil {
             file.delete();
         }catch (Exception e){
             //合成图片xx失败
-            throw new CrmebException("合成图片 + " + fileName + "失败");
+            throw new OtterwoodException("合成图片 + " + fileName + "失败");
         }
     }
 
@@ -98,7 +98,7 @@ public class ImageMergeUtil {
      */
     private static void buildImage(List<ImageMergeUtilVo> list){
         if(list.size() < 2){
-            throw new CrmebException("至少需要2张图片才可以做合并");
+            throw new OtterwoodException("至少需要2张图片才可以做合并");
         }
 
         for (ImageMergeUtilVo imageMergeUtilVo : list) {

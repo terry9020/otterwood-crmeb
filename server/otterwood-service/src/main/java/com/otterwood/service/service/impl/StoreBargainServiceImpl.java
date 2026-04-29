@@ -15,11 +15,11 @@ import com.otterwood.common.vo.MyRecord;
 import com.otterwood.common.constants.BargainConstants;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.ProductConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.model.bargain.StoreBargain;
 import com.otterwood.common.model.bargain.StoreBargainUser;
@@ -48,13 +48,13 @@ import java.util.stream.Collectors;
 /**
  * StoreBargainService 实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -132,9 +132,9 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         for (StoreBargain storeBargain : storeBargainList) {
             StoreBargainResponse storeBargainResponse = new StoreBargainResponse();
             BeanUtils.copyProperties(storeBargain, storeBargainResponse);
-            storeBargainResponse.setStartTime(CrmebDateUtil.timestamp2DateStr(storeBargain.getStartTime(), Constants.DATE_FORMAT_DATE));
-            storeBargainResponse.setStopTime(CrmebDateUtil.timestamp2DateStr(storeBargain.getStopTime(), Constants.DATE_FORMAT_DATE));
-            storeBargainResponse.setAddTime(CrmebDateUtil.timestamp2DateStr(storeBargain.getAddTime(), Constants.DATE_FORMAT));
+            storeBargainResponse.setStartTime(OtterwoodDateUtil.timestamp2DateStr(storeBargain.getStartTime(), Constants.DATE_FORMAT_DATE));
+            storeBargainResponse.setStopTime(OtterwoodDateUtil.timestamp2DateStr(storeBargain.getStopTime(), Constants.DATE_FORMAT_DATE));
+            storeBargainResponse.setAddTime(OtterwoodDateUtil.timestamp2DateStr(storeBargain.getAddTime(), Constants.DATE_FORMAT));
             List<StoreBargainUser> bargainUserList = storeBargainUserService.getListByBargainId(storeBargain.getId());
             if (CollUtil.isEmpty(bargainUserList)) {
                 storeBargainResponse.setCountPeopleAll(0L);
@@ -172,7 +172,7 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         StoreBargain existBargain = getById(id);
         long timeMillis = System.currentTimeMillis();
         if (existBargain.getStatus().equals(true) && existBargain.getStartTime() <= timeMillis && timeMillis <= existBargain.getStopTime()) {
-            throw new CrmebException("活动开启中，商品不支持删除");
+            throw new OtterwoodException("活动开启中，商品不支持删除");
         }
 
         StoreBargain storeBargain = new StoreBargain();
@@ -206,11 +206,11 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
     public boolean saveBargain(StoreBargainRequest request) {
         // 参数校验
         if (CollUtil.isEmpty(request.getAttrValue())) {
-            throw new CrmebException("请选择砍价商品的规格属性");
+            throw new OtterwoodException("请选择砍价商品的规格属性");
         }
         StoreProductAttrValueAddRequest attrValueRequest = request.getAttrValue().get(0);
         if (ObjectUtil.isNull(attrValueRequest.getQuota()) || attrValueRequest.getQuota() <= 0) {
-            throw new CrmebException("活动限购数量必须大于0");
+            throw new OtterwoodException("活动限购数量必须大于0");
         }
         // 可砍价的金额
         BigDecimal tempPrice = attrValueRequest.getPrice().subtract(attrValueRequest.getMinPrice());
@@ -218,7 +218,7 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         BigDecimal multiply = new BigDecimal(request.getPeopleNum()).multiply(new BigDecimal("0.01"));
         if (tempPrice.compareTo(multiply) < 0) {
             // 砍价起始金额 - 砍价最低价 >= 砍价人数 * 0.01
-            throw new CrmebException("必须保证每个人最少砍1分钱");
+            throw new OtterwoodException("必须保证每个人最少砍1分钱");
         }
 
         StoreBargain bargain = new StoreBargain();
@@ -228,8 +228,8 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         bargain.setImage(systemAttachmentService.clearPrefix(request.getImage()));
         bargain.setImages(systemAttachmentService.clearPrefix(request.getImages()));
         // 活动开始结束时间
-        bargain.setStartTime(CrmebDateUtil.dateStr2Timestamp(request.getStartTime(), Constants.DATE_TIME_TYPE_BEGIN));
-        bargain.setStopTime(CrmebDateUtil.dateStr2Timestamp(request.getStopTime(), Constants.DATE_TIME_TYPE_END));
+        bargain.setStartTime(OtterwoodDateUtil.dateStr2Timestamp(request.getStartTime(), Constants.DATE_TIME_TYPE_BEGIN));
+        bargain.setStopTime(OtterwoodDateUtil.dateStr2Timestamp(request.getStopTime(), Constants.DATE_TIME_TYPE_END));
         bargain.setAddTime(System.currentTimeMillis());
         // 砍价商品价格
         bargain.setPrice(attrValueRequest.getPrice());
@@ -286,19 +286,19 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
     @Override
     public boolean updateBargain(StoreBargainRequest request) {
         if (ObjectUtil.isNull(request.getId())) {
-            throw new CrmebException("砍价商品id不能为空");
+            throw new OtterwoodException("砍价商品id不能为空");
         }
         StoreBargain existBargain = getById(request.getId());
         if (ObjectUtil.isNull(existBargain) || existBargain.getIsDel()) {
-            throw new CrmebException("砍价商品不存在");
+            throw new OtterwoodException("砍价商品不存在");
         }
         long timeMillis = System.currentTimeMillis();
         if (existBargain.getStatus().equals(true) && existBargain.getStartTime() <= timeMillis && timeMillis <= existBargain.getStopTime()) {
-            throw new CrmebException("活动开启中，商品不支持修改");
+            throw new OtterwoodException("活动开启中，商品不支持修改");
         }
 
         if (CollUtil.isEmpty(request.getAttrValue())) {
-            throw new CrmebException("请选择砍价商品的规格属性");
+            throw new OtterwoodException("请选择砍价商品的规格属性");
         }
 
         StoreProductAttrValueAddRequest attrValueRequest = request.getAttrValue().get(0);
@@ -309,7 +309,7 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         BigDecimal multiply = new BigDecimal(request.getPeopleNum()).multiply(new BigDecimal("0.01"));
         if (tempPrice.compareTo(multiply) < 0) {
             // 砍价起始金额 - 砍价最低价 >= 砍价人数 * 0.01
-            throw new CrmebException("必须保证每个人最少砍1分钱");
+            throw new OtterwoodException("必须保证每个人最少砍1分钱");
         }
 
         StoreBargain bargain = new StoreBargain();
@@ -318,8 +318,8 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         bargain.setImage(systemAttachmentService.clearPrefix(request.getImage()));
         bargain.setImages(systemAttachmentService.clearPrefix(request.getImages()));
         // 活动开始结束时间
-        bargain.setStartTime(CrmebDateUtil.dateStr2Timestamp(request.getStartTime(), Constants.DATE_TIME_TYPE_BEGIN));
-        bargain.setStopTime(CrmebDateUtil.dateStr2Timestamp(request.getStopTime(), Constants.DATE_TIME_TYPE_END));
+        bargain.setStartTime(OtterwoodDateUtil.dateStr2Timestamp(request.getStartTime(), Constants.DATE_TIME_TYPE_BEGIN));
+        bargain.setStopTime(OtterwoodDateUtil.dateStr2Timestamp(request.getStopTime(), Constants.DATE_TIME_TYPE_END));
 
         // 砍价商品价格
         bargain.setPrice(attrValueRequest.getPrice());
@@ -330,7 +330,7 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         bargain.setQuotaShow(attrValueRequest.getQuota());
         int saveCount = dao.updateById(bargain);
         if (saveCount <= 0) {
-            throw new CrmebException("编辑砍价商品失败");
+            throw new OtterwoodException("编辑砍价商品失败");
         }
 
         List<StoreProductAttrAddRequest> addRequestList = request.getAttr();
@@ -408,13 +408,13 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
     public boolean updateBargainStatus(Integer id, boolean status) {
         StoreBargain temp = getById(id);
         if (ObjectUtil.isNull(temp) || temp.getIsDel()) {
-            throw new CrmebException("砍价商品不存在");
+            throw new OtterwoodException("砍价商品不存在");
         }
         if (status) {
             // 判断商品是否存在
             StoreProduct product = storeProductService.getById(temp.getProductId());
             if (ObjectUtil.isNull(product)) {
-                throw new CrmebException("关联的商品已删除，无法开启活动");
+                throw new OtterwoodException("关联的商品已删除，无法开启活动");
             }
         }
 
@@ -432,7 +432,7 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
     public StoreProductInfoResponse getAdminDetail(Integer bargainId) {
         StoreBargain storeBargain = dao.selectById(bargainId);
         if (ObjectUtil.isNull(storeBargain) || storeBargain.getIsDel()) {
-            throw new CrmebException("未找到对应砍价商品信息");
+            throw new OtterwoodException("未找到对应砍价商品信息");
         }
         StoreProductInfoResponse storeProductResponse = new StoreProductInfoResponse();
         BeanUtils.copyProperties(storeBargain, storeProductResponse);
@@ -519,10 +519,10 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
     public BargainDetailH5Response getH5Detail(Integer id) {
         StoreBargain storeBargain = dao.selectById(id);
         if (ObjectUtil.isNull(storeBargain) || storeBargain.getIsDel()) {
-            throw new CrmebException("未找到对应砍价商品信息");
+            throw new OtterwoodException("未找到对应砍价商品信息");
         }
         if (!storeBargain.getStatus()) {
-            throw new CrmebException("砍价商品已下架");
+            throw new OtterwoodException("砍价商品已下架");
         }
         BargainDetailH5Response detailH5Response = new BargainDetailH5Response();
         BeanUtils.copyProperties(storeBargain, detailH5Response);
@@ -539,7 +539,7 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
 
         List<StoreProductAttrValue> storeProductAttrValuesBargain = attrValueService.getListByProductIdAndType(id, ProductConstants.PRODUCT_TYPE_BARGAIN);
         if (CollUtil.isEmpty(storeProductAttrValuesBargain)) {
-            throw new CrmebException("砍价商品规格属性值未找到");
+            throw new OtterwoodException("砍价商品规格属性值未找到");
         }
         StoreProductAttrValue productAttrValue = storeProductAttrValuesBargain.get(0);
         detailH5Response.setAttrValueId(productAttrValue.getId());
@@ -588,17 +588,17 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
     public MyRecord start(BargainFrontRequest request) {
         StoreBargain storeBargain = dao.selectById(request.getBargainId());
         if (ObjectUtil.isNull(storeBargain) || storeBargain.getIsDel()) {
-            throw new CrmebException("对应的砍价商品不存在");
+            throw new OtterwoodException("对应的砍价商品不存在");
         }
         if (!storeBargain.getStatus()) {
-            throw new CrmebException("砍价商品已下架");
+            throw new OtterwoodException("砍价商品已下架");
         }
         if (storeBargain.getQuota() <= 0 || storeBargain.getStock() <= 0) {
-            throw new CrmebException("砍价商品已售罄");
+            throw new OtterwoodException("砍价商品已售罄");
         }
         long currentTimeMillis = System.currentTimeMillis();
         if (currentTimeMillis > storeBargain.getStopTime()) {
-            throw new CrmebException("砍价活动已结束");
+            throw new OtterwoodException("砍价活动已结束");
         }
         User user = userService.getInfoException();
 
@@ -609,11 +609,11 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         if (CollUtil.isNotEmpty(historyList)) {
             List<StoreBargainUser> collect = historyList.stream().filter(i -> i.getStatus().equals(BargainConstants.BARGAIN_USER_STATUS_PARTICIPATE)).collect(Collectors.toList());
             if (CollUtil.isNotEmpty(collect)) {
-                throw new CrmebException("请先完成当前砍价活动");
+                throw new OtterwoodException("请先完成当前砍价活动");
             }
             // 判断是否达到参与砍价活动上限
             if (historyList.size() >= storeBargain.getNum()) {
-                throw new CrmebException("您已达到当前砍价活动上限");
+                throw new OtterwoodException("您已达到当前砍价活动上限");
             }
         }
 
@@ -627,7 +627,7 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         storeBargainUser.setStatus(BargainConstants.BARGAIN_USER_STATUS_PARTICIPATE);
         boolean save = storeBargainUserService.save(storeBargainUser);
         if (!save) {
-            throw new CrmebException("参与砍价失败");
+            throw new OtterwoodException("参与砍价失败");
         }
         MyRecord record = new MyRecord();
         record.set("storeBargainUserId", storeBargainUser.getId());
@@ -696,7 +696,7 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         boolean b = storeBargainUserService.updateBatchById(bargainUserList, 100);
         if (!b) {
             logger.error("砍价活动结束后更新用户状态定时任务——————失败");
-            throw new CrmebException("砍价活动结束后更新用户状态失败");
+            throw new OtterwoodException("砍价活动结束后更新用户状态失败");
         }
     }
 
@@ -731,7 +731,7 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         lqw.eq(StoreBargain::getIsDel, false);
         lqw.eq(StoreBargain::getStatus, true);
         StoreBargain storeBargain = dao.selectOne(lqw);
-        if (ObjectUtil.isNull(storeBargain)) throw new CrmebException("砍价商品不存在或未开启");
+        if (ObjectUtil.isNull(storeBargain)) throw new OtterwoodException("砍价商品不存在或未开启");
         return storeBargain;
     }
 
@@ -759,7 +759,7 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         updateWrapper.eq("id", id);
         boolean update = update(updateWrapper);
         if (!update) {
-            throw new CrmebException("更新砍价商品库存失败,商品id = " + id);
+            throw new OtterwoodException("更新砍价商品库存失败,商品id = " + id);
         }
         return update;
     }

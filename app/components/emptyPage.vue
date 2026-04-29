@@ -1,6 +1,6 @@
 <template>
 	<view class="empty-box">
-		<image :src="urlDomain+'crmebimage/perset/staticImg/empty-box.png'"></image>
+		<image :src="urlDomain+'otterwoodimage/perset/staticImg/empty-box.png'"></image>
 		<view class="txt">{{title}}</view>
 	</view>
 </template>

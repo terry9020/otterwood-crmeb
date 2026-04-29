@@ -7,7 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.system.SystemAdmin;
 import com.otterwood.common.model.system.SystemRole;
 import com.otterwood.common.request.PageParamRequest;
@@ -15,7 +15,7 @@ import com.otterwood.common.request.SystemAdminAddRequest;
 import com.otterwood.common.request.SystemAdminRequest;
 import com.otterwood.common.request.SystemAdminUpdateRequest;
 import com.otterwood.common.response.SystemAdminResponse;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.utils.ValidateFormUtil;
 import com.github.pagehelper.PageHelper;
 import com.otterwood.service.dao.SystemAdminDao;
@@ -35,13 +35,13 @@ import java.util.stream.Collectors;
 /**
  * SystemAdminServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -86,7 +86,7 @@ public class SystemAdminServiceImpl extends ServiceImpl<SystemAdminDao, SystemAd
             BeanUtils.copyProperties(admin, sar);
             sar.setLastTime(admin.getUpdateTime());
             if (StrUtil.isBlank(admin.getRoles())) continue;
-            List<Integer> roleIds = CrmebUtil.stringToArrayInt(admin.getRoles());
+            List<Integer> roleIds = OtterwoodUtil.stringToArrayInt(admin.getRoles());
             List<String> roleNames = new ArrayList<>();
             for (Integer roleId : roleIds) {
                 List<SystemRole> hasRoles = roleList.stream().filter(e -> e.getId().equals(roleId)).collect(Collectors.toList());
@@ -110,7 +110,7 @@ public class SystemAdminServiceImpl extends ServiceImpl<SystemAdminDao, SystemAd
         // 管理员名称唯一校验
         Integer result = checkAccount(systemAdminAddRequest.getAccount());
         if (result > 0) {
-            throw new CrmebException("管理员已存在");
+            throw new OtterwoodException("管理员已存在");
         }
         // 如果有手机号，校验手机号
         if (StrUtil.isNotBlank(systemAdminAddRequest.getPhone())) {
@@ -120,7 +120,7 @@ public class SystemAdminServiceImpl extends ServiceImpl<SystemAdminDao, SystemAd
         SystemAdmin systemAdmin = new SystemAdmin();
         BeanUtils.copyProperties(systemAdminAddRequest, systemAdmin);
 
-        String pwd = CrmebUtil.encryptPassword(systemAdmin.getPwd(), systemAdmin.getAccount());
+        String pwd = OtterwoodUtil.encryptPassword(systemAdmin.getPwd(), systemAdmin.getAccount());
         systemAdmin.setPwd(pwd);
         return save(systemAdmin);
     }
@@ -152,7 +152,7 @@ public class SystemAdminServiceImpl extends ServiceImpl<SystemAdminDao, SystemAd
         BeanUtils.copyProperties(systemAdminRequest, systemAdmin);
         systemAdmin.setPwd(null);
         if (StrUtil.isNotBlank(systemAdminRequest.getPwd())) {
-            String pwd = CrmebUtil.encryptPassword(systemAdminRequest.getPwd(), systemAdminRequest.getAccount());
+            String pwd = OtterwoodUtil.encryptPassword(systemAdminRequest.getPwd(), systemAdminRequest.getAccount());
             systemAdmin.setPwd(pwd);
         }
         systemAdmin.setUpdateTime(DateUtil.date());
@@ -170,7 +170,7 @@ public class SystemAdminServiceImpl extends ServiceImpl<SystemAdminDao, SystemAd
         lqw.eq(SystemAdmin::getAccount, account);
         SystemAdmin systemAdmin = dao.selectOne(lqw);
         if (ObjectUtil.isNotNull(systemAdmin)) {
-            throw new CrmebException("账号已存在");
+            throw new OtterwoodException("账号已存在");
         }
     }
 
@@ -223,7 +223,7 @@ public class SystemAdminServiceImpl extends ServiceImpl<SystemAdminDao, SystemAd
     public Boolean updateIsSms(Integer id) {
         SystemAdmin systemAdmin = getDetail(id);
         if (StrUtil.isBlank(systemAdmin.getPhone())) {
-            throw new CrmebException("请先为管理员添加手机号!");
+            throw new OtterwoodException("请先为管理员添加手机号!");
         }
         systemAdmin.setIsSms(!systemAdmin.getIsSms());
         systemAdmin.setUpdateTime(DateUtil.date());
@@ -256,7 +256,7 @@ public class SystemAdminServiceImpl extends ServiceImpl<SystemAdminDao, SystemAd
     public SystemAdmin getDetail(Integer id) {
         SystemAdmin systemAdmin = getById(id);
         if (ObjectUtil.isNull(systemAdmin) || systemAdmin.getIsDel()) {
-            throw new CrmebException("管理员不存在");
+            throw new OtterwoodException("管理员不存在");
         }
         return systemAdmin;
     }

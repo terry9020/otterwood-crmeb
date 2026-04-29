@@ -9,11 +9,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.anji.captcha.model.common.ResponseModel;
 import com.otterwood.admin.filter.TokenComponent;
 import com.otterwood.admin.service.AdminLoginService;
-import com.otterwood.common.config.CrmebConfig;
+import com.otterwood.common.config.OtterwoodConfig;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.SysConfigConstants;
 import com.otterwood.common.constants.SysGroupDataConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.system.SystemAdmin;
 import com.otterwood.common.model.system.SystemMenu;
 import com.otterwood.common.model.system.SystemPermissions;
@@ -25,7 +25,7 @@ import com.otterwood.common.response.SystemAdminResponse;
 import com.otterwood.common.response.SystemGroupDataAdminLoginBannerResponse;
 import com.otterwood.common.response.SystemLoginResponse;
 import com.otterwood.common.result.CommonResultCode;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.utils.SecurityUtil;
 import com.otterwood.common.vo.LoginUserVo;
@@ -54,13 +54,13 @@ import java.util.stream.Stream;
 /**
  * 管理端登录服务实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -92,7 +92,7 @@ public class AdminLoginServiceImpl implements AdminLoginService {
     private SafetyService safetyService;
 
     @Autowired
-    private CrmebConfig crmebConfig;
+    private OtterwoodConfig otterwoodConfig;
     /**
      * PC登录
      */
@@ -101,14 +101,14 @@ public class AdminLoginServiceImpl implements AdminLoginService {
         Integer errorNum = accountDetection(systemAdminLoginRequest.getAccount());
         if (errorNum > 3) {
             if (ObjectUtil.isNull(systemAdminLoginRequest.getCaptchaVO())) {
-                throw new CrmebException("验证码信息不存在");
+                throw new OtterwoodException("验证码信息不存在");
             }
             // 校验验证码
             ResponseModel responseModel = safetyService.verifySafetyCode(systemAdminLoginRequest.getCaptchaVO());
             if (!responseModel.getRepCode().equals("0000")) {
                 logger.error("验证码登录失败，repCode = {}, repMsg = {}", responseModel.getRepCode(), responseModel.getRepMsg());
                 accountErrorNumAdd(systemAdminLoginRequest.getAccount());
-                throw new CrmebException("验证码校验失败");
+                throw new OtterwoodException("验证码校验失败");
             }
         }
         // 用户验证
@@ -120,12 +120,12 @@ public class AdminLoginServiceImpl implements AdminLoginService {
         } catch (AuthenticationException e) {
             accountErrorNumAdd(systemAdminLoginRequest.getAccount());
             if (e instanceof BadCredentialsException) {
-                throw new CrmebException("用户不存在或密码错误");
+                throw new OtterwoodException("用户不存在或密码错误");
             }
-            throw new CrmebException(e.getMessage());
-        }catch (CrmebException e){
+            throw new OtterwoodException(e.getMessage());
+        }catch (OtterwoodException e){
             accountErrorNumAdd(systemAdminLoginRequest.getAccount());
-            throw new CrmebException("账号或密码不正确");
+            throw new OtterwoodException("账号或密码不正确");
         }
         LoginUserVo loginUser = (LoginUserVo) authentication.getPrincipal();
         SystemAdmin systemAdmin = loginUser.getUser();
@@ -262,13 +262,13 @@ public class AdminLoginServiceImpl implements AdminLoginService {
     public Boolean loginAdminUpdatePwd(LoginAdminUpdatePasswordRequest request) {
         SystemAdmin admin = SecurityUtil.getLoginUserVo().getUser();
         SystemAdmin systemAdmin = systemAdminService.getById(admin.getId());
-        String encryptPassword = CrmebUtil.encryptPassword(request.getOldPassword(), systemAdmin.getAccount());
+        String encryptPassword = OtterwoodUtil.encryptPassword(request.getOldPassword(), systemAdmin.getAccount());
         if (!systemAdmin.getPwd().equals(encryptPassword)) {
-            throw new CrmebException(CommonResultCode.VALIDATE_FAILED, "原密码不正确");
+            throw new OtterwoodException(CommonResultCode.VALIDATE_FAILED, "原密码不正确");
         }
         SystemAdmin newAdmin = new SystemAdmin();
         newAdmin.setId(admin.getId());
-        String pwd = CrmebUtil.encryptPassword(request.getPassword(), admin.getAccount());
+        String pwd = OtterwoodUtil.encryptPassword(request.getPassword(), admin.getAccount());
         newAdmin.setPwd(pwd);
         newAdmin.setUpdateTime(DateUtil.date());
         return systemAdminService.updateById(newAdmin);

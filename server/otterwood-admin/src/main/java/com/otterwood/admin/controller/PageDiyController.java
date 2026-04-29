@@ -3,7 +3,7 @@ package com.otterwood.admin.controller;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.page.PageDiy;
 import com.otterwood.common.page.CommonPage;
 import com.otterwood.common.request.PageParamRequest;
@@ -161,7 +161,7 @@ public class PageDiyController {
     @RequestMapping(value = "/info/{id}", method = RequestMethod.GET)
     public CommonResult<PageDiyResponse> info(@PathVariable(value = "id") Integer id){
         PageDiy pageDiy = pageDiyService.getDiyPageByPageIdForAdmin(id);
-        if(ObjectUtil.isNull(pageDiy)) throw new CrmebException("未找到对应模版信息");
+        if(ObjectUtil.isNull(pageDiy)) throw new OtterwoodException("未找到对应模版信息");
         PageDiyResponse response = new PageDiyResponse();
         BeanUtils.copyProperties(pageDiy, response);
         response.setValue(JSON.parseObject(pageDiy.getValue()));

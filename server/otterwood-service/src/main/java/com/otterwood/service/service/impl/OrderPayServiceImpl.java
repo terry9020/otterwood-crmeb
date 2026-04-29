@@ -9,7 +9,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 
 import com.otterwood.common.constants.*;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.combination.StoreCombination;
 import com.otterwood.common.model.combination.StorePink;
 import com.otterwood.common.model.coupon.StoreCouponUser;
@@ -26,8 +26,8 @@ import com.otterwood.common.model.user.*;
 import com.otterwood.common.request.OrderPayRequest;
 import com.otterwood.common.response.OrderPayResultResponse;
 import com.otterwood.common.response.PayConfigResponse;
-import com.otterwood.common.utils.CrmebUtil;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.utils.WxPayUtil;
 import com.otterwood.common.vo.*;
@@ -55,13 +55,13 @@ import java.util.stream.Collectors;
 /**
  * OrderPayService 实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Data
@@ -470,7 +470,7 @@ public class OrderPayServiceImpl implements OrderPayService {
             brokerageRecord.setMark(StrUtil.format("获得推广佣金，分佣{}", brokerage));
             brokerageRecord.setStatus(BrokerageRecordConstants.BROKERAGE_RECORD_STATUS_CREATE);
             brokerageRecord.setFrozenTime(Integer.valueOf(Optional.ofNullable(fronzenTime).orElse("0")));
-            brokerageRecord.setCreateTime(CrmebDateUtil.nowDateTime());
+            brokerageRecord.setCreateTime(OtterwoodDateUtil.nowDateTime());
             brokerageRecord.setBrokerageLevel(record.getInt("index"));
             return brokerageRecord;
         }).collect(Collectors.toList());
@@ -593,15 +593,15 @@ public class OrderPayServiceImpl implements OrderPayService {
 
         // 用户余额扣除
         User user = userService.getById(storeOrder.getUid());
-        if (ObjectUtil.isNull(user)) throw new CrmebException("用户不存在");
+        if (ObjectUtil.isNull(user)) throw new OtterwoodException("用户不存在");
         if (user.getNowMoney().compareTo(storeOrder.getPayPrice()) < 0) {
-            throw new CrmebException("用户余额不足");
+            throw new OtterwoodException("用户余额不足");
         }
         if (user.getIntegral() < storeOrder.getUseIntegral()) {
-            throw new CrmebException("用户积分不足");
+            throw new OtterwoodException("用户积分不足");
         }
         storeOrder.setPaid(true);
-        storeOrder.setPayTime(CrmebDateUtil.nowDateTime());
+        storeOrder.setPayTime(OtterwoodDateUtil.nowDateTime());
         storeOrder.setUpdateTime(DateUtil.date());
         Boolean execute = transactionTemplate.execute(e -> {
             // 订单修改
@@ -673,7 +673,7 @@ public class OrderPayServiceImpl implements OrderPayService {
 
             return Boolean.TRUE;
         });
-        if (!execute) throw new CrmebException("余额支付订单失败");
+        if (!execute) throw new OtterwoodException("余额支付订单失败");
         return execute;
     }
 
@@ -689,23 +689,23 @@ public class OrderPayServiceImpl implements OrderPayService {
     public OrderPayResultResponse payment(OrderPayRequest orderPayRequest, String ip) {
         StoreOrder storeOrder = storeOrderService.getByOderId(orderPayRequest.getOrderNo());
         if (ObjectUtil.isNull(storeOrder)) {
-            throw new CrmebException("订单不存在");
+            throw new OtterwoodException("订单不存在");
         }
         if (storeOrder.getIsDel()) {
-            throw new CrmebException("订单已被删除");
+            throw new OtterwoodException("订单已被删除");
         }
         if (storeOrder.getPaid()) {
-            throw new CrmebException("订单已支付");
+            throw new OtterwoodException("订单已支付");
         }
         User user = userService.getById(storeOrder.getUid());
-        if (ObjectUtil.isNull(user)) throw new CrmebException("用户不存在");
+        if (ObjectUtil.isNull(user)) throw new OtterwoodException("用户不存在");
 
         // 根据支付类型进行校验,更换支付类型
         storeOrder.setPayType(orderPayRequest.getPayType());
         // 余额支付
         if (orderPayRequest.getPayType().equals(PayConstants.PAY_TYPE_YUE)) {
             if (user.getNowMoney().compareTo(storeOrder.getPayPrice()) < 0) {
-                throw new CrmebException("用户余额不足");
+                throw new OtterwoodException("用户余额不足");
             }
             storeOrder.setPayType(PayConstants.PAY_TYPE_YUE);
             storeOrder.setIsChannel(3);
@@ -727,11 +727,11 @@ public class OrderPayServiceImpl implements OrderPayService {
         storeOrder.setUpdateTime(DateUtil.date());
         boolean changePayType = storeOrderService.updateById(storeOrder);
         if (!changePayType) {
-            throw new CrmebException("变更订单支付类型失败!");
+            throw new OtterwoodException("变更订单支付类型失败!");
         }
 
         if (user.getIntegral() < storeOrder.getUseIntegral()) {
-            throw new CrmebException("用户积分不足");
+            throw new OtterwoodException("用户积分不足");
         }
 
         OrderPayResultResponse response = new OrderPayResultResponse();
@@ -781,7 +781,7 @@ public class OrderPayServiceImpl implements OrderPayService {
         }
 
         if (storeOrder.getPayType().equals(PayConstants.PAY_TYPE_OFFLINE)) {
-            throw new CrmebException("暂时不支持线下支付");
+            throw new OtterwoodException("暂时不支持线下支付");
         }
         response.setStatus(false);
         return response;
@@ -809,7 +809,7 @@ public class OrderPayServiceImpl implements OrderPayService {
         }
 
         if (ObjectUtil.isNull(userToken)) {
-            throw new CrmebException("该用户没有openId");
+            throw new OtterwoodException("该用户没有openId");
         }
 
         // 获取appid、mch_id
@@ -847,7 +847,7 @@ public class OrderPayServiceImpl implements OrderPayService {
         String paySign = WxPayUtil.getSign(map, signKey);
         map.put("paySign", paySign);
         map.put("prepayId", responseVo.getPrepayId());
-        map.put("prepayTime", CrmebDateUtil.nowDateTimeStr());
+        map.put("prepayTime", OtterwoodDateUtil.nowDateTimeStr());
         map.put("outTradeNo", unifiedorderVo.getOut_trade_no());
         if (storeOrder.getIsChannel() == 2) {
             map.put("mweb_url", responseVo.getMWebUrl());
@@ -875,7 +875,7 @@ public class OrderPayServiceImpl implements OrderPayService {
         // 因商品名称在微信侧超长更换为网站名称
         vo.setBody(siteName);
         vo.setAttach(JSONObject.toJSONString(attachVo));
-        vo.setOut_trade_no(CrmebUtil.getOrderNo("wxNo"));
+        vo.setOut_trade_no(OtterwoodUtil.getOrderNo("wxNo"));
         // 订单中使用的是BigDecimal,这里要转为Integer类型
         vo.setTotal_fee(storeOrder.getPayPrice().multiply(BigDecimal.TEN).multiply(BigDecimal.TEN).intValue());
         vo.setSpbill_create_ip(ip);
@@ -970,7 +970,7 @@ public class OrderPayServiceImpl implements OrderPayService {
         // 获取积分冻结期
         String fronzenTime = systemConfigService.getValueByKey(Constants.CONFIG_KEY_STORE_INTEGRAL_EXTRACT_TIME);
         integralRecord.setFrozenTime(Integer.valueOf(Optional.ofNullable(fronzenTime).orElse("0")));
-        integralRecord.setCreateTime(CrmebDateUtil.nowDateTime());
+        integralRecord.setCreateTime(OtterwoodDateUtil.nowDateTime());
         return integralRecord;
     }
 

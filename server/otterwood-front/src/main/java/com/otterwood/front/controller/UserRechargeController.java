@@ -8,7 +8,7 @@ import com.otterwood.common.response.OrderPayResultResponse;
 import com.otterwood.common.response.UserRechargeBillRecordResponse;
 import com.otterwood.common.response.UserRechargeFrontResponse;
 import com.otterwood.common.result.CommonResult;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.front.service.UserCenterService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -26,13 +26,13 @@ import java.util.Map;
 /**
  * 用户 -- 充值
  *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
  */
 @Slf4j
@@ -59,7 +59,7 @@ public class UserRechargeController {
     @RequestMapping(value = "/routine", method = RequestMethod.POST)
     public CommonResult<Map<String, Object>> routineRecharge(HttpServletRequest httpServletRequest, @RequestBody @Validated UserRechargeRequest request) {
         request.setFromType(Constants.PAY_TYPE_WE_CHAT_FROM_PROGRAM);
-        request.setClientIp(CrmebUtil.getClientIp(httpServletRequest));
+        request.setClientIp(OtterwoodUtil.getClientIp(httpServletRequest));
         OrderPayResultResponse recharge = userCenterService.recharge(request);
         Map<String, Object> map = new HashMap<>();
         map.put("data", recharge);
@@ -73,7 +73,7 @@ public class UserRechargeController {
     @ApiOperation(value = "公众号充值")
     @RequestMapping(value = "/wechat", method = RequestMethod.POST)
     public CommonResult<OrderPayResultResponse> weChatRecharge(HttpServletRequest httpServletRequest, @RequestBody @Validated UserRechargeRequest request) {
-        request.setClientIp(CrmebUtil.getClientIp(httpServletRequest));
+        request.setClientIp(OtterwoodUtil.getClientIp(httpServletRequest));
         return CommonResult.success(userCenterService.recharge(request));
     }
 
@@ -83,7 +83,7 @@ public class UserRechargeController {
     @ApiOperation(value = "App充值")
     @RequestMapping(value = "/wechat/app", method = RequestMethod.POST)
     public CommonResult<OrderPayResultResponse> weChatAppRecharge(HttpServletRequest httpServletRequest, @RequestBody @Validated UserRechargeRequest request) {
-        request.setClientIp(CrmebUtil.getClientIp(httpServletRequest));
+        request.setClientIp(OtterwoodUtil.getClientIp(httpServletRequest));
         return CommonResult.success(userCenterService.recharge(request));
     }
 

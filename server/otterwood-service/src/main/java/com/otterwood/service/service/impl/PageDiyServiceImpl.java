@@ -17,7 +17,7 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.otterwood.common.constants.SysConfigConstants;
 import com.otterwood.common.constants.UploadConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.page.PageDiy;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.request.page.PageDiyEditNameRequest;
@@ -86,7 +86,7 @@ public class PageDiyServiceImpl extends ServiceImpl<PageDiyDao, PageDiy> impleme
     public PageDiy savePageDiy(PageDiy pageDiy) {
         String adminApiPath = systemConfigService.getValueByKey(SysConfigConstants.CONFIG_KEY_API_URL);
         if (StrUtil.isBlank(adminApiPath)) {
-            throw new CrmebException(CommonResultCode.VALIDATE_FAILED, "应用设置中 微信小程序数据配置 或者 支付回调地址以及网站地址 配置不全");
+            throw new OtterwoodException(CommonResultCode.VALIDATE_FAILED, "应用设置中 微信小程序数据配置 或者 支付回调地址以及网站地址 配置不全");
         }
         // 检查diy模版名称唯一
         checkPageDiyNameUnique(pageDiy.getName(), null);
@@ -107,7 +107,7 @@ public class PageDiyServiceImpl extends ServiceImpl<PageDiyDao, PageDiy> impleme
     public Boolean editPageDiy(PageDiy pageDiy) {
         String adminApiPath = systemConfigService.getValueByKey(SysConfigConstants.CONFIG_KEY_API_URL);
         if (StrUtil.isBlank(adminApiPath)) {
-            throw new CrmebException(CommonResultCode.VALIDATE_FAILED, "应用设置中 微信小程序数据配置 或者 支付回调地址以及网站地址 配置不全");
+            throw new OtterwoodException(CommonResultCode.VALIDATE_FAILED, "应用设置中 微信小程序数据配置 或者 支付回调地址以及网站地址 配置不全");
         }
         // 检查diy模版名称唯一
         checkPageDiyNameUnique(pageDiy.getName(), pageDiy.getId());
@@ -145,7 +145,7 @@ public class PageDiyServiceImpl extends ServiceImpl<PageDiyDao, PageDiy> impleme
     @Override
     public Boolean setDiyPageHome(Integer diyId) {
         PageDiy pageDiy = dao.selectById(diyId);
-        if(ObjectUtil.isNull(pageDiy)) throw new CrmebException(CommonResultCode.VALIDATE_FAILED, "当前DIY模版不存在");
+        if(ObjectUtil.isNull(pageDiy)) throw new OtterwoodException(CommonResultCode.VALIDATE_FAILED, "当前DIY模版不存在");
 
         // 取消现有的首页设置，如果存在的话
         LambdaQueryWrapper<PageDiy> queryWaiteResetDefaultTemp = Wrappers.lambdaQuery();
@@ -174,7 +174,7 @@ public class PageDiyServiceImpl extends ServiceImpl<PageDiyDao, PageDiy> impleme
         }
         List<PageDiy> currentWaitResetPageHome = dao.selectList(queryWrapper);
         if(ObjectUtil.isNull(currentWaitResetPageHome) || currentWaitResetPageHome.size() != 1){
-            throw new CrmebException("首页模版设置不正确！");
+            throw new OtterwoodException("首页模版设置不正确！");
         }
 
         PageDiy pageDiy = currentWaitResetPageHome.get(0);
@@ -207,7 +207,7 @@ public class PageDiyServiceImpl extends ServiceImpl<PageDiyDao, PageDiy> impleme
             pageDiy = getById(id);
         }
 
-        if(ObjectUtil.isNull(pageDiy)) throw new CrmebException(SystemConfigResultCode.PAGE_DIY_NOT_EXIST);
+        if(ObjectUtil.isNull(pageDiy)) throw new OtterwoodException(SystemConfigResultCode.PAGE_DIY_NOT_EXIST);
 
 //        String modifiedJsonString = getModifiedJsonString(pageDiy.getValue());
 //        pageDiy.setValue(modifiedJsonString);
@@ -234,7 +234,7 @@ public class PageDiyServiceImpl extends ServiceImpl<PageDiyDao, PageDiy> impleme
             pageDiy = getById(id);
         }
 
-        if(ObjectUtil.isNull(pageDiy)) throw new CrmebException(SystemConfigResultCode.PAGE_DIY_NOT_EXIST);
+        if(ObjectUtil.isNull(pageDiy)) throw new OtterwoodException(SystemConfigResultCode.PAGE_DIY_NOT_EXIST);
 
 
         // 优化front比必要的字段 提高diy组件渲染效率
@@ -271,7 +271,7 @@ public class PageDiyServiceImpl extends ServiceImpl<PageDiyDao, PageDiy> impleme
         }
         List<PageDiy> pageDiyNameExist = dao.selectList(pageDiyLambdaQueryWrapper);
         if(ObjectUtil.isNotNull(pageDiyNameExist) && !pageDiyNameExist.isEmpty()){
-            throw new CrmebException(CommonResultCode.VALIDATE_FAILED, "当前模版名称已经存在，请修改后再保存！");
+            throw new OtterwoodException(CommonResultCode.VALIDATE_FAILED, "当前模版名称已经存在，请修改后再保存！");
         }
     }
 

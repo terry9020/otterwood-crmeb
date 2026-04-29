@@ -12,7 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.otterwood.common.constants.*;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.coupon.StoreCoupon;
 import com.otterwood.common.model.coupon.StoreCouponUser;
 import com.otterwood.common.model.finance.UserRecharge;
@@ -47,13 +47,13 @@ import java.util.stream.Collectors;
 /**
  * 用户中心 服务实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -172,7 +172,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
         switch (request.getExtractType()) {
             case "weixin":
                 if (StrUtil.isBlank(request.getWechat())) {
-                    throw new CrmebException("请填写微信号！");
+                    throw new OtterwoodException("请填写微信号！");
                 }
                 request.setAlipayCode(null);
                 request.setBankCode(null);
@@ -180,7 +180,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
                 break;
             case "alipay":
                 if (StrUtil.isBlank(request.getAlipayCode())) {
-                    throw new CrmebException("请填写支付宝账号！");
+                    throw new OtterwoodException("请填写支付宝账号！");
                 }
                 request.setWechat(null);
                 request.setBankCode(null);
@@ -188,16 +188,16 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
                 break;
             case "bank":
                 if (StrUtil.isBlank(request.getBankName())) {
-                    throw new CrmebException("请填写银行名称！");
+                    throw new OtterwoodException("请填写银行名称！");
                 }
                 if (StrUtil.isBlank(request.getBankCode())) {
-                    throw new CrmebException("请填写银行卡号！");
+                    throw new OtterwoodException("请填写银行卡号！");
                 }
                 request.setWechat(null);
                 request.setAlipayCode(null);
                 break;
             default:
-                throw new CrmebException("请选择支付方式");
+                throw new OtterwoodException("请选择支付方式");
         }
         return userExtractService.extractApply(request);
     }
@@ -272,7 +272,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
         String rechargeAttention = systemConfigService.getValueByKey(Constants.CONFIG_RECHARGE_ATTENTION);
         List<String> rechargeAttentionList = new ArrayList<>();
         if (StrUtil.isNotBlank(rechargeAttention)) {
-            rechargeAttentionList = CrmebUtil.stringToArrayStrRegex(rechargeAttention, "\n");
+            rechargeAttentionList = OtterwoodUtil.stringToArrayStrRegex(rechargeAttention, "\n");
         }
         userRechargeResponse.setRechargeAttention(rechargeAttentionList);
         return userRechargeResponse;
@@ -300,7 +300,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
     public UserSpreadOrderResponse getSpreadOrder(PageParamRequest pageParamRequest) {
         User user = userService.getInfo();
         if (ObjectUtil.isNull(user)) {
-            throw new CrmebException("用户数据异常");
+            throw new OtterwoodException("用户数据异常");
         }
         UserSpreadOrderResponse spreadOrderResponse = new UserSpreadOrderResponse();
         // 获取累计推广条数
@@ -332,7 +332,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
             userSpreadOrderItemChildResponse.setNickname(userMap.get(orderUid).getNickname());
             userSpreadOrderItemChildResponse.setType("返佣");
 
-            String month = CrmebDateUtil.dateToStr(record.getUpdateTime(), Constants.DATE_FORMAT_MONTH);
+            String month = OtterwoodDateUtil.dateToStr(record.getUpdateTime(), Constants.DATE_FORMAT_MONTH);
             if (monthList.contains(month)) {
                 //如果在已有的数据中找到当前月份数据则追加
                 for (UserSpreadOrderItemResponse userSpreadOrderItemResponse : userSpreadOrderItemResponseList) {
@@ -367,7 +367,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
      * @return UserSpreadOrderResponse;
      */
     @Override
-    @Transactional(rollbackFor = {RuntimeException.class, Error.class, CrmebException.class})
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class, OtterwoodException.class})
     public OrderPayResultResponse recharge(UserRechargeRequest request) {
         request.setPayType(Constants.PAY_TYPE_WE_CHAT);
 
@@ -376,7 +376,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
         BigDecimal rechargeMinAmount = new BigDecimal(rechargeMinAmountStr);
         int compareResult = rechargeMinAmount.compareTo(request.getPrice());
         if (compareResult > 0) {
-            throw new CrmebException("充值金额不能低于" + rechargeMinAmountStr);
+            throw new OtterwoodException("充值金额不能低于" + rechargeMinAmountStr);
         }
 
         request.setGivePrice(BigDecimal.ZERO);
@@ -384,7 +384,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
         if (request.getGroupDataId() > 0) {
             SystemGroupDataRechargeConfigVo systemGroupData = systemGroupDataService.getNormalInfo(request.getGroupDataId(), SystemGroupDataRechargeConfigVo.class);
             if (ObjectUtil.isNull(systemGroupData)) {
-                throw new CrmebException("您选择的充值方式已下架");
+                throw new OtterwoodException("您选择的充值方式已下架");
             }
             //售价和赠送
             request.setPrice(systemGroupData.getPrice());
@@ -394,7 +394,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
         //生成系统订单
         UserRecharge userRecharge = new UserRecharge();
         userRecharge.setUid(currentUser.getUid());
-        userRecharge.setOrderId(CrmebUtil.getOrderNo("recharge"));
+        userRecharge.setOrderId(OtterwoodUtil.getOrderNo("recharge"));
         userRecharge.setPrice(request.getPrice());
         userRecharge.setGivePrice(request.getGivePrice());
         userRecharge.setRechargeType(request.getFromType());
@@ -424,7 +424,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
         userRecharge.setOutTradeNo(unifiedorder.get("outTradeNo"));
         boolean save = userRechargeService.save(userRecharge);
         if (!save) {
-            throw new CrmebException("生成充值订单失败!");
+            throw new OtterwoodException("生成充值订单失败!");
         }
         return response;
     }
@@ -444,16 +444,16 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
         if (ObjectUtil.isNotNull(userToken)) {// 已存在，正常登录
             User user = userService.getById(userToken.getUid());
             if (!user.getStatus()) {
-                throw new CrmebException("当前账户已禁用，请联系管理员！");
+                throw new OtterwoodException("当前账户已禁用，请联系管理员！");
             }
 
             // 记录最后一次登录时间
-            user.setLastLoginTime(CrmebDateUtil.nowDateTime());
+            user.setLastLoginTime(OtterwoodDateUtil.nowDateTime());
             Boolean execute = transactionTemplate.execute(e -> {
                 // 分销绑定
                 if (userService.checkBingSpread(user, spreadUid, "old")) {
                     user.setSpreadUid(spreadUid);
-                    user.setSpreadTime(CrmebDateUtil.nowDateTime());
+                    user.setSpreadTime(OtterwoodDateUtil.nowDateTime());
                     // 处理新旧推广人数据
                     userService.updateSpreadCountByUid(spreadUid, "add");
                 }
@@ -521,15 +521,15 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
         if (ObjectUtil.isNotNull(userToken)) {// 已存在，正常登录
             User user = userService.getById(userToken.getUid());
             if (!user.getStatus()) {
-                throw new CrmebException("当前账户已禁用，请联系管理员！");
+                throw new OtterwoodException("当前账户已禁用，请联系管理员！");
             }
             // 记录最后一次登录时间
-            user.setLastLoginTime(CrmebDateUtil.nowDateTime());
+            user.setLastLoginTime(OtterwoodDateUtil.nowDateTime());
             Boolean execute = transactionTemplate.execute(e -> {
                 // 分销绑定
                 if (userService.checkBingSpread(user, request.getSpreadPid(), "old")) {
                     user.setSpreadUid(request.getSpreadPid());
-                    user.setSpreadTime(CrmebDateUtil.nowDateTime());
+                    user.setSpreadTime(OtterwoodDateUtil.nowDateTime());
                     // 处理新旧推广人数据
                     userService.updateSpreadCountByUid(request.getSpreadPid(), "add");
                 }
@@ -679,16 +679,16 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
     @Override
     public Boolean transferIn(BigDecimal price) {
         if (price.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new CrmebException("转入金额不能为0");
+            throw new OtterwoodException("转入金额不能为0");
         }
         //当前可提现佣金
         User user = userService.getInfo();
         if (ObjectUtil.isNull(user)) {
-            throw new CrmebException("用户数据异常");
+            throw new OtterwoodException("用户数据异常");
         }
         BigDecimal subtract = user.getBrokeragePrice();
         if (subtract.compareTo(price) < 0) {
-            throw new CrmebException("您当前可充值余额为 " + subtract + "元");
+            throw new OtterwoodException("您当前可充值余额为 " + subtract + "元");
         }
         // userBill现金增加记录
         UserBill userBill = new UserBill();
@@ -702,7 +702,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
         userBill.setBalance(user.getNowMoney().add(price));
         userBill.setMark(StrUtil.format("佣金转余额,增加{}", price));
         userBill.setStatus(1);
-        userBill.setCreateTime(CrmebDateUtil.nowDateTime());
+        userBill.setCreateTime(OtterwoodDateUtil.nowDateTime());
 
         // userBrokerage转出记录
         UserBrokerageRecord brokerageRecord = new UserBrokerageRecord();
@@ -715,7 +715,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
         brokerageRecord.setBalance(user.getNowMoney().add(price));
         brokerageRecord.setMark(StrUtil.format("佣金转余额，减少{}", price));
         brokerageRecord.setStatus(BrokerageRecordConstants.BROKERAGE_RECORD_STATUS_COMPLETE);
-        brokerageRecord.setCreateTime(CrmebDateUtil.nowDateTime());
+        brokerageRecord.setCreateTime(OtterwoodDateUtil.nowDateTime());
 
         Boolean execute = transactionTemplate.execute(e -> {
             // 扣佣金
@@ -759,7 +759,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
     public CommonPage<UserRechargeBillRecordResponse> nowMoneyBillRecord(String type, PageParamRequest pageRequest) {
         User user = userService.getInfo();
         if (ObjectUtil.isNull(user)) {
-            throw new CrmebException("用户数据异常");
+            throw new OtterwoodException("用户数据异常");
         }
         PageInfo<UserBill> billPageInfo = userBillService.nowMoneyBillRecord(user.getUid(), type, pageRequest);
         List<UserBill> list = billPageInfo.getList();
@@ -767,7 +767,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
         // 获取年-月
         Map<String, List<UserBill>> map = CollUtil.newHashMap();
         list.forEach(i -> {
-            String month = StrUtil.subPre(CrmebDateUtil.dateToStr(i.getCreateTime(), Constants.DATE_FORMAT), 7);
+            String month = StrUtil.subPre(OtterwoodDateUtil.dateToStr(i.getCreateTime(), Constants.DATE_FORMAT), 7);
             if (map.containsKey(month)) {
                 map.get(month).add(i);
             } else {
@@ -802,7 +802,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
         // 进入创建用户绑定手机号流程
         Object o = redisUtil.get(request.getKey());
         if (ObjectUtil.isNull(o)) {
-            throw new CrmebException("用户缓存已过期，请清除缓存重新登录");
+            throw new OtterwoodException("用户缓存已过期，请清除缓存重新登录");
         }
         RegisterThirdUserRequest registerThirdUserRequest = JSONObject.parseObject(o.toString(), RegisterThirdUserRequest.class);
 
@@ -835,7 +835,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
 
             UserToken userToken = userTokenService.getTokenByUserId(user.getUid(), type);
             if (ObjectUtil.isNotNull(userToken)) {
-                throw new CrmebException("该手机号已被注册");
+                throw new OtterwoodException("该手机号已被注册");
             }
             isNew = false;
         }
@@ -847,7 +847,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
                 // 分销绑定
                 if (userService.checkBingSpread(finalUser, registerThirdUserRequest.getSpreadPid(), "new")) {
                     finalUser.setSpreadUid(registerThirdUserRequest.getSpreadPid());
-                    finalUser.setSpreadTime(CrmebDateUtil.nowDateTime());
+                    finalUser.setSpreadTime(OtterwoodDateUtil.nowDateTime());
                     userService.updateSpreadCountByUid(registerThirdUserRequest.getSpreadPid(), "add");
                 }
                 userService.save(finalUser);
@@ -924,11 +924,11 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
         if (ObjectUtil.isNotNull(userToken)) {// 已存在，正常登录
             User user = userService.getById(userToken.getUid());
             if (!user.getStatus()) {
-                throw new CrmebException("当前账户已禁用，请联系管理员！");
+                throw new OtterwoodException("当前账户已禁用，请联系管理员！");
             }
 
             // 记录最后一次登录时间
-            user.setLastLoginTime(CrmebDateUtil.nowDateTime());
+            user.setLastLoginTime(OtterwoodDateUtil.nowDateTime());
             user.setUpdateTime(DateUtil.date());
             Boolean execute = transactionTemplate.execute(e -> {
                 userService.updateById(user);
@@ -1063,62 +1063,62 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
      */
     private void checkBindingPhone(WxBindingPhoneRequest request) {
         if (!request.getType().equals("public") && !request.getType().equals("routine") && !request.getType().equals("iosWx") && !request.getType().equals("androidWx")) {
-            throw new CrmebException("未知的用户类型");
+            throw new OtterwoodException("未知的用户类型");
         }
         if (request.getType().equals("public") || request.getType().equals("iosWx") || request.getType().equals("androidWx")) {
             if (StrUtil.isBlank(request.getCaptcha())) {
-                throw new CrmebException("验证码不能为空");
+                throw new OtterwoodException("验证码不能为空");
             }
             boolean matchPhone = ReUtil.isMatch(RegularConstants.PHONE_TWO, request.getPhone());
             if (!matchPhone) {
-                throw new CrmebException("手机号格式错误，请输入正确得手机号");
+                throw new OtterwoodException("手机号格式错误，请输入正确得手机号");
             }
             // 公众号用户校验验证码
             boolean match = ReUtil.isMatch(RegularConstants.VALIDATE_CODE_NUM_SIX, request.getCaptcha());
             if (!match) {
-                throw new CrmebException("验证码格式错误，验证码必须为6位数字");
+                throw new OtterwoodException("验证码格式错误，验证码必须为6位数字");
             }
             checkValidateCode(request.getPhone(), request.getCaptcha());
         } else {
             if (StrUtil.isNotBlank(request.getCaptcha())) {
                 if (StrUtil.isBlank(request.getPhone())) {
-                    throw new CrmebException("手机号不能为空");
+                    throw new OtterwoodException("手机号不能为空");
                 }
                 boolean matchPhone = ReUtil.isMatch(RegularConstants.PHONE_TWO, request.getPhone());
                 if (!matchPhone) {
-                    throw new CrmebException("手机号格式错误，请输入正确得手机号");
+                    throw new OtterwoodException("手机号格式错误，请输入正确得手机号");
                 }
                 boolean match = ReUtil.isMatch(RegularConstants.VALIDATE_CODE_NUM_SIX, request.getCaptcha());
                 if (!match) {
-                    throw new CrmebException("验证码格式错误，验证码必须为6位数字");
+                    throw new OtterwoodException("验证码格式错误，验证码必须为6位数字");
                 }
                 checkValidateCode(request.getPhone(), request.getCaptcha());
             } else {
                 // 参数校验
                 if (StrUtil.isBlank(request.getCode())) {
-                    throw new CrmebException("小程序获取手机号code不能为空");
+                    throw new OtterwoodException("小程序获取手机号code不能为空");
                 }
                 if (StrUtil.isBlank(request.getEncryptedData())) {
-                    throw new CrmebException("小程序获取手机号加密数据不能为空");
+                    throw new OtterwoodException("小程序获取手机号加密数据不能为空");
                 }
                 if (StrUtil.isBlank(request.getIv())) {
-                    throw new CrmebException("小程序获取手机号加密算法的初始向量不能为空");
+                    throw new OtterwoodException("小程序获取手机号加密算法的初始向量不能为空");
                 }
                 // 获取appid
                 String programAppId = systemConfigService.getValueByKey(WeChatConstants.WECHAT_MINI_APPID);
                 if (StrUtil.isBlank(programAppId)) {
-                    throw new CrmebException("微信小程序appId未设置");
+                    throw new OtterwoodException("微信小程序appId未设置");
                 }
 
                 WeChatMiniAuthorizeVo response = wechatNewService.miniAuthCode(request.getCode());
                 System.out.println("小程序登陆成功 = " + JSON.toJSONString(response));
                 String decrypt = WxUtil.decrypt(programAppId, request.getEncryptedData(), response.getSessionKey(), request.getIv());
                 if (StrUtil.isBlank(decrypt)) {
-                    throw new CrmebException("微信小程序获取手机号解密失败");
+                    throw new OtterwoodException("微信小程序获取手机号解密失败");
                 }
                 JSONObject jsonObject = JSONObject.parseObject(decrypt);
                 if (StrUtil.isBlank(jsonObject.getString("phoneNumber"))) {
-                    throw new CrmebException("微信小程序获取手机号没有有效的手机号");
+                    throw new OtterwoodException("微信小程序获取手机号没有有效的手机号");
                 }
                 request.setPhone(jsonObject.getString("phoneNumber"));
             }
@@ -1138,9 +1138,9 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
             couponList.forEach(storeCoupon -> {
                 //是否有固定的使用时间
                 if (!storeCoupon.getIsFixedTime()) {
-                    String endTime = CrmebDateUtil.addDay(CrmebDateUtil.nowDate(Constants.DATE_FORMAT), storeCoupon.getDay(), Constants.DATE_FORMAT);
-                    storeCoupon.setUseEndTime(CrmebDateUtil.strToDate(endTime, Constants.DATE_FORMAT));
-                    storeCoupon.setUseStartTime(CrmebDateUtil.nowDateTimeReturnDate(Constants.DATE_FORMAT));
+                    String endTime = OtterwoodDateUtil.addDay(OtterwoodDateUtil.nowDate(Constants.DATE_FORMAT), storeCoupon.getDay(), Constants.DATE_FORMAT);
+                    storeCoupon.setUseEndTime(OtterwoodDateUtil.strToDate(endTime, Constants.DATE_FORMAT));
+                    storeCoupon.setUseStartTime(OtterwoodDateUtil.nowDateTimeReturnDate(Constants.DATE_FORMAT));
                 }
 
                 StoreCouponUser storeCouponUser = new StoreCouponUser();
@@ -1153,7 +1153,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
                     storeCouponUser.setStartTime(storeCoupon.getUseStartTime());
                     storeCouponUser.setEndTime(storeCoupon.getUseEndTime());
                 } else {// 没有固定使用时间
-                    Date nowDate = CrmebDateUtil.nowDateTime();
+                    Date nowDate = OtterwoodDateUtil.nowDateTime();
                     storeCouponUser.setStartTime(nowDate);
                     DateTime dateTime = cn.hutool.core.date.DateUtil.offsetDay(nowDate, storeCoupon.getDay());
                     storeCouponUser.setEndTime(dateTime);
@@ -1184,10 +1184,10 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
     private void checkValidateCode(String phone, String code) {
         Object validateCode = redisUtil.get(SmsConstants.SMS_VALIDATE_PHONE + phone);
         if (validateCode == null) {
-            throw new CrmebException("验证码已过期");
+            throw new OtterwoodException("验证码已过期");
         }
         if (!validateCode.toString().equals(code)) {
-            throw new CrmebException("验证码错误");
+            throw new OtterwoodException("验证码错误");
         }
         //删除验证码
         redisUtil.delete(SmsConstants.SMS_VALIDATE_PHONE + phone);

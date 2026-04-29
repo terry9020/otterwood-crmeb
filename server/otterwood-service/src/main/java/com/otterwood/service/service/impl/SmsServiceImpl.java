@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.otterwood.common.request.SmsApplyTempRequest;
 import com.otterwood.common.request.SmsModifySignRequest;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.utils.RestTemplateUtil;
 import com.otterwood.common.utils.ValidateFormUtil;
@@ -16,7 +16,7 @@ import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.OnePassConstants;
 import com.otterwood.common.constants.SmsConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.vo.OnePassLoginVo;
 import com.otterwood.common.vo.SendSmsVo;
 import com.otterwood.service.service.*;
@@ -38,13 +38,13 @@ import java.util.stream.Collectors;
 /**
  * SmsServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -90,7 +90,7 @@ public class SmsServiceImpl implements SmsService {
                 if (StrUtil.isBlank(codeExpireStr) || Integer.parseInt(codeExpireStr) == 0) {
                     codeExpireStr = Constants.NUM_FIVE + "";// 默认5分钟过期
                 }
-                Integer code = CrmebUtil.randomCount(111111, 999999);
+                Integer code = OtterwoodUtil.randomCount(111111, 999999);
                 HashMap<String, Object> justPram = new HashMap<>();
                 justPram.put("code", code);
                 justPram.put("time", codeExpireStr);
@@ -334,19 +334,19 @@ public class SmsServiceImpl implements SmsService {
         ValidateFormUtil.isPhone(phone,"手机号码错误");
         Boolean checkAccount = onePassService.checkAccount();
         if (!checkAccount) {
-            throw new CrmebException("发送短信请先登录一号通账号");
+            throw new OtterwoodException("发送短信请先登录一号通账号");
         }
         JSONObject info = onePassService.info();
         JSONObject smsObject = info.getJSONObject("sms");
         Integer open = smsObject.getInteger("open");
         if (!open.equals(1)) {
-            throw new CrmebException("发送短信请先开通一号通账号服务");
+            throw new OtterwoodException("发送短信请先开通一号通账号服务");
         }
         if (smsObject.getInteger("num") <= 0) {
-            throw new CrmebException("一号通账号服务余量不足");
+            throw new OtterwoodException("一号通账号服务余量不足");
         }
         if (redisUtil.exists(SmsConstants.SMS_VALIDATE_PHONE_NUM + phone)) {
-            throw new CrmebException("您的短信发送过于频繁，请稍后再试");
+            throw new OtterwoodException("您的短信发送过于频繁，请稍后再试");
         }
         return sendSms(phone, SmsConstants.SMS_CONFIG_TYPE_VERIFICATION_CODE, null);
     }
@@ -487,17 +487,17 @@ public class SmsServiceImpl implements SmsService {
      */
     private JSONObject checkResult(String result) {
         if (StrUtil.isBlank(result)) {
-            throw new CrmebException("短信平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("短信平台接口异常，没任何数据返回！");
         }
 
         JSONObject jsonObject;
         try {
             jsonObject = JSONObject.parseObject(result);
         } catch (Exception e) {
-            throw new CrmebException("短信平台接口异常！");
+            throw new OtterwoodException("短信平台接口异常！");
         }
         if (SmsConstants.SMS_ERROR_CODE.equals(jsonObject.getInteger("status"))) {
-            throw new CrmebException("短信平台接口" + jsonObject.getString("msg"));
+            throw new OtterwoodException("短信平台接口" + jsonObject.getString("msg"));
         }
         return jsonObject;
     }
@@ -519,7 +519,7 @@ public class SmsServiceImpl implements SmsService {
             if (StrUtil.isBlank(codeExpireStr) || Integer.parseInt(codeExpireStr) == 0) {
                 codeExpireStr = Constants.NUM_FIVE + "";// 默认5分钟过期
             }
-            Integer code = CrmebUtil.randomCount(111111, 999999);
+            Integer code = OtterwoodUtil.randomCount(111111, 999999);
             HashMap<String, Object> justPram = new HashMap<>();
             justPram.put("code", code);
             justPram.put("time", codeExpireStr);
@@ -528,7 +528,7 @@ public class SmsServiceImpl implements SmsService {
             sendSmsVo.setContent(JSONObject.toJSONString(justPram));
             Boolean aBoolean = commonSendSms(sendSmsVo);
             if (!aBoolean) {
-                throw new CrmebException("发送短信失败，请联系后台管理员");
+                throw new OtterwoodException("发送短信失败，请联系后台管理员");
             }
             // 将验证码存入redis
             redisUtil.set(userService.getValidateCodeRedisKey(phone), code, Long.valueOf(codeExpireStr), TimeUnit.MINUTES);

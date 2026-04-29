@@ -157,13 +157,13 @@
 
 <script>
 // +----------------------------------------------------------------------
-// | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+// | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
 // +----------------------------------------------------------------------
-// | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+// | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
 // +----------------------------------------------------------------------
-// | Author: CRMEB Team <admin@crmeb.com>
+// | Author: OTTERWOOD Team <admin@otterwood.com>
 // +----------------------------------------------------------------------
 // import { backgroundColor } from 'echarts/lib/theme/dark';
 import { mapState, mapGetters } from 'vuex';
@@ -438,7 +438,7 @@ export default {
           tabTitle: '头部设置',
           title: '标题图片',
           tips: '建议：154px*32px',
-          url: localStorage.getItem('mediaDomain') + '/crmebimage/perset/202412/groupTitle.png',
+          url: localStorage.getItem('mediaDomain') + '/otterwoodimage/perset/202412/groupTitle.png',
         },
         selectBgImg: {
           cname: 'selectBgImg',
@@ -458,7 +458,7 @@ export default {
           isShow: 1,
           title: '背景图片',
           tips: '建议：710px*96px',
-          url: localStorage.getItem('mediaDomain') + '/crmebimage/perset/202412/groupBg.png',
+          url: localStorage.getItem('mediaDomain') + '/otterwoodimage/perset/202412/groupBg.png',
         },
         titleConfig: {
           title: '标题文字',

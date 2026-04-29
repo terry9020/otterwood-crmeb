@@ -16,12 +16,12 @@ import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.ExperienceRecordConstants;
 import com.otterwood.common.constants.IntegralRecordConstants;
 import com.otterwood.common.constants.SysGroupDataConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.response.UserSignInfoResponse;
 import com.otterwood.common.vo.UserSignMonthVo;
 import com.otterwood.common.vo.UserSignVo;
 import com.github.pagehelper.PageHelper;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.vo.SystemGroupDataSignConfigVo;
 import com.otterwood.service.dao.UserSignDao;
 import com.otterwood.service.service.*;
@@ -38,13 +38,13 @@ import java.util.List;
 /**
  * UserSignServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -110,14 +110,14 @@ public class UserSignServiceImpl extends ServiceImpl<UserSignDao, UserSign> impl
             user.setSignNum(0);
         } else {
             // 判断是否重复签到
-            String lastDate = CrmebDateUtil.dateToStr(lastUserSign.getCreateDay(), Constants.DATE_FORMAT_DATE);
-            String nowDate = CrmebDateUtil.nowDate(Constants.DATE_FORMAT_DATE);
+            String lastDate = OtterwoodDateUtil.dateToStr(lastUserSign.getCreateDay(), Constants.DATE_FORMAT_DATE);
+            String nowDate = OtterwoodDateUtil.nowDate(Constants.DATE_FORMAT_DATE);
             //对比今天数据
-            if (CrmebDateUtil.compareDate(lastDate, nowDate, Constants.DATE_FORMAT_DATE) == 0) {
-                throw new CrmebException("今日已签到。不可重复签到");
+            if (OtterwoodDateUtil.compareDate(lastDate, nowDate, Constants.DATE_FORMAT_DATE) == 0) {
+                throw new OtterwoodException("今日已签到。不可重复签到");
             }
-            String nextDate = CrmebDateUtil.addDay(lastUserSign.getCreateDay(), 1, Constants.DATE_FORMAT_DATE);
-            int compareDate = CrmebDateUtil.compareDate(nextDate, nowDate, Constants.DATE_FORMAT_DATE);
+            String nextDate = OtterwoodDateUtil.addDay(lastUserSign.getCreateDay(), 1, Constants.DATE_FORMAT_DATE);
+            int compareDate = OtterwoodDateUtil.compareDate(nextDate, nowDate, Constants.DATE_FORMAT_DATE);
             if (compareDate != 0) {
                 //不相等，所以不是连续签到,重置签到次数
                 user.setSignNum(0);
@@ -127,7 +127,7 @@ public class UserSignServiceImpl extends ServiceImpl<UserSignDao, UserSign> impl
         //获取签到数据
         List<SystemGroupDataSignConfigVo> config = getSignConfig();
         if (CollUtil.isEmpty(config)) {
-            throw new CrmebException("签到配置不存在，请在管理端配置签到数据");
+            throw new OtterwoodException("签到配置不存在，请在管理端配置签到数据");
         }
 
         //如果已经签到一个周期，那么再次签到的时候直接从第一天重新开始
@@ -144,7 +144,7 @@ public class UserSignServiceImpl extends ServiceImpl<UserSignDao, UserSign> impl
             }
         }
         if (ObjectUtil.isNull(configVo)) {
-            throw new CrmebException("请先配置签到天数！");
+            throw new OtterwoodException("请先配置签到天数！");
         }
 
         //保存签到数据
@@ -154,7 +154,7 @@ public class UserSignServiceImpl extends ServiceImpl<UserSignDao, UserSign> impl
         userSign.setNumber(configVo.getIntegral());
         userSign.setType(Constants.SIGN_TYPE_INTEGRAL);
         userSign.setBalance(user.getIntegral() + configVo.getIntegral());
-        userSign.setCreateDay(CrmebDateUtil.strToDate(CrmebDateUtil.nowDate(Constants.DATE_FORMAT_DATE), Constants.DATE_FORMAT_DATE));
+        userSign.setCreateDay(OtterwoodDateUtil.strToDate(OtterwoodDateUtil.nowDate(Constants.DATE_FORMAT_DATE), Constants.DATE_FORMAT_DATE));
 
         // 生成用户积分记录
         UserIntegralRecord integralRecord = new UserIntegralRecord();
@@ -199,7 +199,7 @@ public class UserSignServiceImpl extends ServiceImpl<UserSignDao, UserSign> impl
         });
 
         if (!execute) {
-            throw new CrmebException("修改用户签到信息失败!");
+            throw new OtterwoodException("修改用户签到信息失败!");
         }
 
         return configVo;
@@ -256,7 +256,7 @@ public class UserSignServiceImpl extends ServiceImpl<UserSignDao, UserSign> impl
         }
 
         for (UserSign userSign : userSignList) {
-            String date = CrmebDateUtil.dateToStr(userSign.getCreateDay(), Constants.DATE_FORMAT_MONTH);
+            String date = OtterwoodDateUtil.dateToStr(userSign.getCreateDay(), Constants.DATE_FORMAT_MONTH);
             UserSignVo userSignVo = new UserSignVo(userSign.getTitle(), userSign.getNumber(), userSign.getCreateDay());
             boolean findResult = false;
             if (signMonthVoArrayList.size() > 0) {
@@ -325,7 +325,7 @@ public class UserSignServiceImpl extends ServiceImpl<UserSignDao, UserSign> impl
      * @since 2020-05-29
      */
     private Boolean checkDaySign(Integer userId) {
-        List<UserSign> userSignList = getInfoByDay(userId, CrmebDateUtil.nowDate(Constants.DATE_FORMAT_DATE));
+        List<UserSign> userSignList = getInfoByDay(userId, OtterwoodDateUtil.nowDate(Constants.DATE_FORMAT_DATE));
         return userSignList.size() != 0;
     }
 
@@ -338,8 +338,8 @@ public class UserSignServiceImpl extends ServiceImpl<UserSignDao, UserSign> impl
      * @since 2020-05-29
      */
     private Boolean checkYesterdaySign(Integer userId) {
-        String day = CrmebDateUtil.nowDate(Constants.DATE_FORMAT_DATE);
-        String yesterday = CrmebDateUtil.addDay(day, -1, Constants.DATE_FORMAT_DATE);
+        String day = OtterwoodDateUtil.nowDate(Constants.DATE_FORMAT_DATE);
+        String yesterday = OtterwoodDateUtil.addDay(day, -1, Constants.DATE_FORMAT_DATE);
         List<UserSign> userSignList = getInfoByDay(userId, yesterday);
         return userSignList.size() != 0;
     }

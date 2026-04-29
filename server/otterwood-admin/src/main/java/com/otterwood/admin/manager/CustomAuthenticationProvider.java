@@ -1,8 +1,8 @@
 package com.otterwood.admin.manager;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.otterwood.common.exception.CrmebException;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.exception.OtterwoodException;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.vo.LoginUserVo;
 import com.otterwood.service.service.impl.UserDetailServiceImpl;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -33,12 +33,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         //以下自定义方法，判断是否登录成功
         LoginUserVo userDetails = (LoginUserVo) userDetailsService.loadUserByUsername(name);
         if (ObjectUtil.isNull(userDetails)) {
-            throw new CrmebException("用户名不存在");
+            throw new OtterwoodException("用户名不存在");
         }
         // base64加密获取真正密码
-        String encryptPassword = CrmebUtil.encryptPassword(password, name);
+        String encryptPassword = OtterwoodUtil.encryptPassword(password, name);
         if (!userDetails.getUser().getPwd().equals(encryptPassword)) {
-            throw new CrmebException("账号或者密码不正确");
+            throw new OtterwoodException("账号或者密码不正确");
         }
         return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
     }

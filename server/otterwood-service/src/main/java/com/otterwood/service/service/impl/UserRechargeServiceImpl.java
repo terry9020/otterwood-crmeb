@@ -12,11 +12,11 @@ import com.otterwood.common.constants.PayConstants;
 import com.otterwood.common.page.CommonPage;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.constants.Constants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.model.finance.UserRecharge;
 import com.otterwood.common.request.UserRechargeSearchRequest;
 import com.otterwood.common.response.UserRechargeResponse;
@@ -38,13 +38,13 @@ import java.util.stream.Collectors;
 /**
 * UserRechargeServiceImpl 接口实现
 *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
 */
 @Service
@@ -67,7 +67,7 @@ public class UserRechargeServiceImpl extends ServiceImpl<UserRechargeDao, UserRe
     public PageInfo<UserRechargeResponse> getList(UserRechargeSearchRequest request, PageParamRequest pageParamRequest) {
         Page<UserRecharge> userRechargesList = PageHelper.startPage(pageParamRequest.getPage(), pageParamRequest.getLimit());
 
-        DateLimitUtilVo dateLimit = CrmebDateUtil.getDateLimit(request.getDateLimit());
+        DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(request.getDateLimit());
         //带 UserExtract 类的多条件查询
         LambdaQueryWrapper<UserRecharge> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         if (ObjectUtil.isNotNull(request.getUid()) && request.getUid() > 0) {
@@ -82,9 +82,9 @@ public class UserRechargeServiceImpl extends ServiceImpl<UserRechargeDao, UserRe
         //时间范围
         if (StrUtil.isNotBlank(dateLimit.getStartTime()) && StrUtil.isNotBlank(dateLimit.getEndTime())) {
             //判断时间
-            int compareDateResult = CrmebDateUtil.compareDate(dateLimit.getEndTime(), dateLimit.getStartTime(), Constants.DATE_FORMAT);
+            int compareDateResult = OtterwoodDateUtil.compareDate(dateLimit.getEndTime(), dateLimit.getStartTime(), Constants.DATE_FORMAT);
             if(compareDateResult == -1){
-                throw new CrmebException("开始时间不能大于结束时间！");
+                throw new OtterwoodException("开始时间不能大于结束时间！");
             }
 
             lambdaQueryWrapper.between(UserRecharge::getCreateTime, dateLimit.getStartTime(), dateLimit.getEndTime());

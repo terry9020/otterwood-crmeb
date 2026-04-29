@@ -1,6 +1,6 @@
-# CRMEB 相关配置
-crmeb:
-  version: CRMEB-JAVA-KY-v1.4 # 当前代码版本
+# OTTERWOOD 相关配置
+otterwood:
+  version: OTTERWOOD-JAVA-KY-v1.4 # 当前代码版本
   domain: #配合swagger使用 # 待部署域名
   wechat-api-url:  #请求微信接口中专服务器
   wechat-js-api-debug: false #微信js api系列是否开启调试模式
@@ -73,7 +73,7 @@ spring:
             isClustered: false
             clusterCheckinInterval: 10000
             useProperties: false
-          #            dataSource: crmeb_java_beta
+          #            dataSource: otterwood_java_beta
           threadPool:
             class: org.quartz.simpl.SimpleThreadPool
             threadCount: 10
@@ -103,11 +103,11 @@ debug: true
 logging:
   level:
     io.swagger.*: error
-    com.otterwood.crmeb: debug
+    com.otterwood.otterwood: debug
     org.springframework.boot.autoconfigure: ERROR
   config: classpath:logback-spring.xml
   file:
-    path: ./crmeb_log
+    path: ./otterwood_log
 
 # mybatis 配置
 mybatis-plus:
@@ -135,7 +135,7 @@ swagger:
 aj:
   captcha:
     type: default       # 验证码类型
-    water-mark: CRMEB Java   # 水印
+    water-mark: OTTERWOOD Java   # 水印
     slip-offset: 15      # 校验滑动拼图允许误差偏移量(默认5像素)
     aes-status: true    # aes加密坐标开启或者禁用(true|false)
     interference-options: 2 # 滑动干扰项(0/1/2)

@@ -8,11 +8,11 @@ import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.SysConfigConstants;
 import com.otterwood.common.constants.SysGroupDataConstants;
 import com.otterwood.common.constants.UploadConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.system.SystemGroupData;
 import com.otterwood.common.request.SystemFormItemCheckRequest;
 import com.otterwood.common.response.pagelayout.PageLayoutBottomNavigationResponse;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.vo.MyRecord;
 import com.otterwood.service.service.PageLayoutService;
 import com.otterwood.service.service.SystemAttachmentService;
@@ -30,13 +30,13 @@ import java.util.stream.Collectors;
 /**
  * 页面布局接口实现类
  *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
  */
 @Service
@@ -87,23 +87,23 @@ public class PageLayoutServiceImpl implements PageLayoutService {
         List<SystemGroupData> dataList = CollUtil.newArrayList();
 
         if (StrUtil.isNotBlank(jsonObject.getString("indexBanner"))) {
-            List<JSONObject> indexBanner = CrmebUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("indexBanner"));
+            List<JSONObject> indexBanner = OtterwoodUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("indexBanner"));
             dataList.addAll(convertGroupData(indexBanner, Constants.GROUP_DATA_ID_INDEX_BANNER));
         }
         if (StrUtil.isNotBlank(jsonObject.getString("indexMenu"))) {
-            List<JSONObject> indexMenu = CrmebUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("indexMenu"));
+            List<JSONObject> indexMenu = OtterwoodUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("indexMenu"));
             dataList.addAll(convertGroupData(indexMenu, Constants.GROUP_DATA_ID_INDEX_MENU));
         }
         if (StrUtil.isNotBlank(jsonObject.getString("indexNews"))) {
-            List<JSONObject> indexNews = CrmebUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("indexNews"));
+            List<JSONObject> indexNews = OtterwoodUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("indexNews"));
             dataList.addAll(convertGroupData(indexNews, Constants.GROUP_DATA_ID_INDEX_NEWS_BANNER));
         }
         if (StrUtil.isNotBlank(jsonObject.getString("userMenu"))) {
-            List<JSONObject> userMenu = CrmebUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("userMenu"));
+            List<JSONObject> userMenu = OtterwoodUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("userMenu"));
             dataList.addAll(convertGroupData(userMenu, Constants.GROUP_DATA_ID_USER_CENTER_MENU));
         }
         if (StrUtil.isNotBlank(jsonObject.getString("userBanner"))) {
-            List<JSONObject> userBanner = CrmebUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("userBanner"));
+            List<JSONObject> userBanner = OtterwoodUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("userBanner"));
             dataList.addAll(convertGroupData(userBanner, Constants.GROUP_DATA_ID_USER_CENTER_BANNER));
         }
         Boolean execute = transactionTemplate.execute(e -> {
@@ -127,7 +127,7 @@ public class PageLayoutServiceImpl implements PageLayoutService {
      */
     @Override
     public Boolean indexBannerSave(JSONObject jsonObject) {
-        List<JSONObject> indexBanner = CrmebUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("indexBanner"));
+        List<JSONObject> indexBanner = OtterwoodUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("indexBanner"));
         List<SystemGroupData> dataList = convertGroupData(indexBanner, Constants.GROUP_DATA_ID_INDEX_BANNER);
         Boolean execute = transactionTemplate.execute(e -> {
             // 先删除历史数据
@@ -146,7 +146,7 @@ public class PageLayoutServiceImpl implements PageLayoutService {
      */
     @Override
     public Boolean indexMenuSave(JSONObject jsonObject) {
-        List<JSONObject> indexMenu = CrmebUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("indexMenu"));
+        List<JSONObject> indexMenu = OtterwoodUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("indexMenu"));
         List<SystemGroupData> dataList = convertGroupData(indexMenu, Constants.GROUP_DATA_ID_INDEX_MENU);
         Boolean execute = transactionTemplate.execute(e -> {
             // 先删除历史数据
@@ -165,7 +165,7 @@ public class PageLayoutServiceImpl implements PageLayoutService {
      */
     @Override
     public Boolean indexNewsSave(JSONObject jsonObject) {
-        List<JSONObject> indexNews = CrmebUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("indexNews"));
+        List<JSONObject> indexNews = OtterwoodUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("indexNews"));
         List<SystemGroupData> dataList = convertGroupData(indexNews, Constants.GROUP_DATA_ID_INDEX_NEWS_BANNER);
         if (StrUtil.isNotBlank(jsonObject.getString("indexNews"))) {
         }
@@ -186,7 +186,7 @@ public class PageLayoutServiceImpl implements PageLayoutService {
      */
     @Override
     public Boolean userBannerSave(JSONObject jsonObject) {
-        List<JSONObject> userBanner = CrmebUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("userBanner"));
+        List<JSONObject> userBanner = OtterwoodUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("userBanner"));
         List<SystemGroupData> dataList = convertGroupData(userBanner, Constants.GROUP_DATA_ID_USER_CENTER_BANNER);
         Boolean execute = transactionTemplate.execute(e -> {
             // 先删除历史数据
@@ -205,7 +205,7 @@ public class PageLayoutServiceImpl implements PageLayoutService {
      */
     @Override
     public Boolean userMenuSave(JSONObject jsonObject) {
-        List<JSONObject> userMenu = CrmebUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("userMenu"));
+        List<JSONObject> userMenu = OtterwoodUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("userMenu"));
         List<SystemGroupData> dataList = convertGroupData(userMenu, Constants.GROUP_DATA_ID_USER_CENTER_MENU);
         Boolean execute = transactionTemplate.execute(e -> {
             // 先删除历史数据
@@ -224,7 +224,7 @@ public class PageLayoutServiceImpl implements PageLayoutService {
      */
     @Override
     public Boolean indexTableSave(JSONObject jsonObject) {
-        List<JSONObject> indexBanner = CrmebUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("indexTable"));
+        List<JSONObject> indexBanner = OtterwoodUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("indexTable"));
         List<SystemGroupData> dataList = convertGroupData(indexBanner, Constants.GROUP_DATA_ID_INDEX_EX_BANNER);
         Boolean execute = transactionTemplate.execute(e -> {
             // 先删除历史数据
@@ -292,7 +292,7 @@ public class PageLayoutServiceImpl implements PageLayoutService {
             map.put("sort", data.getSort());
             map.put("status", data.getStatus());
             JSONObject jsonObject = JSONObject.parseObject(data.getValue());
-            List<SystemFormItemCheckRequest> systemFormItemCheckRequestList = CrmebUtil.jsonToListClass(jsonObject.getString("fields"), SystemFormItemCheckRequest.class);
+            List<SystemFormItemCheckRequest> systemFormItemCheckRequestList = OtterwoodUtil.jsonToListClass(jsonObject.getString("fields"), SystemFormItemCheckRequest.class);
             systemFormItemCheckRequestList.forEach(e -> {
                 map.put(e.getName(), e.getValue());
             });
@@ -327,11 +327,11 @@ public class PageLayoutServiceImpl implements PageLayoutService {
     public Boolean bottomNavigationSave(JSONObject jsonObject) {
         String isCustom = jsonObject.getString("isCustom");
         if (StrUtil.isBlank(isCustom)) {
-            throw new CrmebException("请选择是否自定义");
+            throw new OtterwoodException("请选择是否自定义");
         }
-        List<JSONObject> bottomNavigationList = CrmebUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("bottomNavigationList"));
+        List<JSONObject> bottomNavigationList = OtterwoodUtil.jsonArrayToJsonObjectList(jsonObject.getJSONArray("bottomNavigationList"));
         if (CollUtil.isEmpty(bottomNavigationList)) {
-            throw new CrmebException("请传入底部导航数据");
+            throw new OtterwoodException("请传入底部导航数据");
         }
         List<SystemGroupData> dataList = convertGroupData(bottomNavigationList, Constants.GROUP_DATA_ID_BOTTOM_NAVIGATION);
         return transactionTemplate.execute(e -> {

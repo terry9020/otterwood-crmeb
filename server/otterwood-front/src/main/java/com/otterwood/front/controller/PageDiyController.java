@@ -2,7 +2,7 @@ package com.otterwood.front.controller;
 
 
 import cn.hutool.core.util.ObjectUtil;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.response.page.PageDiyResponse;
 import com.otterwood.common.result.CommonResult;
 import com.otterwood.service.service.PageDiyService;
@@ -38,7 +38,7 @@ public class PageDiyController {
     @RequestMapping(value = "/info/{id}", method = RequestMethod.GET)
     public CommonResult<PageDiyResponse> info(@PathVariable(value = "id") Integer id){
         PageDiyResponse response = pageDiyService.getDiyPageByPageIdForFront(id);
-        if(ObjectUtil.isNull(response)) throw new CrmebException("未找到对应模版信息");
+        if(ObjectUtil.isNull(response)) throw new OtterwoodException("未找到对应模版信息");
         return CommonResult.success(response);
    }
 }

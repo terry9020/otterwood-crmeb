@@ -3,7 +3,7 @@ package com.otterwood.admin.config;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.otterwood.common.config.CrmebConfig;
+import com.otterwood.common.config.OtterwoodConfig;
 import com.otterwood.common.constants.SysConfigConstants;
 import com.otterwood.service.service.SystemConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class StartupRunner implements CommandLineRunner {
     @Autowired
     private SystemConfigService systemConfigService;
     @Autowired
-    private CrmebConfig crmebConfig;
+    private OtterwoodConfig otterwoodConfig;
 
 
 
@@ -35,9 +35,9 @@ public class StartupRunner implements CommandLineRunner {
 
     public void installStatistics() {
         try {
-            String version = crmebConfig.getVersion();
+            String version = otterwoodConfig.getVersion();
             if (StrUtil.isBlank(version) ) {
-                version = "CRMEB-JAVA-KY-EDIT";
+                version = "OTTERWOOD-JAVA-KY-EDIT";
             }
             String apiUrl = systemConfigService.getValueByKey(SysConfigConstants.CONFIG_KEY_API_URL);
             if (StrUtil.isBlank(apiUrl) || !(StrUtil.startWithIgnoreCase(apiUrl, "http"))) {
@@ -47,7 +47,7 @@ public class StartupRunner implements CommandLineRunner {
             map.put("host", apiUrl);
             map.put("version", version);
             map.put("https", "https");
-            String result = HttpUtil.post("https://shop.crmeb.net/index.php/admin/server.upgrade_api/updatewebinfo", JSONObject.toJSONString(map));
+            String result = HttpUtil.post("https://shop.otterwood.net/index.php/admin/server.upgrade_api/updatewebinfo", JSONObject.toJSONString(map));
 
         } catch (Exception e) {
             // 异步调用不应影响主流程

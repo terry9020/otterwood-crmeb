@@ -38,7 +38,7 @@
 				</block>
 				<!-- 无优惠券 -->
 				<view class='pictrue' v-else>
-					<image :src="urlDomain+'crmebimage/perset/staticImg/noCoupon.png'"></image>
+					<image :src="urlDomain+'otterwoodimage/perset/staticImg/noCoupon.png'"></image>
 				</view>
 			</view>
 			

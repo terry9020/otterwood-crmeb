@@ -13,7 +13,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.ProductConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.order.StoreOrder;
 import com.otterwood.common.model.product.StoreProduct;
 import com.otterwood.common.model.product.StoreProductReply;
@@ -26,8 +26,8 @@ import com.otterwood.common.request.StoreProductReplySearchRequest;
 import com.otterwood.common.response.ProductDetailReplyResponse;
 import com.otterwood.common.response.ProductReplyResponse;
 import com.otterwood.common.response.StoreProductReplyResponse;
-import com.otterwood.common.utils.CrmebUtil;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.vo.MyRecord;
 import com.otterwood.common.vo.StoreOrderInfoOldVo;
@@ -50,13 +50,13 @@ import java.util.stream.Collectors;
 /**
  * StoreProductReplyServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -113,7 +113,7 @@ public class StoreProductReplyServiceImpl extends ServiceImpl<StoreProductReplyD
             lambdaQueryWrapper.like(StoreProductReply::getNickname,request.getNickname());
         }
         if (StringUtils.isNotBlank(request.getDateLimit())) {
-            DateLimitUtilVo dateLimit = CrmebDateUtil.getDateLimit(request.getDateLimit());
+            DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(request.getDateLimit());
             lambdaQueryWrapper.between(StoreProductReply::getCreateTime, dateLimit.getStartTime(), dateLimit.getEndTime());
         }
         lambdaQueryWrapper.orderByDesc(StoreProductReply::getId);
@@ -125,7 +125,7 @@ public class StoreProductReplyServiceImpl extends ServiceImpl<StoreProductReplyD
             BeanUtils.copyProperties(productReply, productReplyResponse);
             StoreProduct storeProduct = storeProductService.getById(productReply.getProductId());
             productReplyResponse.setStoreProduct(storeProduct);
-            productReplyResponse.setPics(CrmebUtil.stringToArrayStr(productReply.getPics()));
+            productReplyResponse.setPics(OtterwoodUtil.stringToArrayStr(productReply.getPics()));
             dataResList.add(productReplyResponse);
         }
         return CommonPage.copyPageInfo(pageStoreReply, dataResList);
@@ -163,7 +163,7 @@ public class StoreProductReplyServiceImpl extends ServiceImpl<StoreProductReplyD
         User user = userService.getInfoException();
         StoreOrder storeOrder = storeOrderService.getByOderId(request.getOrderNo());
         if (ObjectUtil.isNull(storeOrder) || !storeOrder.getUid().equals(user.getUid())) {
-            throw new CrmebException("该订单不存在");
+            throw new OtterwoodException("该订单不存在");
         }
         StoreProductReply storeProductReply = new StoreProductReply();
         BeanUtils.copyProperties(request, storeProductReply);
@@ -185,7 +185,7 @@ public class StoreProductReplyServiceImpl extends ServiceImpl<StoreProductReplyD
             return Boolean.TRUE;
         });
         if (!execute) {
-            throw new CrmebException("评价订单失败");
+            throw new OtterwoodException("评价订单失败");
         }
         return execute;
     }
@@ -207,7 +207,7 @@ public class StoreProductReplyServiceImpl extends ServiceImpl<StoreProductReplyD
             storeProductReply.setPics(systemAttachmentService.clearPrefix(ArrayUtils.toString(pics)));
         }
         storeProductReply.setAvatar(systemAttachmentService.clearPrefix(storeProductReply.getAvatar()));
-        storeProductReply.setUnique(CrmebUtil.randomCount(11111,9999)+"");
+        storeProductReply.setUnique(OtterwoodUtil.randomCount(11111,9999)+"");
         return save(storeProductReply);
     }
 
@@ -299,7 +299,7 @@ public class StoreProductReplyServiceImpl extends ServiceImpl<StoreProductReplyD
         ProductReplyResponse productReplyResponse = new ProductReplyResponse();
         BeanUtils.copyProperties(storeProductReply, productReplyResponse);
         // 评价图
-        productReplyResponse.setPics(CrmebUtil.stringToArrayStr(storeProductReply.getPics()));
+        productReplyResponse.setPics(OtterwoodUtil.stringToArrayStr(storeProductReply.getPics()));
         // 昵称
         String nickname = storeProductReply.getNickname();
         if (StrUtil.isNotBlank(nickname)) {
@@ -360,7 +360,7 @@ public class StoreProductReplyServiceImpl extends ServiceImpl<StoreProductReplyD
             ProductReplyResponse productReplyResponse = new ProductReplyResponse();
             BeanUtils.copyProperties(productReply, productReplyResponse);
             // 评价图
-            productReplyResponse.setPics(CrmebUtil.stringToArrayStr(productReply.getPics()));
+            productReplyResponse.setPics(OtterwoodUtil.stringToArrayStr(productReply.getPics()));
             // 昵称
             String nickname = productReply.getNickname();
             if (StrUtil.isNotBlank(nickname)) {
@@ -405,7 +405,7 @@ public class StoreProductReplyServiceImpl extends ServiceImpl<StoreProductReplyD
         LambdaUpdateWrapper<StoreProductReply> lup = new LambdaUpdateWrapper<>();
         lup.eq(StoreProductReply::getId, request.getIds());
         lup.set(StoreProductReply::getMerchantReplyContent, request.getMerchantReplyContent());
-        lup.set(StoreProductReply::getMerchantReplyTime, CrmebDateUtil.getNowTime());
+        lup.set(StoreProductReply::getMerchantReplyTime, OtterwoodDateUtil.getNowTime());
         lup.set(StoreProductReply::getIsReply, true);
         return update(lup);
     }
@@ -488,7 +488,7 @@ public class StoreProductReplyServiceImpl extends ServiceImpl<StoreProductReplyD
         //查看商品信息
         List<StoreOrderInfoOldVo> orderInfoVoList = storeOrderInfoService.getOrderListByOrderId(storeProductReply.getOid());
         if (null == orderInfoVoList || orderInfoVoList.size() < 1) {
-            throw new CrmebException("没有找到商品信息");
+            throw new OtterwoodException("没有找到商品信息");
         }
 
         boolean findResult = false;
@@ -506,13 +506,13 @@ public class StoreProductReplyServiceImpl extends ServiceImpl<StoreProductReplyD
         }
 
         if (!findResult) {
-            throw new CrmebException("没有找到商品信息");
+            throw new OtterwoodException("没有找到商品信息");
         }
 
         //商品是否已评价
         Integer replyCount = getReplyCountByEntity(storeProductReply, false);
         if (replyCount > 0) {
-            throw new CrmebException("该商品已评价");
+            throw new OtterwoodException("该商品已评价");
         }
 
         return orderInfoVoList.size();

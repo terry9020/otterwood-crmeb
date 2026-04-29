@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.PayConstants;
 import com.otterwood.common.constants.SysConfigConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.order.StoreOrder;
 import com.otterwood.common.vo.StoreOrderInfoOldVo;
 import com.otterwood.service.service.StoreOrderInfoService;
@@ -19,13 +19,13 @@ import java.util.List;
 /**
  * 订单工具类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -91,7 +91,7 @@ public class OrderUtils {
 
         if(null == storeOrder || !userId.equals(storeOrder.getUid())){
             //订单号错误
-            throw new CrmebException("没有找到相关订单信息!");
+            throw new OtterwoodException("没有找到相关订单信息!");
         }
 
         return storeOrder;

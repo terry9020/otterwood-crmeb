@@ -13,7 +13,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.ProductConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.combination.StoreCombination;
 import com.otterwood.common.model.combination.StorePink;
 import com.otterwood.common.model.order.StoreOrder;
@@ -26,8 +26,8 @@ import com.otterwood.common.model.user.User;
 import com.otterwood.common.page.CommonPage;
 import com.otterwood.common.request.*;
 import com.otterwood.common.response.*;
-import com.otterwood.common.utils.CrmebUtil;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.service.dao.StoreCombinationDao;
 import com.otterwood.service.service.*;
@@ -45,13 +45,13 @@ import java.util.stream.Collectors;
 /**
  * StoreCombinationService 实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -149,7 +149,7 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
                 combinationResponse.setCountPeopleAll(pinkList.size());
                 combinationResponse.setCountPeoplePink(successTeam.size());
             }
-            combinationResponse.setStopTimeStr(CrmebDateUtil.timestamp2DateStr(combination.getStopTime(), Constants.DATE_FORMAT_DATE));
+            combinationResponse.setStopTimeStr(OtterwoodDateUtil.timestamp2DateStr(combination.getStopTime(), Constants.DATE_FORMAT_DATE));
             return combinationResponse;
         }).collect(Collectors.toList());
 
@@ -166,7 +166,7 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
     public Boolean saveCombination(StoreCombinationRequest request) {
         if (!request.getSpecType()) {
             if (request.getAttrValue().size() > 1) {
-                throw new CrmebException("单规格商品属性值不能大于1");
+                throw new OtterwoodException("单规格商品属性值不能大于1");
             }
         }
         // 过滤掉checked=false的数据
@@ -175,9 +175,9 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
         StoreCombination storeCombination = new StoreCombination();
         BeanUtils.copyProperties(request, storeCombination);
         // 校验结束时间
-        Long stopTime = CrmebDateUtil.dateStr2Timestamp(request.getStopTime(), Constants.DATE_TIME_TYPE_END);
+        Long stopTime = OtterwoodDateUtil.dateStr2Timestamp(request.getStopTime(), Constants.DATE_TIME_TYPE_END);
         if (stopTime <= System.currentTimeMillis()) {
-            throw new CrmebException("活动结束时间不能小于当前时间");
+            throw new OtterwoodException("活动结束时间不能小于当前时间");
         }
 
         storeCombination.setId(null);
@@ -185,7 +185,7 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
         storeCombination.setImage(systemAttachmentService.clearPrefix(request.getImage()));
         storeCombination.setImages(systemAttachmentService.clearPrefix(request.getImages()));
         // 活动开始结束时间
-        storeCombination.setStartTime(CrmebDateUtil.dateStr2Timestamp(request.getStartTime(), Constants.DATE_TIME_TYPE_BEGIN));
+        storeCombination.setStartTime(OtterwoodDateUtil.dateStr2Timestamp(request.getStartTime(), Constants.DATE_TIME_TYPE_BEGIN));
         storeCombination.setStopTime(stopTime);
         storeCombination.setAddTime(System.currentTimeMillis());
         storeCombination.setSales(0);
@@ -251,7 +251,7 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
         StoreCombination combination = getById(id);
         long timeMillis = System.currentTimeMillis();
         if (combination.getIsShow().equals(true) && combination.getStartTime() <= timeMillis && timeMillis <= combination.getStopTime()) {
-            throw new CrmebException("活动开启中，商品不支持删除");
+            throw new OtterwoodException("活动开启中，商品不支持删除");
         }
 
         StoreCombination storeCombination = new StoreCombination();
@@ -268,15 +268,15 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
     @Override
     public Boolean updateCombination(StoreCombinationRequest request) {
         if (ObjectUtil.isNull(request.getId())) {
-            throw new CrmebException("拼团商品id不能为空");
+            throw new OtterwoodException("拼团商品id不能为空");
         }
         StoreCombination existCombination = getById(request.getId());
         if (ObjectUtil.isNull(existCombination) || existCombination.getIsDel()) {
-            throw new CrmebException("拼团商品不存在");
+            throw new OtterwoodException("拼团商品不存在");
         }
         long timeMillis = System.currentTimeMillis();
         if (existCombination.getIsShow().equals(true) && existCombination.getStartTime() <= timeMillis && timeMillis <= existCombination.getStopTime()) {
-            throw new CrmebException("活动开启中，商品不支持修改");
+            throw new OtterwoodException("活动开启中，商品不支持修改");
         }
 
         StoreCombination storeCombination = new StoreCombination();
@@ -285,8 +285,8 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
         storeCombination.setImage(systemAttachmentService.clearPrefix(request.getImage()));
         storeCombination.setImages(systemAttachmentService.clearPrefix(request.getImages()));
         // 活动开始结束时间
-        storeCombination.setStartTime(CrmebDateUtil.dateStr2Timestamp(request.getStartTime(), Constants.DATE_TIME_TYPE_BEGIN));
-        storeCombination.setStopTime(CrmebDateUtil.dateStr2Timestamp(request.getStopTime(), Constants.DATE_TIME_TYPE_END));
+        storeCombination.setStartTime(OtterwoodDateUtil.dateStr2Timestamp(request.getStartTime(), Constants.DATE_TIME_TYPE_BEGIN));
+        storeCombination.setStopTime(OtterwoodDateUtil.dateStr2Timestamp(request.getStopTime(), Constants.DATE_TIME_TYPE_END));
 
         List<StoreProductAttrValueAddRequest> attrValueAddRequestList = request.getAttrValue();
         // 计算价格
@@ -384,7 +384,7 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
     public StoreProductInfoResponse getAdminDetail(Integer id) {
         StoreCombination storeCombination = dao.selectById(id);
         if (ObjectUtil.isNull(storeCombination) || storeCombination.getIsDel()) {
-            throw new CrmebException("未找到对应商品信息");
+            throw new OtterwoodException("未找到对应商品信息");
         }
         StoreProductInfoResponse storeProductResponse = new StoreProductInfoResponse();
         BeanUtils.copyProperties(storeCombination, storeProductResponse);
@@ -442,13 +442,13 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
     public Boolean updateCombinationShow(Integer id, Boolean isShow) {
         StoreCombination temp = getById(id);
         if (ObjectUtil.isNull(temp) || temp.getIsDel()) {
-            throw new CrmebException("拼团商品不存在");
+            throw new OtterwoodException("拼团商品不存在");
         }
         if (isShow) {
             // 判断商品是否存在
             StoreProduct product = storeProductService.getById(temp.getProductId());
             if (ObjectUtil.isNull(product)) {
-                throw new CrmebException("关联的商品已删除，无法开启活动");
+                throw new OtterwoodException("关联的商品已删除，无法开启活动");
             }
         }
 
@@ -514,10 +514,10 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
         CombinationDetailResponse detailResponse = new CombinationDetailResponse();
         StoreCombination storeCombination = getById(comId);
         if (ObjectUtil.isNull(storeCombination) || storeCombination.getIsDel()) {
-            throw new CrmebException("对应拼团商品不存在");
+            throw new OtterwoodException("对应拼团商品不存在");
         }
         if (!storeCombination.getIsShow()) {
-            throw new CrmebException("拼团商品已下架");
+            throw new OtterwoodException("拼团商品已下架");
         }
         CombinationDetailH5Response infoResponse = new CombinationDetailH5Response();
         BeanUtils.copyProperties(storeCombination, infoResponse);
@@ -667,16 +667,16 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
         int pinkBool = 0;//判断拼团是否成功  0未成功 1成功
 
         StorePink teamPink = storePinkService.getById(pinkId);
-        if (ObjectUtil.isNull(teamPink) || teamPink.getIsRefund()) throw new CrmebException("对应的拼团不存在");
+        if (ObjectUtil.isNull(teamPink) || teamPink.getIsRefund()) throw new OtterwoodException("对应的拼团不存在");
         StoreCombination storeCombination = getById(teamPink.getCid());
-        if (ObjectUtil.isNull(storeCombination) || storeCombination.getIsDel()) throw new CrmebException("对应拼团商品不存在");
+        if (ObjectUtil.isNull(storeCombination) || storeCombination.getIsDel()) throw new OtterwoodException("对应拼团商品不存在");
 
         // 判断拼团活动时效
         if (!storeCombination.getIsShow()) {
-            throw new CrmebException("拼团活动已结束");
+            throw new OtterwoodException("拼团活动已结束");
         }
         if (System.currentTimeMillis() > storeCombination.getStopTime()) {
-            throw new CrmebException("拼团活动已结束");
+            throw new OtterwoodException("拼团活动已结束");
         }
 
         User user = userService.getInfo();
@@ -823,27 +823,27 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
     @Override
     public Boolean removePink(StorePinkRequest storePinkRequest) {
         StorePink userPink = storePinkService.getById(storePinkRequest.getId());
-        if (ObjectUtil.isNull(userPink)) throw new CrmebException("未查到拼团信息，无法取消");
-        if (userPink.getIsRefund()) throw new CrmebException("拼团订单已退款");
+        if (ObjectUtil.isNull(userPink)) throw new OtterwoodException("未查到拼团信息，无法取消");
+        if (userPink.getIsRefund()) throw new OtterwoodException("拼团订单已退款");
         // 获取是否拼团成功
         if (userPink.getStatus() == 2) {
-            throw new CrmebException("拼团已完成，无法取消");
+            throw new OtterwoodException("拼团已完成，无法取消");
         }
         Integer kid = userPink.getKId() > 0 ? userPink.getKId() : userPink.getId();
         Integer count = storePinkService.getCountByKid(kid);
         if (count.equals(userPink.getPeople())) {
             // 拼团完成操作
             storePinkService.pinkSuccess(kid);
-            throw new CrmebException("拼团已完成，无法取消");
+            throw new OtterwoodException("拼团已完成，无法取消");
         }
         if (userPink.getStatus() == 3) {
-            throw new CrmebException("拼团已申请取消");
+            throw new OtterwoodException("拼团已申请取消");
         }
 
         StoreOrder order = storeOrderService.getByOderId(userPink.getOrderId());
-        if (ObjectUtil.isNull(order) || order.getIsDel()) throw new CrmebException("拼团订单不存在");
+        if (ObjectUtil.isNull(order) || order.getIsDel()) throw new OtterwoodException("拼团订单不存在");
         if (order.getStatus() == -1 && order.getRefundStatus() != 0) {
-            throw new CrmebException("拼团订单已进入退款流程");
+            throw new OtterwoodException("拼团订单已进入退款流程");
         }
 
         // 订单申请退款
@@ -853,7 +853,7 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
         refundRequest.setText("拼团订单取消，申请退款");
         refundRequest.setExplain("用户取消拼团订单，申请退款");
         boolean apply = orderService.refundApply(refundRequest);
-        if (!apply) throw new CrmebException("订单申请退款失败");
+        if (!apply) throw new OtterwoodException("订单申请退款失败");
 
         // 拼团改为未完成
         userPink.setStatus(3).setStopTime(System.currentTimeMillis());
@@ -949,7 +949,7 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
         lqw.eq(StoreCombination::getIsDel, false);
         lqw.eq(StoreCombination::getIsShow, true);
         StoreCombination storeCombination = dao.selectOne(lqw);
-        if (ObjectUtil.isNull(storeCombination)) throw new CrmebException("拼团商品不存在或未开启");
+        if (ObjectUtil.isNull(storeCombination)) throw new OtterwoodException("拼团商品不存在或未开启");
         return storeCombination;
     }
 
@@ -978,7 +978,7 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
         updateWrapper.eq("id", id);
         boolean update = update(updateWrapper);
         if (!update) {
-            throw new CrmebException("更新拼团商品库存失败,商品id = " + id);
+            throw new OtterwoodException("更新拼团商品库存失败,商品id = " + id);
         }
         return update;
     }
@@ -1018,7 +1018,7 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
             return null;
         }
         combinationList.forEach(e -> {
-            int percentIntVal = CrmebUtil.percentInstanceIntVal(e.getQuota(), e.getQuotaShow());
+            int percentIntVal = OtterwoodUtil.percentInstanceIntVal(e.getQuota(), e.getQuotaShow());
             e.setQuotaPercent(percentIntVal);
         });
 

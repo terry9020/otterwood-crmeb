@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.otterwood.common.constants.DateConstants;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -73,20 +73,20 @@ public class ActivityStyleResponse {
      */
     public void setRunningStatus(Date starttime, Date endtime, Date currenttime) {
         // isEnd = -1 = 已结束
-        int isEnd = CrmebDateUtil.compareDate(CrmebDateUtil.dateToStr(endtime, DateConstants.DATE_FORMAT),
-                CrmebDateUtil.dateToStr(currenttime, DateConstants.DATE_FORMAT),
+        int isEnd = OtterwoodDateUtil.compareDate(OtterwoodDateUtil.dateToStr(endtime, DateConstants.DATE_FORMAT),
+                OtterwoodDateUtil.dateToStr(currenttime, DateConstants.DATE_FORMAT),
                 DateConstants.DATE_FORMAT);
         // isIng1 = 1 和下面并且链接
-        int isIng1 = CrmebDateUtil.compareDate(CrmebDateUtil.dateToStr(endtime, DateConstants.DATE_FORMAT),
-                CrmebDateUtil.dateToStr(currenttime, DateConstants.DATE_FORMAT),
+        int isIng1 = OtterwoodDateUtil.compareDate(OtterwoodDateUtil.dateToStr(endtime, DateConstants.DATE_FORMAT),
+                OtterwoodDateUtil.dateToStr(currenttime, DateConstants.DATE_FORMAT),
                 DateConstants.DATE_FORMAT);
         // isIng2 = -1 和上面并且链接
-        int isIng2 = CrmebDateUtil.compareDate(CrmebDateUtil.dateToStr(starttime, DateConstants.DATE_FORMAT),
-                CrmebDateUtil.dateToStr(currenttime, DateConstants.DATE_FORMAT),
+        int isIng2 = OtterwoodDateUtil.compareDate(OtterwoodDateUtil.dateToStr(starttime, DateConstants.DATE_FORMAT),
+                OtterwoodDateUtil.dateToStr(currenttime, DateConstants.DATE_FORMAT),
                 DateConstants.DATE_FORMAT);
         // isPer = 1 = 未开始
-        int isPer = CrmebDateUtil.compareDate(CrmebDateUtil.dateToStr(starttime, DateConstants.DATE_FORMAT),
-                CrmebDateUtil.dateToStr(currenttime, DateConstants.DATE_FORMAT),
+        int isPer = OtterwoodDateUtil.compareDate(OtterwoodDateUtil.dateToStr(starttime, DateConstants.DATE_FORMAT),
+                OtterwoodDateUtil.dateToStr(currenttime, DateConstants.DATE_FORMAT),
                 DateConstants.DATE_FORMAT);
         Integer tempRunningStatus = null;
         if(isEnd == -1){

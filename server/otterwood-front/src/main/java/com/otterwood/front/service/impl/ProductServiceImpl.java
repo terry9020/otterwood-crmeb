@@ -12,7 +12,7 @@ import com.otterwood.common.response.*;
 import com.otterwood.common.vo.MyRecord;
 import com.otterwood.common.request.PageParamRequest;
 import com.github.pagehelper.PageInfo;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.vo.CategoryTreeVo;
 import com.otterwood.common.model.record.UserVisitRecord;
@@ -38,13 +38,13 @@ import java.util.stream.Collectors;
 /**
 * IndexServiceImpl 接口实现
 *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
 */
 @Service
@@ -128,7 +128,7 @@ public class ProductServiceImpl implements ProductService {
         List<IndexProductResponse> productResponseArrayList = new ArrayList<>();
         for (StoreProduct storeProduct : storeProductList) {
             IndexProductResponse productResponse = new IndexProductResponse();
-            List<Integer> activityList = CrmebUtil.stringToArrayInt(storeProduct.getActivity());
+            List<Integer> activityList = OtterwoodUtil.stringToArrayInt(storeProduct.getActivity());
             // 活动类型默认：直接跳过
             if (activityList.get(0).equals(Constants.PRODUCT_TYPE_NORMAL)) {
                 BeanUtils.copyProperties(storeProduct, productResponse);
@@ -393,7 +393,7 @@ public class ProductServiceImpl implements ProductService {
         List<IndexProductResponse> productResponseArrayList = new ArrayList<>();
         for (StoreProduct storeProduct : storeProductList) {
             IndexProductResponse productResponse = new IndexProductResponse();
-            List<Integer> activityList = CrmebUtil.stringToArrayInt(storeProduct.getActivity());
+            List<Integer> activityList = OtterwoodUtil.stringToArrayInt(storeProduct.getActivity());
             // 活动类型默认：直接跳过
             if (activityList.get(0).equals(Constants.PRODUCT_TYPE_NORMAL)) {
                 BeanUtils.copyProperties(storeProduct, productResponse);
@@ -469,7 +469,7 @@ public class ProductServiceImpl implements ProductService {
         List<IndexProductResponse> productResponseArrayList = new ArrayList<>();
         for (StoreProduct storeProduct : storeProductList) {
             IndexProductResponse productResponse = new IndexProductResponse();
-            List<Integer> activityList = CrmebUtil.stringToArrayInt(storeProduct.getActivity());
+            List<Integer> activityList = OtterwoodUtil.stringToArrayInt(storeProduct.getActivity());
             // 活动类型默认：直接跳过
             if (activityList.get(0).equals(Constants.PRODUCT_TYPE_NORMAL)) {
                 BeanUtils.copyProperties(storeProduct, productResponse);

@@ -1,8 +1,8 @@
 {
-  "name": "crmeb-java-webpc-admin",
+  "name": "otterwood-java-webpc-admin",
   "version": "4.2.1",
-  "description": "Java mall free open source CRMEB mall JAVA version, SpringBoot + Maven + Swagger + Mybatis Plus + Redis + Uniapp +Vue+elementUI Including mobile terminal, applet, PC background, Api interface; products, users, shopping carts, orders, points, Modules such as coupons, marketing, balance, permissions, roles, system settings, combined data, and drag-and-drop forms have greatly reduced the cost of second-opening.",
-  "author": "CRMEB",
+  "description": "Java mall free open source OTTERWOOD mall JAVA version, SpringBoot + Maven + Swagger + Mybatis Plus + Redis + Uniapp +Vue+elementUI Including mobile terminal, applet, PC background, Api interface; products, users, shopping carts, orders, points, Modules such as coupons, marketing, balance, permissions, roles, system settings, combined data, and drag-and-drop forms have greatly reduced the cost of second-opening.",
+  "author": "OTTERWOOD",
   "license": "MIT",
   "scripts": {
     "dev": "vue-cli-service serve --open",
@@ -29,14 +29,14 @@
     ]
   },
   "keywords": [
-    "CRMEB Java"
+    "OTTERWOOD Java"
   ],
   "repository": {
     "type": "gitee",
-    "url": "https://gitee.com/ZhongBangKeJi/crmeb_java"
+    "url": "https://gitee.com/ZhongBangKeJi/otterwood_java"
   },
   "bugs": {
-    "url": "https://gitee.com/ZhongBangKeJi/crmeb_java/issues"
+    "url": "https://gitee.com/ZhongBangKeJi/otterwood_java/issues"
   },
   "dependencies": {
     "@babel/parser": "^7.9.6",

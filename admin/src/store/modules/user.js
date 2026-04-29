@@ -1,11 +1,11 @@
 // +----------------------------------------------------------------------
-// | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+// | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2024 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2024 https://www.otterwood.com All rights reserved.
 // +----------------------------------------------------------------------
-// | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+// | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
 // +----------------------------------------------------------------------
-// | Author: CRMEB Team <admin@crmeb.com>
+// | Author: OTTERWOOD Team <admin@otterwood.com>
 // +----------------------------------------------------------------------
 
 import { login, logout, getInfo } from '@/api/user';
@@ -132,8 +132,8 @@ const actions = {
           // commit('SET_ROLES', ['admin'])
           commit('SET_NAME', account);
           // commit('SET_AVATAR', avatar)
-          commit('SET_AVATAR', 'http://kaifa.crmeb.net/system/images/admin_logo.png');
-          commit('SET_INTRODUCTION', 'CRMEB admin');
+          commit('SET_AVATAR', 'http://kaifa.otterwood.net/system/images/admin_logo.png');
+          commit('SET_INTRODUCTION', 'OTTERWOOD admin');
           commit('SET_PERMISSIONS', data.permissionsList); //权限标识
           resolve(data);
         })

@@ -6,7 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.SysConfigConstants;
 import com.otterwood.common.constants.UploadConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.result.CommonResultCode;
 import com.otterwood.common.vo.CloudVo;
 import com.otterwood.common.vo.FileResultVo;
@@ -19,11 +19,11 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
-import com.otterwood.common.utils.CrmebUtil;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.UploadUtil;
 import com.otterwood.common.model.system.SystemAttachment;
-import com.otterwood.common.config.CrmebConfig;
+import com.otterwood.common.config.OtterwoodConfig;
 import com.otterwood.service.service.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,13 +41,13 @@ import java.util.List;
 /**
  * UploadServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -71,7 +71,7 @@ public class UploadServiceImpl implements UploadService {
     private CosService cosService;
 
     @Autowired
-    CrmebConfig crmebConfig;
+    OtterwoodConfig otterwoodConfig;
 
     @Autowired
     private JdCloudService jdCloudService;
@@ -90,7 +90,7 @@ public class UploadServiceImpl implements UploadService {
             fileResultVo = commonUpload(multipartFile, model, pid, UploadConstants.UPLOAD_FILE_KEYWORD);
         } catch (IOException e) {
             logger.error("图片上传IO异常，{}", e.getMessage());
-            throw new CrmebException("图片上传 IO异常");
+            throw new OtterwoodException("图片上传 IO异常");
         }
         return fileResultVo;
     }
@@ -110,7 +110,7 @@ public class UploadServiceImpl implements UploadService {
             fileResultVo = commonUpload(multipartFile, model, pid, UploadConstants.UPLOAD_FILE_KEYWORD);
         } catch (IOException e) {
             logger.error("文件上传IO异常，{}", e.getMessage());
-            throw new CrmebException("文件上传 IO异常");
+            throw new OtterwoodException("文件上传 IO异常");
         }
         return fileResultVo;
     }
@@ -129,7 +129,7 @@ public class UploadServiceImpl implements UploadService {
             if (StrUtil.isNotBlank(contentType)) {
                 extName = contentType.split("/")[1];
             } else {
-                throw new CrmebException(CommonResultCode.VALIDATE_FAILED, "文件类型未定义，无法上传...");
+                throw new OtterwoodException(CommonResultCode.VALIDATE_FAILED, "文件类型未定义，无法上传...");
             }
         }
 
@@ -137,21 +137,21 @@ public class UploadServiceImpl implements UploadService {
         // 判断文件的后缀名是否符合规则
         if (StrUtil.isNotBlank(extStr)) {
             // 切割文件扩展名
-            List<String> extensionList = CrmebUtil.stringToArrayStr(extStr);
+            List<String> extensionList = OtterwoodUtil.stringToArrayStr(extStr);
             if (CollUtil.isNotEmpty(extensionList)) {
                 //判断
                 if (!extensionList.contains(extName)) {
-                    throw new CrmebException(CommonResultCode.VALIDATE_FAILED, "上载文件类型只能为：" + extStr);
+                    throw new OtterwoodException(CommonResultCode.VALIDATE_FAILED, "上载文件类型只能为：" + extStr);
                 }
             } else {
-                throw new CrmebException(CommonResultCode.VALIDATE_FAILED, "上载文件类型只能为：" + extStr);
+                throw new OtterwoodException(CommonResultCode.VALIDATE_FAILED, "上载文件类型只能为：" + extStr);
             }
         }
         // 文件大小验证
         int size = Integer.parseInt(systemConfigService.getValueByKey(fileType.equals(UploadConstants.UPLOAD_AFTER_FILE_KEYWORD) ? SysConfigConstants.UPLOAD_FILE_MAX_SIZE_CONFIG_KEY : SysConfigConstants.UPLOAD_IMAGE_MAX_SIZE_CONFIG_KEY));
         String fs = String.format("%.2f", fileSize);
         if (fileSize > size) {
-            throw new CrmebException(CommonResultCode.VALIDATE_FAILED, StrUtil.format("最大允许上传 {} MB文件，当前文件大小为 {} MB", size, fs));
+            throw new OtterwoodException(CommonResultCode.VALIDATE_FAILED, StrUtil.format("最大允许上传 {} MB文件，当前文件大小为 {} MB", size, fs));
         }
         return extName;
     }
@@ -169,7 +169,7 @@ public class UploadServiceImpl implements UploadService {
      */
     private FileResultVo commonUpload(MultipartFile multipartFile, String model, Integer pid, String fileType) throws IOException {
         if (ObjectUtil.isNull(multipartFile) || multipartFile.isEmpty()) {
-            throw new CrmebException(CommonResultCode.VALIDATE_FAILED, "上载的文件对象不存在...");
+            throw new OtterwoodException(CommonResultCode.VALIDATE_FAILED, "上载的文件对象不存在...");
         }
         // 校验
         String fileName = multipartFile.getOriginalFilename();
@@ -181,7 +181,7 @@ public class UploadServiceImpl implements UploadService {
         }
 
         // 服务器存储地址
-        String rootPath = crmebConfig.getImagePath().trim();
+        String rootPath = otterwoodConfig.getImagePath().trim();
         // 模块
         String modelPath = "public/" + model + "/";
         // 类型
@@ -190,7 +190,7 @@ public class UploadServiceImpl implements UploadService {
         // 变更文件名
         String newFileName = UploadUtil.fileName(extName);
         // 创建目标文件的名称，规则：  子目录/年/月/日.后缀名
-        String webPath = type + modelPath + CrmebDateUtil.nowDate("yyyy/MM/dd") + "/";
+        String webPath = type + modelPath + OtterwoodDateUtil.nowDate("yyyy/MM/dd") + "/";
         // 文件分隔符转化为当前系统的格式
         String destPath = FilenameUtils.separatorsToSystem(rootPath + webPath) + newFileName;
         // 创建文件
@@ -260,7 +260,7 @@ public class UploadServiceImpl implements UploadService {
                     Auth auth = Auth.create(cloudVo.getAccessKey(), cloudVo.getSecretKey());
                     String upToken = auth.uploadToken(cloudVo.getBucketName());
 
-                    String webPathQn = crmebConfig.getImagePath();
+                    String webPathQn = otterwoodConfig.getImagePath();
                     qiNiuService.uploadFile(uploadManager, upToken,
                             systemAttachment.getSattDir(), webPathQn + "/" + systemAttachment.getSattDir(), file);   //异步处理
                 } catch (Exception e) {
@@ -275,7 +275,7 @@ public class UploadServiceImpl implements UploadService {
                 cloudVo.setBucketName(systemConfigService.getValueByKeyException(SysConfigConstants.CONFIG_AL_STORAGE_NAME));
                 cloudVo.setRegion(systemConfigService.getValueByKeyException(SysConfigConstants.CONFIG_AL_STORAGE_REGION));
                 try {
-                    String webPathAl = crmebConfig.getImagePath();
+                    String webPathAl = otterwoodConfig.getImagePath();
                     ossService.upload(cloudVo, systemAttachment.getSattDir(), webPathAl + "/" + systemAttachment.getSattDir(),
                             file);
                 } catch (Exception e) {
@@ -296,7 +296,7 @@ public class UploadServiceImpl implements UploadService {
                 // 3 生成 cos 客户端。
                 COSClient cosClient = new COSClient(cred, clientConfig);
                 try {
-                    String webPathTx = crmebConfig.getImagePath();
+                    String webPathTx = otterwoodConfig.getImagePath();
                     cosService.uploadFile(cloudVo, systemAttachment.getSattDir(), webPathTx + "/" + systemAttachment.getSattDir(), systemAttachment.getAttId(), cosClient);
                 } catch (Exception e) {
                     logger.error("AsyncServiceImpl.cos.fail " + e.getMessage());
@@ -308,7 +308,7 @@ public class UploadServiceImpl implements UploadService {
                 systemAttachment.setImageType(5);
                 String bucket = systemConfigService.getValueByKeyException(SysConfigConstants.CONFIG_JD_BUCKET_NAME);
                 try {
-                    String webPathTx = crmebConfig.getImagePath();
+                    String webPathTx = otterwoodConfig.getImagePath();
                     jdCloudService.uploadFile(systemAttachment.getSattDir(), webPathTx + "/" + systemAttachment.getSattDir(), bucket);
                 } catch (Exception e) {
                     logger.error("AsyncServiceImpl.cos.fail " + e.getMessage());

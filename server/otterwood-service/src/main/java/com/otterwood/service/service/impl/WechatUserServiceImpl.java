@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 /**
  * 微信用户表 服务实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -44,7 +44,7 @@ public class WechatUserServiceImpl implements WechatUserService {
 //        //检查文章是否存在
 //        Article article = articleService.getById(newsId);
 //        if(article == null){
-//            throw new CrmebException("你选择的文章不存在！");
+//            throw new OtterwoodException("你选择的文章不存在！");
 //        }
 //
 ////        {
@@ -55,16 +55,16 @@ public class WechatUserServiceImpl implements WechatUserService {
 ////                    {
 ////                        "title":"Happy Day",
 ////                        "description":"Is Really A Happy Day",
-////                        "url":"http://front.java.crmeb.net:20002/articleManager",
+////                        "url":"http://front.java.otterwood.net:20002/articleManager",
 ////                        "picurl":"https://wuht-1300909283.cos.ap-chengdu.myqcloud.com/image/wechat/2020/06/16/003b595d6cc544dd981d3468d5caafa38p24bq7sa7.jpg"
 ////                    }
 ////                ]
 ////            }
 ////        }
-//        List<Integer> userIdList = CrmebUtil.stringToArray(userId);
+//        List<Integer> userIdList = OtterwoodUtil.stringToArray(userId);
 //        List<UserToken> userList = userTokenService.getList(userIdList);
 //        if(null == userList){
-//            throw new CrmebException("没有用户关注微信号");
+//            throw new OtterwoodException("没有用户关注微信号");
 //        }
 //
 //        HashMap<String, Object> map = new HashMap<>();

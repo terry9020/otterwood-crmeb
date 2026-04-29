@@ -6,7 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.otterwood.common.constants.Constants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.utils.RestTemplateUtil;
 import com.otterwood.common.vo.LogisticsResultListVo;
@@ -28,13 +28,13 @@ import java.util.concurrent.TimeUnit;
 /**
 * ExpressServiceImpl 接口实现
 *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
 */
 @Data
@@ -163,7 +163,7 @@ public class LogisticsServiceImpl implements LogisticService {
      */
     private void checkResult(JSONObject data) {
         if (!data.getString("status").equals("0")){
-            throw new CrmebException(data.getString("msg"));
+            throw new OtterwoodException(data.getString("msg"));
         }
     }
 }

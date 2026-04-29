@@ -1,6 +1,6 @@
 package com.otterwood.admin.filter;
 
-import com.otterwood.common.config.CrmebConfig;
+import com.otterwood.common.config.OtterwoodConfig;
 import com.otterwood.common.constants.UploadConstants;
 import com.otterwood.common.utils.SpringUtil;
 import com.otterwood.service.service.SystemAttachmentService;
@@ -10,18 +10,18 @@ import org.springframework.util.PathMatcher;
 /**
  * response路径处理
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 public class ResponseRouter {
 
-    public String filter(String data, String path, CrmebConfig crmebConfig) {
+    public String filter(String data, String path, OtterwoodConfig otterwoodConfig) {
         boolean result = un().contains(path);
         if (result) {
             return data;
@@ -29,7 +29,7 @@ public class ResponseRouter {
 
         //系统不用过滤的URL，针对数据而非token
         PathMatcher pathMatcher = new AntPathMatcher();
-        for (String configUrl : crmebConfig.getIgnored()) {
+        for (String configUrl : otterwoodConfig.getIgnored()) {
             if(pathMatcher.match(path, configUrl)){
                 return data;
             }

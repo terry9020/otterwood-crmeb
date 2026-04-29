@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.constants.Constants;
 import com.github.pagehelper.PageHelper;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.model.system.SystemUserLevel;
 import com.otterwood.common.model.user.User;
 import com.otterwood.common.model.user.UserLevel;
@@ -29,13 +29,13 @@ import java.util.stream.Collectors;
 /**
  * UserLevelServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -113,9 +113,9 @@ public class UserLevelServiceImpl extends ServiceImpl<UserLevelDao, UserLevel> i
         newLevel.setLevelId(userLevelConfig.getId());
         newLevel.setDiscount(userLevelConfig.getDiscount());
 
-        Date date = CrmebDateUtil.nowDateTimeReturnDate(Constants.DATE_FORMAT);
+        Date date = OtterwoodDateUtil.nowDateTimeReturnDate(Constants.DATE_FORMAT);
         String mark = Constants.USER_LEVEL_UP_LOG_MARK.replace("【{$userName}】", user.getNickname()).
-                replace("{$date}", CrmebDateUtil.dateToStr(date, Constants.DATE_FORMAT)).
+                replace("{$date}", OtterwoodDateUtil.dateToStr(date, Constants.DATE_FORMAT)).
                 replace("{$levelName}", userLevelConfig.getName());
         newLevel.setMark(mark);
 
@@ -170,9 +170,9 @@ public class UserLevelServiceImpl extends ServiceImpl<UserLevelDao, UserLevel> i
         newLevel.setLevelId(userLevelConfig.getId());
         newLevel.setDiscount(userLevelConfig.getDiscount());
 
-        Date date = CrmebDateUtil.nowDateTimeReturnDate(Constants.DATE_FORMAT);
+        Date date = OtterwoodDateUtil.nowDateTimeReturnDate(Constants.DATE_FORMAT);
         String mark = Constants.USER_LEVEL_OPERATE_LOG_MARK.replace("【{$userName}】", user.getNickname()).
-                replace("{$date}", CrmebDateUtil.dateToStr(date, Constants.DATE_FORMAT)).
+                replace("{$date}", OtterwoodDateUtil.dateToStr(date, Constants.DATE_FORMAT)).
                 replace("{$levelName}", userLevelConfig.getName());
         newLevel.setMark(mark);
 

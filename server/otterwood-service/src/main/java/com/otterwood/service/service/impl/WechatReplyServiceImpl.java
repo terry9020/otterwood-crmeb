@@ -4,7 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.otterwood.common.request.PageParamRequest;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.github.pagehelper.PageHelper;
 import com.otterwood.common.model.wechat.WechatReply;
 import com.otterwood.common.request.WechatReplyRequest;
@@ -23,13 +23,13 @@ import java.util.List;
 /**
  * WechatReplyServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -73,7 +73,7 @@ public class WechatReplyServiceImpl extends ServiceImpl<WechatReplyDao, WechatRe
         //检测重复
         WechatReply voByKeywords = getVoByKeywords(wechatReply.getKeywords());
         if (voByKeywords != null) {
-            throw new CrmebException(wechatReply.getKeywords() + "关键字已经存在");
+            throw new OtterwoodException(wechatReply.getKeywords() + "关键字已经存在");
         }
         wechatReply.setData(systemAttachmentService.clearPrefix(wechatReply.getData()));
         return save(wechatReply);
@@ -88,7 +88,7 @@ public class WechatReplyServiceImpl extends ServiceImpl<WechatReplyDao, WechatRe
         WechatReply voByKeywords = getVoByKeywords(wechatReply.getKeywords());
 
         if (voByKeywords != null && !wechatReply.getId().equals(voByKeywords.getId())) {
-            throw new CrmebException(wechatReply.getKeywords() + "关键字已经存在");
+            throw new OtterwoodException(wechatReply.getKeywords() + "关键字已经存在");
         }
 
         wechatReply.setData(systemAttachmentService.clearPrefix(wechatReply.getData()));
@@ -119,11 +119,11 @@ public class WechatReplyServiceImpl extends ServiceImpl<WechatReplyDao, WechatRe
         //检测重复
         WechatReply info = getInfo(id);
         if (null == info) {
-            throw new CrmebException("没有找到相关数据");
+            throw new OtterwoodException("没有找到相关数据");
         }
 
         if (!info.getStatus() && isTrue) {
-            throw new CrmebException("没有找到相关数据");
+            throw new OtterwoodException("没有找到相关数据");
         }
 
         return info;

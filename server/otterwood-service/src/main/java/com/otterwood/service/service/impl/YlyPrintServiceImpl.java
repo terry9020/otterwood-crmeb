@@ -4,7 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.otterwood.common.constants.Constants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.order.StoreOrder;
 import com.otterwood.common.request.YlyPrintRequest;
 import com.otterwood.common.request.YlyPrintRequestGoods;
@@ -25,13 +25,13 @@ import java.util.List;
 /**
  * 易联云打印订单 service
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -57,7 +57,7 @@ public class YlyPrintServiceImpl implements YlyPrintService {
     @Override
     public void YlyPrint(String orderId,boolean isAuto) {
         if(ylyUtil.checkYlyPrintStatus()){
-            throw new CrmebException("易联云 未开启打印");
+            throw new OtterwoodException("易联云 未开启打印");
         }
         // 判断是否开启自动打印
         if(isAuto && ylyUtil.checkYlyPrintAfterPaySuccess()){
@@ -65,10 +65,10 @@ public class YlyPrintServiceImpl implements YlyPrintService {
         }
         StoreOrder exitOrder = storeOrderService.getByOderId(orderId);
         if(ObjectUtil.isNull(exitOrder)){
-            throw new CrmebException("易联云 打印时未找到 订单信息");
+            throw new OtterwoodException("易联云 打印时未找到 订单信息");
         }
         if(!exitOrder.getPaid()){
-            throw new CrmebException("易联云 打印时出错， 订单未支付");
+            throw new OtterwoodException("易联云 打印时出错， 订单未支付");
         }
         List<StoreOrderInfoOldVo> exitOrderInfo = storeOrderInfoService.getOrderListByOrderId(exitOrder.getId());
         List<YlyPrintRequestGoods> goods = new ArrayList<>();

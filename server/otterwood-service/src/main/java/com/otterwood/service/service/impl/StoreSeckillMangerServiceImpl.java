@@ -7,12 +7,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.otterwood.common.request.PageParamRequest;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.request.StoreSeckillMangerRequest;
 import com.otterwood.common.request.StoreSeckillMangerSearchRequest;
 import com.otterwood.common.response.StoreSeckillManagerResponse;
 import com.github.pagehelper.PageHelper;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.model.seckill.StoreSeckillManger;
 import com.otterwood.service.dao.StoreSeckillMangerDao;
 import com.otterwood.service.service.StoreSeckillMangerService;
@@ -30,13 +30,13 @@ import java.util.List;
 /**
  * StoreSeckillMangerServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -149,7 +149,7 @@ public class StoreSeckillMangerServiceImpl extends ServiceImpl<StoreSeckillMange
      */
     @Override
     public List<StoreSeckillManger> getCurrentSeckillManager() {
-        int currentHour = CrmebDateUtil.getCurrentHour();
+        int currentHour = OtterwoodDateUtil.getCurrentHour();
         LambdaQueryWrapper<StoreSeckillManger> lqw = Wrappers.lambdaQuery();
         lqw.le(StoreSeckillManger::getStartTime,currentHour).gt(StoreSeckillManger::getEndTime,currentHour);
         return dao.selectList(lqw);
@@ -184,7 +184,7 @@ public class StoreSeckillMangerServiceImpl extends ServiceImpl<StoreSeckillMange
         setTimeRangeFromRequest(storeSeckillMangerRequest, storeSeckillManger);
         List<StoreSeckillManger> existTimes = checkTimeRangeUnique(storeSeckillManger);
         if(existTimes.size() > 1){
-            throw new CrmebException("当前时间段的秒杀配置已存在");
+            throw new OtterwoodException("当前时间段的秒杀配置已存在");
         }else if(existTimes.size() == 1) {
             // 判断开始时间 结束时间 是否被包涵
             LambdaQueryWrapper<StoreSeckillManger> startAndEndExcuseQuery = Wrappers.lambdaQuery();
@@ -200,7 +200,7 @@ public class StoreSeckillMangerServiceImpl extends ServiceImpl<StoreSeckillMange
             if(storeSeckillMangers.size() <= 1 && storeSeckillMangersIn.size() <= 1){ //storeSeckillMangers.get(0).getId().equals(id)
                 return updateByCondition(storeSeckillManger);
             }else{
-                throw new CrmebException("当前时间段的秒杀配置已存在");
+                throw new OtterwoodException("当前时间段的秒杀配置已存在");
             }
         }else {
             return updateByCondition(storeSeckillManger);
@@ -234,7 +234,7 @@ public class StoreSeckillMangerServiceImpl extends ServiceImpl<StoreSeckillMange
      */
     private void setTimeRangeFromRequest(@Validated @RequestBody StoreSeckillMangerRequest storeSeckillMangerRequest, StoreSeckillManger storeSeckillManger) {
         if(!storeSeckillMangerRequest.getTime().contains(",")){
-            throw new CrmebException("时间参数不正确 例如:01:00,02:00");
+            throw new OtterwoodException("时间参数不正确 例如:01:00,02:00");
         }
         String[] timeRage = storeSeckillMangerRequest.getTime().split(",");
         Integer startTime = Integer.parseInt(timeRage[0].split(":")[0]);
@@ -253,7 +253,7 @@ public class StoreSeckillMangerServiceImpl extends ServiceImpl<StoreSeckillMange
         lambdaQueryWrapper.eq(StoreSeckillManger::getIsDel, false);
         lambdaQueryWrapper.eq(StoreSeckillManger::getStatus, "'1'");
         // 获取当前小时
-        int currentHour = CrmebDateUtil.getCurrentHour();
+        int currentHour = OtterwoodDateUtil.getCurrentHour();
         lambdaQueryWrapper.gt(StoreSeckillManger::getEndTime, currentHour);
         lambdaQueryWrapper.orderByAsc(StoreSeckillManger::getStartTime);
         List<StoreSeckillManger> storeSeckillMangers = dao.selectList(lambdaQueryWrapper);
@@ -296,7 +296,7 @@ public class StoreSeckillMangerServiceImpl extends ServiceImpl<StoreSeckillMange
         setTimeRangeFromRequest(storeSeckillMangerRequest, storeSeckillManger);
         List<StoreSeckillManger> storeSeckillMangers = checkTimeRangeUnique(storeSeckillManger);
         if (storeSeckillMangers.size() > 0) {
-            throw new CrmebException("当前时间段的秒杀配置已存在");
+            throw new OtterwoodException("当前时间段的秒杀配置已存在");
         }
         storeSeckillManger.setImg(systemAttachmentService.clearPrefix(storeSeckillManger.getImg()));
         storeSeckillManger.setSilderImgs(systemAttachmentService.clearPrefix(storeSeckillManger.getSilderImgs()));

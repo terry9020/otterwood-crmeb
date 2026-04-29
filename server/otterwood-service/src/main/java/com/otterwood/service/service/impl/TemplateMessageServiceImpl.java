@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.otterwood.common.constants.Constants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.system.SystemNotification;
 import com.otterwood.common.model.wechat.TemplateMessage;
 import com.otterwood.common.utils.RedisUtil;
@@ -34,13 +34,13 @@ import java.util.stream.Stream;
 /**
  * TemplateMessageServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -179,7 +179,7 @@ public class TemplateMessageServiceImpl extends ServiceImpl<TemplateMessageDao, 
     public Boolean updateStatus(Integer id, Integer status) {
         TemplateMessage templateMessage = getById(id);
         if (ObjectUtil.isNull(templateMessage)) {
-            throw new CrmebException("此模板" + id + " 不存在或者已删除");
+            throw new OtterwoodException("此模板" + id + " 不存在或者已删除");
         }
         templateMessage.setStatus(status);
         templateMessage.setUpdateTime(DateUtil.date());
@@ -196,7 +196,7 @@ public class TemplateMessageServiceImpl extends ServiceImpl<TemplateMessageDao, 
         List<Integer> wechatIdList = notificationList.stream().map(SystemNotification::getWechatId).collect(Collectors.toList());
         List<TemplateMessage> templateMessageList = getListByIdList(wechatIdList);
         if (CollUtil.isEmpty(templateMessageList)) {
-            throw new CrmebException("请先添加公众号模板消息");
+            throw new OtterwoodException("请先添加公众号模板消息");
         }
 
         // 获取公众平台所有的微信模板，删除之
@@ -221,7 +221,7 @@ public class TemplateMessageServiceImpl extends ServiceImpl<TemplateMessageDao, 
         List<Integer> routineIdList = notificationList.stream().map(SystemNotification::getRoutineId).collect(Collectors.toList());
         List<TemplateMessage> templateMessageList = getListByIdList(routineIdList);
         if (CollUtil.isEmpty(templateMessageList)) {
-            throw new CrmebException("请先配置小程序订阅消息");
+            throw new OtterwoodException("请先配置小程序订阅消息");
         }
         // 获取当前帐号下的个人模板列表
         List<RoutineMyTemplateVo> templateVoList = wechatNewService.getRoutineMyTemplateList();

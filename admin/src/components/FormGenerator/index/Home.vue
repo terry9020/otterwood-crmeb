@@ -3,7 +3,7 @@
     <div class="left-board">
       <div class="logo-wrapper">
         <div class="logo">
-          <span>CRMEB</span>
+          <span>OTTERWOOD</span>
         </div>
       </div>
       <el-scrollbar class="left-scrollbar">

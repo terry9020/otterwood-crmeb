@@ -10,7 +10,7 @@ import com.otterwood.common.request.ActivityStyleUpdateStatusRequest;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.response.ActivityStyleResponse;
 import com.otterwood.common.result.CommonResult;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.service.service.ActivityStyleService;
 import com.otterwood.service.service.SystemAttachmentService;
 import io.swagger.annotations.Api;
@@ -69,8 +69,8 @@ public class ActivityStyleController {
     public CommonResult<String> save(@RequestBody @Validated ActivityStyleRequest activityStyleRequest) {
         ActivityStyle activityStyle = new ActivityStyle();
         BeanUtils.copyProperties(activityStyleRequest, activityStyle);
-        activityStyle.setStarttime(CrmebDateUtil.strToDate(activityStyleRequest.getStarttime(), DateConstants.DATE_FORMAT));
-        activityStyle.setEndtime(CrmebDateUtil.strToDate(activityStyleRequest.getEndtime(), DateConstants.DATE_FORMAT));
+        activityStyle.setStarttime(OtterwoodDateUtil.strToDate(activityStyleRequest.getStarttime(), DateConstants.DATE_FORMAT));
+        activityStyle.setEndtime(OtterwoodDateUtil.strToDate(activityStyleRequest.getEndtime(), DateConstants.DATE_FORMAT));
         activityStyle.setStyle(systemAttachmentService.clearPrefix(activityStyle.getStyle()));
         if (activityStyleService.save(activityStyle)) {
             return CommonResult.success();
@@ -112,8 +112,8 @@ public class ActivityStyleController {
         BeanUtils.copyProperties(activityStyleRequest, activityStyle);
         activityStyle.setId(activityStyleRequest.getId());
         activityStyle.setStyle(systemAttachmentService.clearPrefix(activityStyle.getStyle()));
-        activityStyle.setStarttime(CrmebDateUtil.strToDate(activityStyleRequest.getStarttime(), DateConstants.DATE_FORMAT));
-        activityStyle.setEndtime(CrmebDateUtil.strToDate(activityStyleRequest.getEndtime(), DateConstants.DATE_FORMAT));
+        activityStyle.setStarttime(OtterwoodDateUtil.strToDate(activityStyleRequest.getStarttime(), DateConstants.DATE_FORMAT));
+        activityStyle.setEndtime(OtterwoodDateUtil.strToDate(activityStyleRequest.getEndtime(), DateConstants.DATE_FORMAT));
         activityStyle.setUpdatetime(DateUtil.date());
         if (activityStyleService.updateById(activityStyle)) {
             return CommonResult.success();

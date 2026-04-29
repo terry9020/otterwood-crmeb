@@ -4,7 +4,7 @@ package com.otterwood.service.util;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.otterwood.common.constants.YlyConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.request.YlyPrintRequest;
 import com.otterwood.common.request.YlyPrintRequestGoods;
 import com.otterwood.common.response.YlyAccessTokenResponse;
@@ -24,13 +24,13 @@ import java.util.concurrent.TimeUnit;
 
 /** 易联云 工具类
  * +----------------------------------------------------------------------
- *  * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  * +----------------------------------------------------------------------
- *  * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  * +----------------------------------------------------------------------
- *  * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  * +----------------------------------------------------------------------
- *  * | Author: CRMEB Team <admin@crmeb.com>
+ *  * | Author: OTTERWOOD Team <admin@otterwood.com>
  *  * +----------------------------------------------------------------------
  **/
 @Component
@@ -75,7 +75,7 @@ public class YlyUtil {
             status = systemConfigService.getValueByKey(YlyConstants.YLY_PRINT_STATUS);
             if(StringUtils.isBlank(client_id) || StringUtils.isBlank(client_secret)
                     || StringUtils.isBlank(machine_code) || StringUtils.isBlank(msign)){
-                throw new CrmebException("易联云配置数据不完整");
+                throw new OtterwoodException("易联云配置数据不完整");
             }
             if(StringUtils.isBlank(status) || "false".equals(status)){
                 return;
@@ -117,7 +117,7 @@ public class YlyUtil {
         instant();
         RequestMethod.getInstance().printerSetVoice(
                 ylyAccessTokenResponse.getBody().getAccess_token(),
-                machine_code,"[\"CRMEB 来新单了\",9,0]","false",
+                machine_code,"[\"OTTERWOOD 来新单了\",9,0]","false",
                 "0","ORDER xxx");
         logger.info("设置语音成功");
     }
@@ -235,7 +235,7 @@ public class YlyUtil {
 //        goods.add(g1);
 //        goods.add(g2);
 //        YlyPrintRequest ylyPrintRequest = new YlyPrintRequest();
-//        ylyPrintRequest.setBusinessName("CRMEB Java Order");
+//        ylyPrintRequest.setBusinessName("OTTERWOOD Java Order");
 //        ylyPrintRequest.setOrderNo("Order110");
 //        ylyPrintRequest.setDate("20211127");
 ////        ylyPrintRequest.setTime("12:00:00");

@@ -9,7 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.PayConstants;
 import com.otterwood.common.constants.TaskConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.combination.StoreCombination;
 import com.otterwood.common.model.combination.StorePink;
 import com.otterwood.common.model.finance.UserRecharge;
@@ -35,13 +35,13 @@ import java.util.Map;
 /**
  * 微信支付
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Data
@@ -108,20 +108,20 @@ public class WeChatPayServiceImpl implements WeChatPayService {
     @Override
     public Boolean queryPayResult(String orderNo) {
         if (StrUtil.isBlank(orderNo)) {
-            throw new CrmebException("订单编号不能为空");
+            throw new OtterwoodException("订单编号不能为空");
         }
         // 切割字符串，判断是支付订单还是充值订单
         String pre = StrUtil.subPre(orderNo, 5);
         if (pre.equals("order")) {// 支付订单
             StoreOrder storeOrder = storeOrderService.getByOderId(orderNo);
             if (ObjectUtil.isNull(storeOrder)) {
-                throw new CrmebException("订单不存在");
+                throw new OtterwoodException("订单不存在");
             }
             if (storeOrder.getIsDel()) {
-                throw new CrmebException("订单已被删除");
+                throw new OtterwoodException("订单已被删除");
             }
             if (!storeOrder.getPayType().equals(PayConstants.PAY_TYPE_WE_CHAT)) {
-                throw new CrmebException("不是微信支付类型订单，请重新选择支付方式");
+                throw new OtterwoodException("不是微信支付类型订单，请重新选择支付方式");
             }
 
             if (storeOrder.getPaid()) {
@@ -130,11 +130,11 @@ public class WeChatPayServiceImpl implements WeChatPayService {
 
             WechatPayInfo wechatPayInfo = wechatPayInfoService.getByNo(storeOrder.getOutTradeNo());
             if (ObjectUtil.isNull(wechatPayInfo)) {
-                throw new CrmebException("未找到对应微信订单");
+                throw new OtterwoodException("未找到对应微信订单");
             }
 
             User user = userService.getById(storeOrder.getUid());
-            if (ObjectUtil.isNull(user)) throw new CrmebException("用户不存在");
+            if (ObjectUtil.isNull(user)) throw new OtterwoodException("用户不存在");
 
 
             // 获取appid、mch_id
@@ -242,7 +242,7 @@ public class WeChatPayServiceImpl implements WeChatPayService {
                 return Boolean.TRUE;
             });
             if (!updatePaid) {
-                throw new CrmebException("支付成功更新订单失败");
+                throw new OtterwoodException("支付成功更新订单失败");
             }
             // 添加支付成功task
             redisUtil.lPush(TaskConstants.ORDER_TASK_PAY_SUCCESS_AFTER, orderNo);
@@ -253,7 +253,7 @@ public class WeChatPayServiceImpl implements WeChatPayService {
         userRecharge.setOrderId(orderNo);
         userRecharge = userRechargeService.getInfoByEntity(userRecharge);
         if (ObjectUtil.isNull(userRecharge)) {
-            throw new CrmebException("没有找到订单信息");
+            throw new OtterwoodException("没有找到订单信息");
         }
         if (userRecharge.getPaid()) {
             return Boolean.TRUE;
@@ -281,7 +281,7 @@ public class WeChatPayServiceImpl implements WeChatPayService {
         // 支付成功处理
         Boolean rechargePayAfter = rechargePayService.paySuccess(userRecharge);
         if (!rechargePayAfter) {
-            throw new CrmebException("wechat pay error : 数据保存失败==》" + orderNo);
+            throw new OtterwoodException("wechat pay error : 数据保存失败==》" + orderNo);
         }
         return rechargePayAfter;
     }
@@ -295,7 +295,7 @@ public class WeChatPayServiceImpl implements WeChatPayService {
     @Override
     public Map<String, String> unifiedRecharge(UserRecharge userRecharge, String clientIp) {
         if (ObjectUtil.isNull(userRecharge)) {
-            throw new CrmebException("订单不存在");
+            throw new OtterwoodException("订单不存在");
         }
         // 获取用户openId
         // 根据订单支付类型来判断获取公众号openId还是小程序openId
@@ -311,7 +311,7 @@ public class WeChatPayServiceImpl implements WeChatPayService {
         }
 
         if (ObjectUtil.isNull(userToken)) {
-            throw new CrmebException("该用户没有openId");
+            throw new OtterwoodException("该用户没有openId");
         }
 
         // 获取appid、mch_id
@@ -433,22 +433,22 @@ public class WeChatPayServiceImpl implements WeChatPayService {
             String xml = restTemplateUtil.postXml(url, request);
             HashMap<String, Object> map = XmlUtil.xmlToMap(xml);
             if (null == map) {
-                throw new CrmebException("微信下单失败！");
+                throw new OtterwoodException("微信下单失败！");
             }
-            CreateOrderResponseVo responseVo = CrmebUtil.mapToObj(map, CreateOrderResponseVo.class);
+            CreateOrderResponseVo responseVo = OtterwoodUtil.mapToObj(map, CreateOrderResponseVo.class);
             if (responseVo.getReturnCode().toUpperCase().equals("FAIL")) {
-                throw new CrmebException("微信下单失败1！" +  responseVo.getReturnMsg());
+                throw new OtterwoodException("微信下单失败1！" +  responseVo.getReturnMsg());
             }
 
             if (responseVo.getResultCode().toUpperCase().equals("FAIL")) {
-                throw new CrmebException("微信下单失败2！" + responseVo.getErrCodeDes());
+                throw new OtterwoodException("微信下单失败2！" + responseVo.getErrCodeDes());
             }
 
             responseVo.setExtra(vo.getScene_info());
             return responseVo;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new CrmebException(e.getMessage());
+            throw new OtterwoodException(e.getMessage());
         }
     }
 

@@ -2,7 +2,7 @@ package com.otterwood.front.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.otterwood.common.constants.Constants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.result.CommonResult;
 import com.otterwood.service.service.QrCodeService;
 import io.swagger.annotations.Api;
@@ -17,13 +17,13 @@ import java.util.Map;
 /**
  * 验证码
  *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
  */
 
@@ -66,7 +66,7 @@ public class QrCodeController {
             @RequestParam int width,
             @RequestParam int height) {
         if((width < 50 || height < 50) && (width > 500 || height > 500) && text.length() >= 999){
-            throw new CrmebException(Constants.RESULT_QRCODE_PRAMERROR);
+            throw new OtterwoodException(Constants.RESULT_QRCODE_PRAMERROR);
         }
         return CommonResult.success(qrCodeService.base64String(text, width,height));
     }

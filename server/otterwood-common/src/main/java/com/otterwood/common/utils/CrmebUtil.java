@@ -20,18 +20,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Crmeb工具类
+ * Otterwood工具类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2022 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2022 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
-public class CrmebUtil {
+public class OtterwoodUtil {
 
     public static String encryptPassword(String pwd, String key) {
         DES des = new DES(getDESSercretKey(key));
@@ -128,7 +128,7 @@ public class CrmebUtil {
         // 加密结果：5JNGj04iE/XUuTZM75zMrA==
         // 解密结果：中国123ABCabc
 
-//        System.out.println(encryptPassword("Crmeb_123456", "18292417675"));
+//        System.out.println(encryptPassword("Otterwood_123456", "18292417675"));
         System.out.println(decryptPassowrd("c7Nwx1WsDdewbab2TlkpUg==", "18292417675"));
         // 执行结果：f6mcpGQ8NEmwbab2TlkpUg==
         // 与 SQL 中的数据一致
@@ -484,7 +484,7 @@ public class CrmebUtil {
             return "";
         }
         ArrayList<String> name = new ArrayList<>();
-        List<Integer> idList = CrmebUtil.stringToArray(categoryIdStr);
+        List<Integer> idList = OtterwoodUtil.stringToArray(categoryIdStr);
 
         String str = "";
         for (Integer id : idList) {
@@ -711,7 +711,7 @@ public class CrmebUtil {
      * @return 生成的随机码
      */
     public static String mapToStringUrl(Map<String, Object> map){
-        map = CrmebUtil.mapSort(map);
+        map = OtterwoodUtil.mapSort(map);
         StringBuilder sb = new StringBuilder();       // 多线程访问的情况下需要用StringBuffer
         Set es = map.keySet();                 // 所有参与传参的key按照accsii排序（升序）
         for (Object set : es) {
@@ -779,7 +779,7 @@ public class CrmebUtil {
     }
 
     public static String getSign(Map<String, Object> map, String signKey){
-        String result = CrmebUtil.mapToStringUrl(map) + "&key=" + signKey;
+        String result = OtterwoodUtil.mapToStringUrl(map) + "&key=" + signKey;
 //        return DigestUtils.md5Hex(result).toUpperCase();
         String sign = SecureUtil.md5(result).toUpperCase();
         System.out.println("sign ========== " + sign);

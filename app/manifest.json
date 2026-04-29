@@ -54,7 +54,7 @@
             "ios" : {
                 "capabilities" : {
                     "entitlements" : {
-                        "com.apple.developer.associated-domains" : [ "applinks:app.beta.java.crmeb.net" ]
+                        "com.apple.developer.associated-domains" : [ "applinks:app.beta.java.otterwood.net" ]
                     }
                 },
                 "privacyDescription" : {
@@ -86,7 +86,7 @@
                     "weixin" : {
                         "appid" : "wxa83d6fab40cab13f",
                         "appsecret" : "e1d254e4c6a68b10bd60bd347bf0ffba",
-                        "UniversalLinks" : "https://app.beta.java.crmeb.net/"
+                        "UniversalLinks" : "https://app.beta.java.otterwood.net/"
                     }
                 },
                 "maps" : {
@@ -98,14 +98,14 @@
                 "share" : {
                     "weixin" : {
                         "appid" : "wxa83d6fab40cab13f",
-                        "UniversalLinks" : "https://app.beta.java.crmeb.net/"
+                        "UniversalLinks" : "https://app.beta.java.otterwood.net/"
                     }
                 },
                 "payment" : {
                     "weixin" : {
                         "__platform__" : [ "ios", "android" ],
                         "appid" : "wxa83d6fab40cab13f",
-                        "UniversalLinks" : "https://app.beta.java.crmeb.net/"
+                        "UniversalLinks" : "https://app.beta.java.otterwood.net/"
                     },
                     "alipay" : {
                         "__platform__" : [ "ios", "android" ]

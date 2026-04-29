@@ -15,7 +15,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.otterwood.common.constants.*;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.coupon.StoreCoupon;
 import com.otterwood.common.model.coupon.StoreCouponUser;
 import com.otterwood.common.model.order.StoreOrder;
@@ -47,13 +47,13 @@ import java.util.stream.Collectors;
 /**
  * 用户表 服务实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -139,17 +139,17 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         }
 
         if (StrUtil.isNotBlank(request.getGroupId())) {
-            List<Integer> groupIdList = CrmebUtil.stringToArray(request.getGroupId());
+            List<Integer> groupIdList = OtterwoodUtil.stringToArray(request.getGroupId());
             map.put("groupIdList", groupIdList);
         }
 
         if (!StringUtils.isBlank(request.getLabelId())) {
-            String tagIdSql = CrmebUtil.getFindInSetSql("u.tag_id", request.getLabelId());
+            String tagIdSql = OtterwoodUtil.getFindInSetSql("u.tag_id", request.getLabelId());
             map.put("tagIdSql", tagIdSql);
         }
 
         if (StrUtil.isNotBlank(request.getLevel())) {
-            List<Integer> levelList = CrmebUtil.stringToArray(request.getLevel());
+            List<Integer> levelList = OtterwoodUtil.stringToArray(request.getLevel());
             map.put("levelList", levelList);
         }
 
@@ -180,7 +180,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             map.put("status", request.getStatus() ? 1 : 0);
         }
 
-        DateLimitUtilVo dateLimit = CrmebDateUtil.getDateLimit(request.getDateLimit());
+        DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(request.getDateLimit());
 
         if (!StringUtils.isBlank(dateLimit.getStartTime())) {
             map.put("startTime", dateLimit.getStartTime());
@@ -213,7 +213,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             } else {
                 userResponse.setSpreadNickname(userDao.selectById(user.getSpreadUid()).getNickname());
             }
-            userResponse.setPhone(CrmebUtil.maskMobile(userResponse.getPhone()));
+            userResponse.setPhone(OtterwoodUtil.maskMobile(userResponse.getPhone()));
             userResponses.add(userResponse);
         }
         return CommonPage.copyPageInfo(pageUser, userResponses);
@@ -225,36 +225,36 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     @Override
     public Boolean updateIntegralMoney(UserOperateIntegralMoneyRequest request) {
         if (ObjectUtil.isNull(request.getMoneyValue()) || ObjectUtil.isNull(request.getIntegralValue())) {
-            throw new CrmebException("至少输入一个金额");
+            throw new OtterwoodException("至少输入一个金额");
         }
         if (request.getMoneyValue().compareTo(BigDecimal.ZERO) < 1 && request.getIntegralValue() <= 0) {
-            throw new CrmebException("修改值不能小于等于0");
+            throw new OtterwoodException("修改值不能小于等于0");
         }
 
         User user = getById(request.getUid());
         if (ObjectUtil.isNull(user)) {
-            throw new CrmebException("用户不存在");
+            throw new OtterwoodException("用户不存在");
         }
         // 减少时要判断小于0的情况,添加时判断是否超过数据限制
         if (request.getMoneyType().equals(2) && request.getMoneyValue().compareTo(BigDecimal.ZERO) != 0) {
             if (user.getNowMoney().subtract(request.getMoneyValue()).compareTo(BigDecimal.ZERO) < 0) {
-                throw new CrmebException("余额扣减后不能小于0");
+                throw new OtterwoodException("余额扣减后不能小于0");
             }
         }
         if (request.getMoneyType().equals(1) && request.getMoneyValue().compareTo(BigDecimal.ZERO) != 0) {
             if (user.getNowMoney().add(request.getMoneyValue()).compareTo(new BigDecimal("99999999.99")) > 0) {
-                throw new CrmebException("余额添加后后不能大于99999999.99");
+                throw new OtterwoodException("余额添加后后不能大于99999999.99");
             }
         }
 
         if (request.getIntegralType().equals(2) && request.getIntegralValue() != 0) {
             if (user.getIntegral() - request.getIntegralValue() < 0) {
-                throw new CrmebException("积分扣减后不能小于0");
+                throw new OtterwoodException("积分扣减后不能小于0");
             }
         }
         if (request.getIntegralType().equals(1) && request.getIntegralValue() != 0) {
             if ((user.getIntegral() + request.getIntegralValue()) > 99999999) {
-                throw new CrmebException("积分添加后不能大于99999999");
+                throw new OtterwoodException("积分添加后不能大于99999999");
             }
         }
 
@@ -269,7 +269,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
                 userBill.setCategory(Constants.USER_BILL_CATEGORY_MONEY);
                 userBill.setNumber(request.getMoneyValue());
                 userBill.setStatus(1);
-                userBill.setCreateTime(CrmebDateUtil.nowDateTime());
+                userBill.setCreateTime(OtterwoodDateUtil.nowDateTime());
 
                 if (request.getMoneyType() == 1) {// 增加
                     userBill.setPm(1);
@@ -317,7 +317,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         });
 
         if (!execute) {
-            throw new CrmebException("修改积分/余额失败");
+            throw new OtterwoodException("修改积分/余额失败");
         }
         return execute;
     }
@@ -353,16 +353,16 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
      */
     @Override
     public Boolean group(String id, String groupIdValue) {
-        if (StrUtil.isBlank(id)) throw new CrmebException("会员编号不能为空");
-        if (StrUtil.isBlank(groupIdValue)) throw new CrmebException("分组id不能为空");
+        if (StrUtil.isBlank(id)) throw new OtterwoodException("会员编号不能为空");
+        if (StrUtil.isBlank(groupIdValue)) throw new OtterwoodException("分组id不能为空");
 
         //循环id处理
-        List<Integer> idList = CrmebUtil.stringToArray(id);
+        List<Integer> idList = OtterwoodUtil.stringToArray(id);
         idList = idList.stream().distinct().collect(Collectors.toList());
         List<User> list = getListInUid(idList);
-        if (CollUtil.isEmpty(list)) throw new CrmebException("没有找到用户信息");
+        if (CollUtil.isEmpty(list)) throw new OtterwoodException("没有找到用户信息");
         if (list.size() < idList.size()) {
-            throw new CrmebException("没有找到用户信息");
+            throw new OtterwoodException("没有找到用户信息");
         }
         for (User user : list) {
             user.setGroupId(groupIdValue);
@@ -400,7 +400,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         User user = userDao.selectOne(lambdaQueryWrapper);
 
         //密码
-        user.setPwd(CrmebUtil.encryptPassword(request.getPassword(), user.getAccount()));
+        user.setPwd(OtterwoodUtil.encryptPassword(request.getPassword(), user.getAccount()));
         return update(user, lambdaQueryWrapper);
     }
 
@@ -430,11 +430,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public User getInfoException() {
         User user = getInfo();
         if (user == null) {
-            throw new CrmebException("用户信息不存在！");
+            throw new OtterwoodException("用户信息不存在！");
         }
 
         if (!user.getStatus()) {
-            throw new CrmebException("用户已经被禁用！");
+            throw new OtterwoodException("用户已经被禁用！");
         }
         return user;
     }
@@ -448,7 +448,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public Integer getUserIdException() {
         Integer id = tokenComponet.getUserId();
         if (null == id) {
-            throw new CrmebException("登录信息已过期，请重新登录！");
+            throw new OtterwoodException("登录信息已过期，请重新登录！");
         }
         return id;
     }
@@ -482,7 +482,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("count(uid) as uid", "left(create_time, 10) as create_time");
         if (StringUtils.isNotBlank(date)) {
-            DateLimitUtilVo dateLimit = CrmebDateUtil.getDateLimit(date);
+            DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(date);
             queryWrapper.between("create_time", dateLimit.getStartTime(), dateLimit.getEndTime());
         }
         queryWrapper.groupBy("left(create_time, 10)").orderByAsc("create_time");
@@ -492,7 +492,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         }
 
         for (User user : list) {
-            map.put(CrmebDateUtil.dateToStr(user.getCreateTime(), Constants.DATE_FORMAT_DATE), user.getUid());
+            map.put(OtterwoodDateUtil.dateToStr(user.getCreateTime(), Constants.DATE_FORMAT_DATE), user.getUid());
         }
         return map;
     }
@@ -511,7 +511,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         User user = getInfoException();
 
         if (!user.getPhone().equals(request.getPhone())) {
-            throw new CrmebException("手机号不是当前用户手机号");
+            throw new OtterwoodException("手机号不是当前用户手机号");
         }
 
         return Boolean.TRUE;
@@ -531,7 +531,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         //检测当前手机号是否已经是账号
         User user = getByPhone(request.getPhone());
         if (null != user) {
-            throw new CrmebException("此手机号码已被注册");
+            throw new OtterwoodException("此手机号码已被注册");
         }
 
         //查询手机号信息
@@ -550,7 +550,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public UserCenterResponse getUserCenter() {
         User currentUser = getInfo();
         if (ObjectUtil.isNull(currentUser)) {
-            throw new CrmebException("您的登录已过期，请先登录");
+            throw new OtterwoodException("您的登录已过期，请先登录");
         }
         UserCenterResponse userCenterResponse = new UserCenterResponse();
         BeanUtils.copyProperties(currentUser, userCenterResponse);
@@ -645,16 +645,16 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
      */
     @Override
     public Boolean tag(String id, String tagIdValue) {
-        if (StrUtil.isBlank(id)) throw new CrmebException("会员编号不能为空");
-        if (StrUtil.isBlank(tagIdValue)) throw new CrmebException("标签id不能为空");
+        if (StrUtil.isBlank(id)) throw new OtterwoodException("会员编号不能为空");
+        if (StrUtil.isBlank(tagIdValue)) throw new OtterwoodException("标签id不能为空");
 
         //循环id处理
-        List<Integer> idList = CrmebUtil.stringToArray(id);
+        List<Integer> idList = OtterwoodUtil.stringToArray(id);
         idList = idList.stream().distinct().collect(Collectors.toList());
         List<User> list = getListInUid(idList);
-        if (CollUtil.isEmpty(list)) throw new CrmebException("没有找到用户信息");
+        if (CollUtil.isEmpty(list)) throw new OtterwoodException("没有找到用户信息");
         if (list.size() < 1) {
-            throw new CrmebException("没有找到用户信息");
+            throw new OtterwoodException("没有找到用户信息");
         }
         for (User user : list) {
             user.setTagId(tagIdValue);
@@ -714,11 +714,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     private void checkValidateCode(String phone, String value) {
         Object validateCode = redisUtil.get(getValidateCodeRedisKey(phone));
         if (validateCode == null) {
-            throw new CrmebException("验证码已过期");
+            throw new OtterwoodException("验证码已过期");
         }
 
         if (!validateCode.toString().equals(value)) {
-            throw new CrmebException("验证码错误");
+            throw new OtterwoodException("验证码错误");
         }
     }
 
@@ -749,7 +749,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         user.setUserType(Constants.USER_LOGIN_TYPE_H5);
         user.setNickname(CommonUtil.createNickName(phone));
         user.setAvatar(systemConfigService.getValueByKey(Constants.USER_DEFAULT_AVATAR_CONFIG_KEY));
-        Date nowDate = CrmebDateUtil.nowDateTime();
+        Date nowDate = OtterwoodDateUtil.nowDateTime();
         user.setCreateTime(nowDate);
         user.setLastLoginTime(nowDate);
 
@@ -768,9 +768,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             couponList.forEach(storeCoupon -> {
                 //是否有固定的使用时间
                 if (!storeCoupon.getIsFixedTime()) {
-                    String endTime = CrmebDateUtil.addDay(CrmebDateUtil.nowDate(Constants.DATE_FORMAT), storeCoupon.getDay(), Constants.DATE_FORMAT);
-                    storeCoupon.setUseEndTime(CrmebDateUtil.strToDate(endTime, Constants.DATE_FORMAT));
-                    storeCoupon.setUseStartTime(CrmebDateUtil.nowDateTimeReturnDate(Constants.DATE_FORMAT));
+                    String endTime = OtterwoodDateUtil.addDay(OtterwoodDateUtil.nowDate(Constants.DATE_FORMAT), storeCoupon.getDay(), Constants.DATE_FORMAT);
+                    storeCoupon.setUseEndTime(OtterwoodDateUtil.strToDate(endTime, Constants.DATE_FORMAT));
+                    storeCoupon.setUseStartTime(OtterwoodDateUtil.nowDateTimeReturnDate(Constants.DATE_FORMAT));
                 }
 
                 StoreCouponUser storeCouponUser = new StoreCouponUser();
@@ -804,7 +804,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             return Boolean.TRUE;
         });
         if (!execute) {
-            throw new CrmebException("创建用户失败!");
+            throw new OtterwoodException("创建用户失败!");
         }
         return user;
     }
@@ -916,7 +916,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
                     .or().like(User::getPhone, keywords)); //手机号码
         }
         if (StrUtil.isNotBlank(dateLimit)) {
-            DateLimitUtilVo dateLimitUtilVo = CrmebDateUtil.getDateLimit(dateLimit);
+            DateLimitUtilVo dateLimitUtilVo = OtterwoodDateUtil.getDateLimit(dateLimit);
             lqw.between(User::getPromoterTime, dateLimitUtilVo.getStartTime(), dateLimitUtilVo.getEndTime());
         }
         lqw.orderByDesc(User::getUid);
@@ -1068,7 +1068,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     @Override
     public User registerByThird(RegisterThirdUserRequest thirdUserRequest) {
         User user = new User();
-        user.setAccount(DigestUtils.md5Hex(CrmebUtil.getUuid() + CrmebDateUtil.getNowTime()));
+        user.setAccount(DigestUtils.md5Hex(OtterwoodUtil.getUuid() + OtterwoodDateUtil.getNowTime()));
         user.setUserType(thirdUserRequest.getType());
         user.setNickname(thirdUserRequest.getNickName());
         String avatar = "";
@@ -1084,7 +1084,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
                 break;
         }
         user.setAvatar(avatar);
-        user.setSpreadTime(CrmebDateUtil.nowDateTime());
+        user.setSpreadTime(OtterwoodDateUtil.nowDateTime());
         // 因微信原因，无法再获取用户的隐私信息
         // 预设用户性别为0-未知，地址为空字符串
 //        user.setSex(Integer.parseInt(thirdUserRequest.getSex()));
@@ -1270,7 +1270,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
                 .gt("spread_uid", 0)
                 .eq("status", true);
         if (StrUtil.isNotBlank(type)) {
-            DateLimitUtilVo dateLimit = CrmebDateUtil.getDateLimit(type);
+            DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(type);
             queryWrapper.between("spread_time", dateLimit.getStartTime(), dateLimit.getEndTime());
         }
         queryWrapper.groupBy("spread_uid").orderByDesc("spread_count");
@@ -1332,7 +1332,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         }
         User user = getInfo();
         if (ObjectUtil.isNull(user)) {
-            throw new CrmebException("当前用户未登录,请先登录");
+            throw new OtterwoodException("当前用户未登录,请先登录");
         }
 
         bindSpread(user, spreadUid);
@@ -1344,7 +1344,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         if (!checkBingSpread) return false;
 
         user.setSpreadUid(spreadUid);
-        user.setSpreadTime(CrmebDateUtil.nowDateTime());
+        user.setSpreadTime(OtterwoodDateUtil.nowDateTime());
 
         Boolean execute = transactionTemplate.execute(e -> {
             user.setUpdateTime(DateUtil.date());
@@ -1370,29 +1370,29 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         Integer userId = request.getUserId();
         Integer spreadUid = request.getSpreadUid();
         if (userId.equals(spreadUid)) {
-            throw new CrmebException("上级推广人不能为自己");
+            throw new OtterwoodException("上级推广人不能为自己");
         }
         User user = getById(userId);
         if (ObjectUtil.isNull(user)) {
-            throw new CrmebException("用户不存在");
+            throw new OtterwoodException("用户不存在");
         }
         if (user.getSpreadUid().equals(spreadUid)) {
-            throw new CrmebException("当前推广人已经是所选人");
+            throw new OtterwoodException("当前推广人已经是所选人");
         }
         Integer oldSprUid = user.getSpreadUid();
 
         User spreadUser = getById(spreadUid);
         if (ObjectUtil.isNull(spreadUser)) {
-            throw new CrmebException("上级用户不存在");
+            throw new OtterwoodException("上级用户不存在");
         }
         if (spreadUser.getSpreadUid().equals(userId)) {
-            throw new CrmebException("当前用户已是推广人的上级");
+            throw new OtterwoodException("当前用户已是推广人的上级");
         }
 
         User tempUser = new User();
         tempUser.setUid(userId);
         tempUser.setSpreadUid(spreadUid);
-        tempUser.setSpreadTime(CrmebDateUtil.nowDateTime());
+        tempUser.setSpreadTime(OtterwoodDateUtil.nowDateTime());
         Boolean execute = transactionTemplate.execute(e -> {
             tempUser.setUpdateTime(DateUtil.date());
             updateById(tempUser);
@@ -1480,20 +1480,20 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public Boolean updateUserPhone(Integer id, String phone) {
         boolean matchPhone = ReUtil.isMatch(RegularConstants.PHONE_TWO, phone);
         if (!matchPhone) {
-            throw new CrmebException("手机号格式错误，请输入正确的手机号");
+            throw new OtterwoodException("手机号格式错误，请输入正确的手机号");
         }
         User user = getById(id);
         if (ObjectUtil.isNull(user)) {
-            throw new CrmebException("对应用户不存在");
+            throw new OtterwoodException("对应用户不存在");
         }
         if (phone.equals(user.getPhone())) {
-            throw new CrmebException("手机号与之前一致");
+            throw new OtterwoodException("手机号与之前一致");
         }
 
         //检测当前手机号是否已经是账号
         User tempUser = getByPhone(phone);
         if (ObjectUtil.isNotNull(tempUser)) {
-            throw new CrmebException("此手机号码已被注册");
+            throw new OtterwoodException("此手机号码已被注册");
         }
 
         User newUser = new User();
@@ -1542,15 +1542,15 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public Boolean updateUserLevel(UpdateUserLevelRequest request) {
         User user = getById(request.getUid());
         if (ObjectUtil.isNull(user)) {
-            throw new CrmebException("用户不存在");
+            throw new OtterwoodException("用户不存在");
         }
         if (user.getLevel().equals(request.getLevelId())) {
-            throw new CrmebException("用户等级与修改前相同");
+            throw new OtterwoodException("用户等级与修改前相同");
         }
 
         SystemUserLevel systemUserLevel = systemUserLevelService.getByLevelId(request.getLevelId());
         if (ObjectUtil.isNull(systemUserLevel)) {
-            throw new CrmebException("系统会员等级不存在，请先配置");
+            throw new OtterwoodException("系统会员等级不存在，请先配置");
         }
         SystemUserLevel userLevel = new SystemUserLevel();
         if (ObjectUtil.isNull(user.getLevel()) || user.getLevel().equals(0)) {
@@ -1559,11 +1559,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             userLevel = systemUserLevelService.getByLevelId(user.getLevel());
         }
         if (ObjectUtil.isNull(userLevel)) {
-            throw new CrmebException("用户会员等级不存在，请检查用户数据");
+            throw new OtterwoodException("用户会员等级不存在，请检查用户数据");
         }
         if (userLevel.getGrade() > systemUserLevel.getGrade()) {
             if (ObjectUtil.isNull(request.getIsSub())) {
-                throw new CrmebException("降低用户等级时，请选择是否扣除用户经验值");
+                throw new OtterwoodException("降低用户等级时，请选择是否扣除用户经验值");
             }
         }
 
@@ -1575,9 +1575,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             newLevel.setLevelId(systemUserLevel.getId());
             newLevel.setGrade(systemUserLevel.getGrade());
             newLevel.setStatus(true);
-            newLevel.setMark(StrUtil.format("尊敬的用户 {},在{}管理员调整会员等级成为{}", user.getNickname(), CrmebDateUtil.nowDateTimeStr(), systemUserLevel.getName()));
+            newLevel.setMark(StrUtil.format("尊敬的用户 {},在{}管理员调整会员等级成为{}", user.getNickname(), OtterwoodDateUtil.nowDateTimeStr(), systemUserLevel.getName()));
             newLevel.setDiscount(systemUserLevel.getDiscount());
-            newLevel.setCreateTime(CrmebDateUtil.nowDateTime());
+            newLevel.setCreateTime(OtterwoodDateUtil.nowDateTime());
             return transactionTemplate.execute(e -> {
                 updateLevel(user.getUid(), request.getLevelId());
                 userLevelService.save(newLevel);
@@ -1592,9 +1592,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             newLevel.setLevelId(systemUserLevel.getId());
             newLevel.setGrade(systemUserLevel.getGrade());
             newLevel.setStatus(true);
-            newLevel.setMark(StrUtil.format("尊敬的用户 {},在{}管理员调整会员等级成为{},不扣除经验", user.getNickname(), CrmebDateUtil.nowDateTimeStr(), systemUserLevel.getName()));
+            newLevel.setMark(StrUtil.format("尊敬的用户 {},在{}管理员调整会员等级成为{},不扣除经验", user.getNickname(), OtterwoodDateUtil.nowDateTimeStr(), systemUserLevel.getName()));
             newLevel.setDiscount(systemUserLevel.getDiscount());
-            newLevel.setCreateTime(CrmebDateUtil.nowDateTime());
+            newLevel.setCreateTime(OtterwoodDateUtil.nowDateTime());
             return transactionTemplate.execute(e -> {
                 updateLevel(user.getUid(), request.getLevelId());
                 userLevelService.save(newLevel);
@@ -1622,9 +1622,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         newLevel.setLevelId(systemUserLevel.getId());
         newLevel.setGrade(systemUserLevel.getGrade());
         newLevel.setStatus(true);
-        newLevel.setMark(StrUtil.format("尊敬的用户 {},在{}管理员调整会员等级成为{},扣除经验{}", user.getNickname(), CrmebDateUtil.nowDateTimeStr(), systemUserLevel.getName(), deductionExp));
+        newLevel.setMark(StrUtil.format("尊敬的用户 {},在{}管理员调整会员等级成为{},扣除经验{}", user.getNickname(), OtterwoodDateUtil.nowDateTimeStr(), systemUserLevel.getName(), deductionExp));
         newLevel.setDiscount(systemUserLevel.getDiscount());
-        newLevel.setCreateTime(CrmebDateUtil.nowDateTime());
+        newLevel.setCreateTime(OtterwoodDateUtil.nowDateTime());
         return transactionTemplate.execute(e -> {
             user.setUpdateTime(DateUtil.date());
             updateById(user);
@@ -1714,7 +1714,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public User getInfoByUid(Integer id) {
         User user = getById(id);
         if (ObjectUtil.isNull(user)) {
-            throw new CrmebException("用户不存在");
+            throw new OtterwoodException("用户不存在");
         }
         return user;
     }

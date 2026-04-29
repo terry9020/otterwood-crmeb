@@ -4,7 +4,7 @@ import lombok.Data;
 
 /**
  * 易联云 获取AccessToken response body 数据
- * @program: crmeb
+ * @program: otterwood
  * @author: 大粽子
  * @create: 2021-11-26 16:52
  **/

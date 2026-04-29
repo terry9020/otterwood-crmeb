@@ -3,13 +3,13 @@ package com.otterwood.common.constants;
 /**
  *  配置类
  *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
  */
 public class Constants {
@@ -60,7 +60,7 @@ public class Constants {
 
 
     //用户登录密码加密混淆字符串
-    public static final String USER_LOGIN_PASSWORD_MD5_KEYWORDS = "crmeb";
+    public static final String USER_LOGIN_PASSWORD_MD5_KEYWORDS = "otterwood";
 
     //用户登token redis存储前缀
     public static final String USER_TOKEN_REDIS_KEY_PREFIX = "TOKEN_USER:";
@@ -577,8 +577,8 @@ public class Constants {
     public static final String CONFIG_FORM_SWITCH_OPEN = "'1'";
 
     /** 公共JS配置 */
-    // CRMEB chat 统计
-    public  static final String JS_CONFIG_CRMEB_CHAT_TONGJI = "crmeb_tongji_js";
+    // OTTERWOOD chat 统计
+    public  static final String JS_CONFIG_OTTERWOOD_CHAT_TONGJI = "otterwood_tongji_js";
 
     /** 小程序源码包文件名 */
     public static final String WECHAT_SOURCE_CODE_FILE_NAME = "/mp-weixin-target.zip";

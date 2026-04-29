@@ -9,7 +9,7 @@ import com.otterwood.admin.model.ScheduleJob;
 import com.otterwood.admin.quartz.ScheduleConstants;
 import com.otterwood.admin.quartz.ScheduleManager;
 import com.otterwood.admin.service.ScheduleJobService;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.request.ScheduleJobRequest;
 import org.quartz.CronTrigger;
 import org.springframework.beans.BeanUtils;
@@ -24,13 +24,13 @@ import java.util.List;
 /**
  * ScheduleJobServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -100,11 +100,11 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobDao, Schedule
     @Override
     public Boolean edit(ScheduleJobRequest request) {
         if (ObjectUtil.isNull(request.getJobId())) {
-            throw new CrmebException("定时任务ID不能为空");
+            throw new OtterwoodException("定时任务ID不能为空");
         }
         ScheduleJob scheduleJob = getByIdException(request.getJobId());
         if (scheduleJob.getStatus().equals(ScheduleConstants.NORMAL)) {
-            throw new CrmebException("请先暂停定时任务");
+            throw new OtterwoodException("请先暂停定时任务");
         }
         BeanUtils.copyProperties(request, scheduleJob);
         boolean update = updateById(scheduleJob);
@@ -123,7 +123,7 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobDao, Schedule
     public Boolean suspend(Integer jobId) {
         ScheduleJob scheduleJob = getByIdException(jobId);
         if (scheduleJob.getStatus().equals(ScheduleConstants.PAUSE)) {
-            throw new CrmebException("定时任务已暂停，请勿重复操作");
+            throw new OtterwoodException("定时任务已暂停，请勿重复操作");
         }
         scheduleJob.setStatus(ScheduleConstants.PAUSE);
         boolean update = updateById(scheduleJob);
@@ -142,7 +142,7 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobDao, Schedule
     public Boolean start(Integer jobId) {
         ScheduleJob scheduleJob = getByIdException(jobId);
         if (scheduleJob.getStatus().equals(ScheduleConstants.NORMAL)) {
-            throw new CrmebException("定时任务已启动，请勿重复操作");
+            throw new OtterwoodException("定时任务已启动，请勿重复操作");
         }
         scheduleJob.setStatus(ScheduleConstants.NORMAL);
         boolean update = updateById(scheduleJob);
@@ -161,7 +161,7 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobDao, Schedule
     public Boolean delete(Integer jobId) {
         ScheduleJob scheduleJob = getByIdException(jobId);
         if (scheduleJob.getStatus().equals(ScheduleConstants.NORMAL)) {
-            throw new CrmebException("请先暂停定时任务");
+            throw new OtterwoodException("请先暂停定时任务");
         }
         scheduleJob.setIsDelte(true);
         boolean delete = updateById(scheduleJob);
@@ -186,7 +186,7 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobDao, Schedule
     private ScheduleJob getByIdException(Integer jobId) {
         ScheduleJob scheduleJob = getById(jobId);
         if (ObjectUtil.isNull(scheduleJob) || scheduleJob.getIsDelte()) {
-            throw new CrmebException("定时任务不存在");
+            throw new OtterwoodException("定时任务不存在");
         }
         return scheduleJob;
     }

@@ -1,13 +1,13 @@
 package com.otterwood.admin.controller;
 
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.category.Category;
 import com.otterwood.common.page.CommonPage;
 import com.otterwood.common.request.CategoryRequest;
 import com.otterwood.common.request.CategorySearchRequest;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.result.CommonResult;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.vo.CategoryTreeVo;
 import com.otterwood.service.service.CategoryService;
 import com.otterwood.service.service.SystemAttachmentService;
@@ -27,13 +27,13 @@ import java.util.List;
 /**
  * 分类表 前端控制器
  *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
  */
 @Slf4j
@@ -106,7 +106,7 @@ public class CategoryController {
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiImplicitParam(name="id", value="分类ID")
     public CommonResult<String> update(@RequestParam Integer id, @ModelAttribute CategoryRequest categoryRequest) {
-        if (null == id || id <= 0) throw new CrmebException("id 参数不合法");
+        if (null == id || id <= 0) throw new OtterwoodException("id 参数不合法");
         categoryRequest.setExtra(systemAttachmentService.clearPrefix(categoryRequest.getExtra()));
         if (categoryService.update(categoryRequest, id)) {
             return CommonResult.success();
@@ -161,7 +161,7 @@ public class CategoryController {
     @RequestMapping(value = "/list/ids", method = RequestMethod.GET)
     @ApiImplicitParam(name = "ids", value="分类id集合")
     public CommonResult<List<Category>> getByIds(@Validated @RequestParam(name = "ids") String ids) {
-        return CommonResult.success(categoryService.getByIds(CrmebUtil.stringToArray(ids)));
+        return CommonResult.success(categoryService.getByIds(OtterwoodUtil.stringToArray(ids)));
     }
 
     /**

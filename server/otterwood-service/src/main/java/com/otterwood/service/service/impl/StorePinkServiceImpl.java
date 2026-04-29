@@ -15,11 +15,11 @@ import com.otterwood.common.vo.MyRecord;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.UserConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.model.combination.StoreCombination;
 import com.otterwood.common.model.combination.StorePink;
 import com.otterwood.common.request.StorePinkSearchRequest;
@@ -43,13 +43,13 @@ import java.util.stream.Collectors;
 /**
  * StorePinkService 实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -96,8 +96,8 @@ public class StorePinkServiceImpl extends ServiceImpl<StorePinkDao, StorePink> i
             lqw.eq(StorePink::getStatus, request.getStatus());
         }
         if (StrUtil.isNotBlank(request.getDateLimit())) {
-            DateLimitUtilVo dateLimit = CrmebDateUtil.getDateLimit(request.getDateLimit());
-            lqw.between(StorePink::getAddTime, CrmebDateUtil.dateStr2Timestamp(dateLimit.getStartTime(), Constants.DATE_TIME_TYPE_BEGIN), CrmebDateUtil.dateStr2Timestamp(dateLimit.getEndTime(), Constants.DATE_TIME_TYPE_END));
+            DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(request.getDateLimit());
+            lqw.between(StorePink::getAddTime, OtterwoodDateUtil.dateStr2Timestamp(dateLimit.getStartTime(), Constants.DATE_TIME_TYPE_BEGIN), OtterwoodDateUtil.dateStr2Timestamp(dateLimit.getEndTime(), Constants.DATE_TIME_TYPE_END));
         }
         lqw.eq(StorePink::getKId, 0);
         lqw.orderByDesc(StorePink::getId);
@@ -110,8 +110,8 @@ public class StorePinkServiceImpl extends ServiceImpl<StorePinkDao, StorePink> i
             BeanUtils.copyProperties(pink, storePinkResponse);
             Integer countPeople = getCountByKidAndCid(pink.getCid(), pink.getId());
             storePinkResponse.setCountPeople(countPeople);
-            storePinkResponse.setAddTime(CrmebDateUtil.timestamp2DateStr(pink.getAddTime(), Constants.DATE_FORMAT));
-            storePinkResponse.setStopTime(CrmebDateUtil.timestamp2DateStr(pink.getStopTime(), Constants.DATE_FORMAT));
+            storePinkResponse.setAddTime(OtterwoodDateUtil.timestamp2DateStr(pink.getAddTime(), Constants.DATE_FORMAT));
+            storePinkResponse.setStopTime(OtterwoodDateUtil.timestamp2DateStr(pink.getStopTime(), Constants.DATE_FORMAT));
             StoreCombination combination = storeCombinationService.getById(pink.getCid());
             storePinkResponse.setTitle(combination.getTitle());
             return storePinkResponse;
@@ -255,15 +255,15 @@ public class StorePinkServiceImpl extends ServiceImpl<StorePinkDao, StorePink> i
         }
         if (CollUtil.isNotEmpty(pinkFailList) && pinkFailList.size() > 0) {
             boolean failUpdate = updateBatchById(pinkFailList, 100);
-            if (!failUpdate) throw new CrmebException("批量更新拼团状态，拼团未成功部分，失败");
+            if (!failUpdate) throw new OtterwoodException("批量更新拼团状态，拼团未成功部分，失败");
         }
         if (applyList.size() > 0) {
             boolean task = orderService.refundApplyTask(applyList);
-            if (!task) throw new CrmebException("拼团未成功,订单申请退款失败");
+            if (!task) throw new OtterwoodException("拼团未成功,订单申请退款失败");
         }
         if (CollUtil.isNotEmpty(pinkSuccessList) && pinkSuccessList.size() > 0) {
             boolean successUpdate = updateBatchById(pinkSuccessList, 100);
-            if (!successUpdate) throw new CrmebException("批量更新拼团状态，拼团成功部分，失败");
+            if (!successUpdate) throw new OtterwoodException("批量更新拼团状态，拼团成功部分，失败");
             SystemNotification notification = systemNotificationService.getByMark(NotifyConstants.GROUP_SUCCESS_MARK);
             if (notification.getIsRoutine().equals(1) || notification.getIsWechat().equals(1)) {
                 pinkSuccessList.forEach(i -> {

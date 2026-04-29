@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.TaskConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.combination.StorePink;
 import com.otterwood.common.model.order.StoreOrder;
 import com.otterwood.common.model.system.SystemAdmin;
@@ -14,7 +14,7 @@ import com.otterwood.common.request.StoreOrderStaticsticsRequest;
 import com.otterwood.common.response.StoreOrderVerificationConfirmResponse;
 import com.otterwood.common.response.StoreStaffDetail;
 import com.otterwood.common.response.StoreStaffTopDetail;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.utils.SecurityUtil;
 import com.otterwood.common.vo.DateLimitUtilVo;
@@ -34,13 +34,13 @@ import java.util.List;
 /**
  * StoreOrderVerificationImpl 接口实现 核销订单
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -105,12 +105,12 @@ public class StoreOrderVerificationImpl implements StoreOrderVerification {
         storeStaffTopDetail.setRefundCount(dao.selectCount(lqwRefundCount));
 
         // 获取今日，昨日，本月，订单金额
-        String dayStart = CrmebDateUtil.nowDateTime(Constants.DATE_FORMAT_START);
-        String dayEnd = CrmebDateUtil.nowDateTime(Constants.DATE_FORMAT_END);
-        String yesterdayStart = CrmebDateUtil.addDay(dayStart,-1,Constants.DATE_FORMAT_START);
-        String yesterdayEnd = CrmebDateUtil.addDay(dayEnd,-1,Constants.DATE_FORMAT_END);
-        String monthStart = CrmebDateUtil.nowDateTime(Constants.DATE_FORMAT_MONTH_START);
-        String monthEnd = CrmebDateUtil.getMonthEndDay();
+        String dayStart = OtterwoodDateUtil.nowDateTime(Constants.DATE_FORMAT_START);
+        String dayEnd = OtterwoodDateUtil.nowDateTime(Constants.DATE_FORMAT_END);
+        String yesterdayStart = OtterwoodDateUtil.addDay(dayStart,-1,Constants.DATE_FORMAT_START);
+        String yesterdayEnd = OtterwoodDateUtil.addDay(dayEnd,-1,Constants.DATE_FORMAT_END);
+        String monthStart = OtterwoodDateUtil.nowDateTime(Constants.DATE_FORMAT_MONTH_START);
+        String monthEnd = OtterwoodDateUtil.getMonthEndDay();
 
         // 今日订单数量
         LambdaQueryWrapper<StoreOrder> lqwTodayCount = Wrappers.lambdaQuery();
@@ -158,7 +158,7 @@ public class StoreOrderVerificationImpl implements StoreOrderVerification {
     @Override
     public List<StoreStaffDetail> getOrderVerificationDetail(StoreOrderStaticsticsRequest request) {
         request.setPage((request.getPage() - 1) * request.getLimit());
-        DateLimitUtilVo dateLimit = CrmebDateUtil.getDateLimit(request.getDateLimit());
+        DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(request.getDateLimit());
         request.setStartTime(dateLimit.getStartTime());
         request.setEndTime(dateLimit.getEndTime());
         return dao.getOrderVerificationDetail(request);
@@ -182,7 +182,7 @@ public class StoreOrderVerificationImpl implements StoreOrderVerification {
         BeanUtils.copyProperties(existOrder,storeOrder);
         if (ObjectUtil.isNotNull(storeOrder.getCombinationId()) && storeOrder.getCombinationId() > 0) {
             StorePink storePink = storePinkService.getById(storeOrder.getPinkId());
-            if (storePink.getStatus() != 2) throw new CrmebException("当前订单正在拼团中不能核销！");
+            if (storePink.getStatus() != 2) throw new OtterwoodException("当前订单正在拼团中不能核销！");
         }
         storeOrder.setStatus(Constants.ORDER_STATUS_INT_BARGAIN);
         storeOrder.setClerkId(currentAdmin.getId());
@@ -208,8 +208,8 @@ public class StoreOrderVerificationImpl implements StoreOrderVerification {
         StoreOrderVerificationConfirmResponse response = new StoreOrderVerificationConfirmResponse();
         StoreOrder storeOrderPram = new StoreOrder().setVerifyCode(vCode).setPaid(true).setRefundStatus(0);
         StoreOrder existOrder = storeOrderService.getByEntityOne(storeOrderPram);
-        if(null == existOrder) throw new CrmebException(Constants.RESULT_VERIFICATION_ORDER_NOT_FUND.replace("${vCode}",vCode));
-        if(existOrder.getStatus() > 0) throw new CrmebException(Constants.RESULT_VERIFICATION_ORDER_VED.replace("${vCode}",vCode));
+        if(null == existOrder) throw new OtterwoodException(Constants.RESULT_VERIFICATION_ORDER_NOT_FUND.replace("${vCode}",vCode));
+        if(existOrder.getStatus() > 0) throw new OtterwoodException(Constants.RESULT_VERIFICATION_ORDER_VED.replace("${vCode}",vCode));
         BeanUtils.copyProperties(existOrder, response);
         response.setStoreOrderInfoVos(storeOrderInfoService.getOrderListByOrderId(existOrder.getId()));
         return response;

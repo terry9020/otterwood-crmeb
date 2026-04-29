@@ -12,7 +12,7 @@ import com.otterwood.common.request.SystemFormItemCheckRequest;
 import com.otterwood.common.request.SystemGroupDataRequest;
 import com.otterwood.common.request.SystemGroupDataSearchRequest;
 import com.github.pagehelper.PageHelper;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.model.system.SystemGroupData;
 import com.otterwood.service.dao.SystemGroupDataDao;
 import com.otterwood.service.service.SystemAttachmentService;
@@ -30,13 +30,13 @@ import java.util.List;
 /**
  * SystemGroupDataServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -134,7 +134,7 @@ public class SystemGroupDataServiceImpl extends ServiceImpl<SystemGroupDataDao, 
 
         for (SystemGroupData systemGroupData : list) {
             JSONObject jsonObject = JSONObject.parseObject(systemGroupData.getValue());
-            List<SystemFormItemCheckRequest> systemFormItemCheckRequestList = CrmebUtil.jsonToListClass(jsonObject.getString("fields"), SystemFormItemCheckRequest.class);
+            List<SystemFormItemCheckRequest> systemFormItemCheckRequestList = OtterwoodUtil.jsonToListClass(jsonObject.getString("fields"), SystemFormItemCheckRequest.class);
             if (systemFormItemCheckRequestList.size() < 1) {
                 continue;
             }
@@ -144,7 +144,7 @@ public class SystemGroupDataServiceImpl extends ServiceImpl<SystemGroupDataDao, 
                 map.put(systemFormItemCheckRequest.getName(), systemFormItemCheckRequest.getValue());
             }
             map.put("id", systemGroupData.getId());
-            t = CrmebUtil.mapToObj(map, cls);
+            t = OtterwoodUtil.mapToObj(map, cls);
             arrayList.add(t);
         }
 
@@ -172,7 +172,7 @@ public class SystemGroupDataServiceImpl extends ServiceImpl<SystemGroupDataDao, 
 
         for (SystemGroupData systemGroupData : list) {
             JSONObject jsonObject = JSONObject.parseObject(systemGroupData.getValue());
-            List<SystemFormItemCheckRequest> systemFormItemCheckRequestList = CrmebUtil.jsonToListClass(jsonObject.getString("fields"), SystemFormItemCheckRequest.class);
+            List<SystemFormItemCheckRequest> systemFormItemCheckRequestList = OtterwoodUtil.jsonToListClass(jsonObject.getString("fields"), SystemFormItemCheckRequest.class);
             if (systemFormItemCheckRequestList.size() < 1) {
                 continue;
             }
@@ -200,7 +200,7 @@ public class SystemGroupDataServiceImpl extends ServiceImpl<SystemGroupDataDao, 
         }
 
         JSONObject jsonObject = JSONObject.parseObject(systemGroupData.getValue());
-        List<SystemFormItemCheckRequest> systemFormItemCheckRequestList = CrmebUtil.jsonToListClass(jsonObject.getString("fields"), SystemFormItemCheckRequest.class);
+        List<SystemFormItemCheckRequest> systemFormItemCheckRequestList = OtterwoodUtil.jsonToListClass(jsonObject.getString("fields"), SystemFormItemCheckRequest.class);
         if (systemFormItemCheckRequestList.size() < 1) {
             return null;
         }
@@ -210,7 +210,7 @@ public class SystemGroupDataServiceImpl extends ServiceImpl<SystemGroupDataDao, 
             map.put(systemFormItemCheckRequest.getName(), systemFormItemCheckRequest.getValue());
         }
         map.put("id", systemGroupData.getId());
-        t = CrmebUtil.mapToObj(map, cls);
+        t = OtterwoodUtil.mapToObj(map, cls);
 
         return t;
     }

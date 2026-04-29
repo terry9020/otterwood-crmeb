@@ -131,7 +131,7 @@
 				</view>
 				<view class='noCart' v-if="(cartList.valid.length == 0 && cartList.invalid.length == 0 && canShow) || !isLogin">
 					<view class='pictrue'>
-						<image :src="urlDomain+'crmebimage/perset/staticImg/noCart.png'"></image>
+						<image :src="urlDomain+'otterwoodimage/perset/staticImg/noCart.png'"></image>
 					</view>
 					<!-- 推荐商品 -->
 					<recommend ref="recommendIndex"></recommend>

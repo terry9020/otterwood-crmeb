@@ -12,7 +12,7 @@ import com.otterwood.common.result.IResultEnum;
 public interface BusinessExceptionAssert extends IResultEnum, Assert {
 
     @Override
-    default CrmebException newException() {
+    default OtterwoodException newException() {
         return new BusinessException(this);
     }
 

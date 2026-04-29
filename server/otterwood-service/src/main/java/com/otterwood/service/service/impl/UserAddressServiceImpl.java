@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.system.SystemCity;
 import com.otterwood.common.model.user.UserAddress;
 import com.otterwood.common.request.PageParamRequest;
@@ -26,13 +26,13 @@ import java.util.List;
 /**
  * UserAddressServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -83,15 +83,15 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressDao, UserAddr
 
         // 添加地址时cityId和城市名称不能同时为空，如果id为空，必须用城市名称自查后set CityId
         if (request.getAddress().getCityId() == 0 && StrUtil.isBlank(request.getAddress().getDistrict())) {
-            throw new CrmebException("请选择正确城市数据");
+            throw new OtterwoodException("请选择正确城市数据");
         }
         if (StrUtil.isNotBlank(request.getAddress().getCity()) && request.getAddress().getCityId() == 0) {
             SystemCity systemCity = systemCityService.getCityByCityName(request.getAddress().getCity());
             if (ObjectUtil.isNull(systemCity)) {
-                throw new CrmebException("当前城市未找到");
+                throw new OtterwoodException("当前城市未找到");
             }
             SystemCity currentCity = systemCityService.getByAreaNameAndPid(request.getAddress().getDistrict(), systemCity.getCityId());
-            if (ObjectUtil.isNull(currentCity)) throw new CrmebException("当前城市区域未找到！");
+            if (ObjectUtil.isNull(currentCity)) throw new OtterwoodException("当前城市区域未找到！");
             userAddress.setCityId(currentCity.getCityId());
         }
 
@@ -204,7 +204,7 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressDao, UserAddr
         //检测城市Id是否存在
         SystemCity systemCity = systemCityService.getByAreaId(cityId);
         if (ObjectUtil.isNull(systemCity)) {
-            throw new CrmebException("请选择正确的城市");
+            throw new OtterwoodException("请选择正确的城市");
         }
     }
 

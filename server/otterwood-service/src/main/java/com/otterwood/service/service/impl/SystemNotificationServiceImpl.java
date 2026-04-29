@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.NotifyConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.sms.SmsTemplate;
 import com.otterwood.common.model.system.SystemNotification;
 import com.otterwood.common.model.wechat.TemplateMessage;
@@ -34,13 +34,13 @@ import java.util.stream.Collectors;
 /**
  * SystemNotificationServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -81,7 +81,7 @@ public class SystemNotificationServiceImpl extends ServiceImpl<SystemNotificatio
     public Boolean wechatSwitch(Integer id) {
         SystemNotification systemNotification = getByIdException(id);
         if (systemNotification.getIsWechat().equals(0)) {
-            throw new CrmebException("通知没有配置公众号模板");
+            throw new OtterwoodException("通知没有配置公众号模板");
         }
         LambdaUpdateWrapper<SystemNotification> luw = Wrappers.lambdaUpdate();
         luw.set(SystemNotification::getIsWechat, systemNotification.getIsWechat().equals(1) ? 2 : 1);
@@ -98,7 +98,7 @@ public class SystemNotificationServiceImpl extends ServiceImpl<SystemNotificatio
     public Boolean routineSwitch(Integer id) {
         SystemNotification systemNotification = getByIdException(id);
         if (systemNotification.getIsRoutine().equals(0)) {
-            throw new CrmebException("通知没有配置小程序订阅模板");
+            throw new OtterwoodException("通知没有配置小程序订阅模板");
         }
         LambdaUpdateWrapper<SystemNotification> luw = Wrappers.lambdaUpdate();
         luw.set(SystemNotification::getIsRoutine, systemNotification.getIsRoutine().equals(1) ? 2 : 1);
@@ -115,7 +115,7 @@ public class SystemNotificationServiceImpl extends ServiceImpl<SystemNotificatio
     public Boolean smsSwitch(Integer id) {
         SystemNotification systemNotification = getByIdException(id);
         if (systemNotification.getIsSms().equals(0)) {
-            throw new CrmebException("通知没有配置短信");
+            throw new OtterwoodException("通知没有配置短信");
         }
         LambdaUpdateWrapper<SystemNotification> luw = Wrappers.lambdaUpdate();
         luw.set(SystemNotification::getIsSms, systemNotification.getIsSms().equals(1) ? 2 : 1);
@@ -134,7 +134,7 @@ public class SystemNotificationServiceImpl extends ServiceImpl<SystemNotificatio
         NotificationInfoResponse response = new NotificationInfoResponse();
         if (request.getDetailType().equals("wechat")) {
             if (notification.getIsWechat().equals(0)) {
-                throw new CrmebException("请先配置公众号模板消息");
+                throw new OtterwoodException("请先配置公众号模板消息");
             }
             TemplateMessage templateMessage = templateMessageService.info(notification.getWechatId());
             BeanUtils.copyProperties(templateMessage, response);
@@ -142,7 +142,7 @@ public class SystemNotificationServiceImpl extends ServiceImpl<SystemNotificatio
         }
         if (request.getDetailType().equals("routine")) {
             if (notification.getIsRoutine().equals(0)) {
-                throw new CrmebException("请先配置小程序订阅消息");
+                throw new OtterwoodException("请先配置小程序订阅消息");
             }
             TemplateMessage templateMessage = templateMessageService.info(notification.getRoutineId());
             BeanUtils.copyProperties(templateMessage, response);
@@ -150,7 +150,7 @@ public class SystemNotificationServiceImpl extends ServiceImpl<SystemNotificatio
         }
         if (request.getDetailType().equals("sms")) {
             if (notification.getIsSms().equals(0)) {
-                throw new CrmebException("请先配置短信模板");
+                throw new OtterwoodException("请先配置短信模板");
             }
             SmsTemplate smsTemplate = smsTemplateService.getDetail(notification.getSmsId());
             BeanUtils.copyProperties(smsTemplate, response);
@@ -195,12 +195,12 @@ public class SystemNotificationServiceImpl extends ServiceImpl<SystemNotificatio
     @Override
     public Boolean modify(NotificationUpdateRequest request) {
         if (!request.getDetailType().equals("sms") && StrUtil.isEmpty(request.getTempId())) {
-            throw new CrmebException("模板id不能为空");
+            throw new OtterwoodException("模板id不能为空");
         }
         SystemNotification notification = getByIdException(request.getId());
         if (request.getDetailType().equals("wechat")) {
             if (notification.getIsWechat().equals(0)) {
-                throw new CrmebException("请先为通知配置公众号模板");
+                throw new OtterwoodException("请先为通知配置公众号模板");
             }
             TemplateMessage templateMessage = templateMessageService.info(notification.getWechatId());
             if (templateMessage.getTempId().equals(request.getTempId()) && notification.getIsWechat().equals(request.getStatus())) {
@@ -221,7 +221,7 @@ public class SystemNotificationServiceImpl extends ServiceImpl<SystemNotificatio
         }
         if (request.getDetailType().equals("routine")) {
             if (notification.getIsRoutine().equals(0)) {
-                throw new CrmebException("请先为通知配置小程序订阅模板");
+                throw new OtterwoodException("请先为通知配置小程序订阅模板");
             }
             TemplateMessage templateMessage = templateMessageService.info(notification.getRoutineId());
             if (templateMessage.getTempId().equals(request.getTempId()) && notification.getIsRoutine().equals(request.getStatus())) {
@@ -304,7 +304,7 @@ public class SystemNotificationServiceImpl extends ServiceImpl<SystemNotificatio
     private SystemNotification getByIdException(Integer id) {
         SystemNotification notification = getById(id);
         if (ObjectUtil.isNull(notification)) {
-            throw new CrmebException("系统通知不存在");
+            throw new OtterwoodException("系统通知不存在");
         }
         return notification;
     }

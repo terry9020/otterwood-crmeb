@@ -5,13 +5,13 @@ import org.apache.commons.codec.digest.DigestUtils;
 /**
  * 通用工具类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 public class CommonUtil {
@@ -24,8 +24,8 @@ public class CommonUtil {
      * 使用des方式加密
      */
     public static String createPwd(String phone) {
-        String password = "Abc" + CrmebUtil.randomCount(10000, 99999);
-        return CrmebUtil.encryptPassword(password, phone);
+        String password = "Abc" + OtterwoodUtil.randomCount(10000, 99999);
+        return OtterwoodUtil.encryptPassword(password, phone);
     }
 
     /**
@@ -35,7 +35,7 @@ public class CommonUtil {
      * @return 昵称
      */
     public static String createNickName(String phone) {
-        return DigestUtils.md5Hex(phone + CrmebDateUtil.getNowTime()).
+        return DigestUtils.md5Hex(phone + OtterwoodDateUtil.getNowTime()).
                 subSequence(0, 12).
                 toString();
     }

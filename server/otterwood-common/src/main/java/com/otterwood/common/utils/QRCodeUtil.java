@@ -19,13 +19,13 @@ import java.util.HashMap;
 
 /**
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  * 二维码工具
  */
@@ -53,7 +53,7 @@ public class QRCodeUtil {
                  * 原生转码前面没有 data:image/png;base64 这些字段，返回给前端是无法被解析，可以让前端加，也可以在下面加上
                  */
 
-                return CrmebUtil.getBase64Image(Base64.encodeBase64String(os.toByteArray()));
+                return OtterwoodUtil.getBase64Image(Base64.encodeBase64String(os.toByteArray()));
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {

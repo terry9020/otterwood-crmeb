@@ -2,9 +2,9 @@
 	<view class='recommend'>
 		<block v-if="tempArr.length">
 			<view v-if="isShowTitle" class="flex-center recommend-box mt-20 mb-24">
-				<image :src="`${urlDomain}crmebimage/presets/haowuzuo.png`"></image>
+				<image :src="`${urlDomain}otterwoodimage/presets/haowuzuo.png`"></image>
 				<view class="f-s-32 lh-44rpx ml-4">热门推荐</view>
-				<image class="ml-6" :src="`${urlDomain}crmebimage/presets/haowuyou.png`"></image>
+				<image class="ml-6" :src="`${urlDomain}otterwoodimage/presets/haowuyou.png`"></image>
 			</view>
 			<view class='recommendList borderPad' :class="isShowTitle?'':'mt30'">
 				<WaterfallsFlow :wfList='tempArr' :type="1" :isStore="1">
@@ -22,13 +22,13 @@
 
 <script>
 	// +----------------------------------------------------------------------
-	// | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+	// | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
 	// +----------------------------------------------------------------------
-	// | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+	// | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
 	// +----------------------------------------------------------------------
-	// | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+	// | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
 	// +----------------------------------------------------------------------
-	// | Author: CRMEB Team <admin@crmeb.com>
+	// | Author: OTTERWOOD Team <admin@otterwood.com>
 	// +----------------------------------------------------------------------
 	import {
 		mapGetters

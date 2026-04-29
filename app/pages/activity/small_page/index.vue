@@ -74,7 +74,7 @@
 			@getRecommendLength="getRecommendLength"></recommend>
 		<view class='noCommodity' v-if="isNoCommodity&& navIndex > 0">
 			<view class='pictrue'>
-				<image :src="urlDomain+'crmebimage/presets/noShopper.png'"></image>
+				<image :src="urlDomain+'otterwoodimage/presets/noShopper.png'"></image>
 			</view>
 			<text class="text-ccc">暂无商品</text>
 		</view>

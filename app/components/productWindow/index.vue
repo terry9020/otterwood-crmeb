@@ -15,7 +15,7 @@
 							￥<text class="num">{{ attr.productSelect.price }}</text>
 							<view class="flex pl-2"
 								v-if="attr.productSelect.vipPrice && attr.productSelect.vipPrice > 0">
-								<image :src="urlDomain+'crmebimage/perset/staticImg/vip_badge.png'" class="vip_icon"></image>
+								<image :src="urlDomain+'otterwoodimage/perset/staticImg/vip_badge.png'" class="vip_icon"></image>
 								<text class='vip_money skeleton-rect'>￥{{attr.productSelect.vipPrice}}</text>
 							</view>
 						</view>

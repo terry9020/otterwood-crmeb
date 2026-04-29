@@ -5,19 +5,19 @@
 			@load="handleImgLoad" @error="handleImgError">
 		</image>
 		<view class="loadfail-img" v-else-if="isLoadError"
-			:style="{'background-image': `url(${urlDomain}crmebimage/presets/loadfail.png) no-repeat center`}"></view>
+			:style="{'background-image': `url(${urlDomain}otterwoodimage/presets/loadfail.png) no-repeat center`}"></view>
 		<view :class="['loading-img',loadingMode]" v-show="!showImg&&!isLoadError"></view>
 	</view>
 </template>
 <script>
 	// +----------------------------------------------------------------------
-	// | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+	// | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
 	// +----------------------------------------------------------------------
-	// | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+	// | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
 	// +----------------------------------------------------------------------
-	// | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+	// | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
 	// +----------------------------------------------------------------------
-	// | Author: CRMEB Team <admin@crmeb.com>
+	// | Author: OTTERWOOD Team <admin@otterwood.com>
 	// +----------------------------------------------------------------------
 	import {
 		throttle

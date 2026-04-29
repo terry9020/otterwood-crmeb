@@ -1,11 +1,11 @@
 // +----------------------------------------------------------------------
-// | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+// | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
 // +----------------------------------------------------------------------
-// | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+// | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
 // +----------------------------------------------------------------------
-// | Author: CRMEB Team <admin@crmeb.com>
+// | Author: OTTERWOOD Team <admin@otterwood.com>
 // +----------------------------------------------------------------------
 
 import request from "@/utils/request.js";
@@ -424,12 +424,12 @@ export function getuserDalance()
 */
 export function computeUser(){
 	uni.request({
-	    url: document.location.protocol + '//shop.crmeb.net/index.php/admin/server.upgrade_api/updatewebinfo',
+	    url: document.location.protocol + '//shop.otterwood.net/index.php/admin/server.upgrade_api/updatewebinfo',
 		method:'POST',
 		data: {
 	        host:window.location.host,
 			https:document.location.protocol,
-			version:'CRMEB-JAVA-SY-V2.0',
+			version:'OTTERWOOD-JAVA-SY-V2.0',
 			ip:Cache.has('Ip') ? Cache.get('Ip') : ''
 	    },
 		dataType:'json',

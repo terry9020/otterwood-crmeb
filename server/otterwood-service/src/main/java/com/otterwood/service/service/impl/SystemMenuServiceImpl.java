@@ -7,7 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.system.SystemMenu;
 import com.otterwood.common.request.SystemMenuRequest;
 import com.otterwood.common.request.SystemMenuSearchRequest;
@@ -27,13 +27,13 @@ import java.util.stream.Collectors;
 /**
  * SystemMenuServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -102,10 +102,10 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
     @Override
     public Boolean add(SystemMenuRequest request) {
         if (request.getMenuType().equals("C") && StrUtil.isEmpty(request.getComponent())) {
-            throw new CrmebException("菜单类型的组件路径不能为空");
+            throw new OtterwoodException("菜单类型的组件路径不能为空");
         }
         if (request.getMenuType().equals("A") && StrUtil.isEmpty(request.getPerms())) {
-            throw new CrmebException("按钮类型的权限表示不能为空");
+            throw new OtterwoodException("按钮类型的权限表示不能为空");
         }
         SystemMenu systemMenu = new SystemMenu();
         request.setId(null);
@@ -160,13 +160,13 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
     @Override
     public Boolean edit(SystemMenuRequest request) {
         if (ObjectUtil.isNull(request.getId())) {
-            throw new CrmebException("系统菜单id不能为空");
+            throw new OtterwoodException("系统菜单id不能为空");
         }
         if (request.getMenuType().equals("C") && StrUtil.isEmpty(request.getComponent())) {
-            throw new CrmebException("菜单类型的组件路径不能为空");
+            throw new OtterwoodException("菜单类型的组件路径不能为空");
         }
         if (request.getMenuType().equals("A") && StrUtil.isEmpty(request.getPerms())) {
-            throw new CrmebException("按钮类型的权限表示不能为空");
+            throw new OtterwoodException("按钮类型的权限表示不能为空");
         }
         SystemMenu systemMenu = new SystemMenu();
         BeanUtils.copyProperties(request, systemMenu);
@@ -288,7 +288,7 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
     private SystemMenu getInfoById(Integer id) {
         SystemMenu systemMenu = getById(id);
         if (ObjectUtil.isNull(systemMenu) || systemMenu.getIsDelte()) {
-            throw new CrmebException("系统菜单不存在");
+            throw new OtterwoodException("系统菜单不存在");
         }
         return systemMenu;
     }

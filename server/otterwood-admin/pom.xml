@@ -49,7 +49,7 @@
 
     <build>
         <!--打包配置-->
-        <finalName>Crmeb-admin</finalName>
+        <finalName>Otterwood-admin</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

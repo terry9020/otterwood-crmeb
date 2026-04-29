@@ -5,8 +5,8 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.otterwood.common.constants.OnePassConstants;
-import com.otterwood.common.exception.CrmebException;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.exception.OtterwoodException;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.utils.RestTemplateUtil;
 import com.otterwood.common.vo.OnePassLoginVo;
@@ -26,13 +26,13 @@ import java.util.concurrent.TimeUnit;
 /**
  * 一号通工具类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Component
@@ -54,11 +54,11 @@ public class OnePassUtil {
     public OnePassLoginVo getLoginVo() {
         String accessKey = systemConfigService.getValueByKey(OnePassConstants.ONE_PASS_ACCESS_KEY);// 获取配置账号
         if (StrUtil.isBlank(accessKey)) {
-            throw new CrmebException("请配置一号通 应用对应的 accessKey");
+            throw new OtterwoodException("请配置一号通 应用对应的 accessKey");
         }
         String secretKey = systemConfigService.getValueByKey(OnePassConstants.ONE_PASS_SECRET_KEY); //获取配置密码
         if (StrUtil.isBlank(secretKey)) {
-            throw new CrmebException("请配置一号通 应用对应的 secretKey");
+            throw new OtterwoodException("请配置一号通 应用对应的 secretKey");
         }
 //        String secret = SecureUtil.md5(account + SecureUtil.md5(token));
         OnePassLoginVo loginVo = new OnePassLoginVo();
@@ -111,7 +111,7 @@ public class OnePassUtil {
         Long expiresIn = 0L;
         accessToken = OnePassConstants.ONE_PASS_USER_TOKEN_PREFIX.concat(jsonObject.getJSONObject("data").getString("access_token"));
         expiresIn = jsonObject.getJSONObject("data").getLong("expires_in");
-        expiresIn = expiresIn - CrmebDateUtil.getTime();
+        expiresIn = expiresIn - OtterwoodDateUtil.getTime();
         redisUtil.set(StrUtil.format(OnePassConstants.ONE_PASS_TOKEN_KEY_PREFIX, loginVo.getAccessKey()), accessToken, expiresIn, TimeUnit.SECONDS);
         return accessToken;
     }
@@ -170,26 +170,26 @@ public class OnePassUtil {
      */
     private JSONObject checkResult(String result) {
         if (StringUtils.isBlank(result)) {
-            throw new CrmebException("一号通平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("一号通平台接口异常，没任何数据返回！");
         }
         JSONObject jsonObject = null;
         try {
             jsonObject = JSONObject.parseObject(result);
         } catch (Exception e) {
-            throw new CrmebException("一号通平台接口异常！");
+            throw new OtterwoodException("一号通平台接口异常！");
         }
         if (OnePassConstants.ONE_PASS_ERROR_CODE.equals(jsonObject.getInteger("status"))) {
-            throw new CrmebException("一号通平台接口" + jsonObject.getString("msg"));
+            throw new OtterwoodException("一号通平台接口" + jsonObject.getString("msg"));
         }
         return jsonObject;
     }
 
     private JSONObject checkResult(JSONObject jsonObject) {
         if (ObjectUtil.isNull(jsonObject)) {
-            throw new CrmebException("一号通平台接口异常，没任何数据返回！");
+            throw new OtterwoodException("一号通平台接口异常，没任何数据返回！");
         }
         if (OnePassConstants.ONE_PASS_ERROR_CODE.equals(jsonObject.getInteger("status"))) {
-            throw new CrmebException("一号通平台接口" + jsonObject.getString("msg"));
+            throw new OtterwoodException("一号通平台接口" + jsonObject.getString("msg"));
         }
         return jsonObject;
     }

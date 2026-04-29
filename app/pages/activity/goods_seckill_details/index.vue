@@ -97,9 +97,9 @@
 					</view>
 					<view class='product-intro' id="past2">
 						<view class='title'>
-							<image :src="urlDomain+'crmebimage/perset/staticImg/xzuo.png'"></image>
+							<image :src="urlDomain+'otterwoodimage/perset/staticImg/xzuo.png'"></image>
 							<span class="sp">产品详情</span>
-							<image :src="urlDomain+'crmebimage/perset/staticImg/xyou.png'"></image>
+							<image :src="urlDomain+'otterwoodimage/perset/staticImg/xyou.png'"></image>
 						</view>
 						<view class='conter'>
 							<jyf-parser :html="storeInfo.content" ref="article" :tag-style="tagStyle"></jyf-parser>
@@ -177,7 +177,7 @@
 					<!-- #ifndef MP -->
 					<button class="item" hover-class="none" v-if="weixinStatus === true" @click="H5ShareBox = true">
 						<view class="pictrue">
-							<image :src="urlDomain+'crmebimage/perset/staticImg/weixin.png'"></image>
+							<image :src="urlDomain+'otterwoodimage/perset/staticImg/weixin.png'"></image>
 						</view>
 						<view class="">分享给好友</view>
 					</button>
@@ -185,7 +185,7 @@
 					<!-- #ifdef MP -->
 					<button class="item" open-type="share" hover-class="none">
 						<view class="pictrue">
-							<image :src="urlDomain+'crmebimage/perset/staticImg/weixin.png'"></image>
+							<image :src="urlDomain+'otterwoodimage/perset/staticImg/weixin.png'"></image>
 						</view>
 						<view class="">分享给好友</view>
 					</button>
@@ -203,7 +203,7 @@
 					<!-- #ifdef H5 || MP -->
 					<view class="item" @click="getpreviewImage">
 						<view class="pictrue">
-							<image :src="urlDomain+'crmebimage/perset/staticImg/changan.png'"></image>
+							<image :src="urlDomain+'otterwoodimage/perset/staticImg/changan.png'"></image>
 						</view>
 						<view class="">预览发图</view>
 					</view>
@@ -211,7 +211,7 @@
 					<!-- #ifdef MP  -->
 					<button class="item" hover-class="none" @click="savePosterPath">
 						<view class="pictrue">
-							<image :src="urlDomain+'crmebimage/perset/staticImg/haibao.png'"></image>
+							<image :src="urlDomain+'otterwoodimage/perset/staticImg/haibao.png'"></image>
 						</view>
 						<view class="">保存海报</view>
 					</button>
@@ -233,7 +233,7 @@
 			</view>
 			<!-- 发送给朋友图片 -->
 			<view class="share-box" v-if="H5ShareBox">
-				<image :src="urlDomain+'crmebimage/perset/staticImg/share-info.png'" @click="H5ShareBox = false"></image>
+				<image :src="urlDomain+'otterwoodimage/perset/staticImg/share-info.png'" @click="H5ShareBox = false"></image>
 			</view>
 		</view>	
 
@@ -352,7 +352,7 @@
 				storeImage: '', //海报产品图
 				PromotionCode: '', //二维码图片
 				posterImage: '', //海报路径
-				posterbackgd: `${this.$Cache.get("imgHost")}crmebimage/perset/staticImg/posterbackgd.png`,
+				posterbackgd: `${this.$Cache.get("imgHost")}otterwoodimage/perset/staticImg/posterbackgd.png`,
 				actionSheetHidden: false,
 				cart_num:'',
 				attrTxt: '',

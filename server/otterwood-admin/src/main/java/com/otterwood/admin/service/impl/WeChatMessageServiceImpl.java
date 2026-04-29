@@ -2,7 +2,7 @@ package com.otterwood.admin.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.otterwood.common.constants.WeChatConstants;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.utils.XmlUtil;
 import com.otterwood.common.model.article.Article;
@@ -27,13 +27,13 @@ import java.util.Map;
 /**
  * 用户中心 服务实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Data
@@ -157,7 +157,7 @@ public class WeChatMessageServiceImpl implements WeChatMessageService {
         return "<xml>\n" +
                 "  <ToUserName><![CDATA["+fromUserName+"]]></ToUserName>\n" +
                 "  <FromUserName><![CDATA["+toUserName+"]]></FromUserName>\n" +
-                "  <CreateTime>"+ CrmebDateUtil.getNowTime() +"</CreateTime>\n" +
+                "  <CreateTime>"+ OtterwoodDateUtil.getNowTime() +"</CreateTime>\n" +
                 "  <MsgType><![CDATA[news]]></MsgType>\n" +
                 "  <ArticleCount>1</ArticleCount>\n" +
                 "  <Articles>\n" +

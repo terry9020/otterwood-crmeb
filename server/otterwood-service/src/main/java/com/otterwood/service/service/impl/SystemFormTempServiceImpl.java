@@ -4,7 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.request.*;
 import com.otterwood.common.vo.SystemConfigFormItemConfigRegListVo;
 import com.otterwood.common.vo.SystemConfigFormItemVo;
@@ -25,13 +25,13 @@ import java.util.List;
 /**
  * SystemFormTempServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -81,7 +81,7 @@ public class SystemFormTempServiceImpl extends ServiceImpl<SystemFormTempDao, Sy
         try {
             systemConfigFormVo =  JSONObject.parseObject(formTemp.getContent(), SystemConfigFormVo.class);
         } catch (Exception e) {
-            throw new CrmebException("模板表单 【" + formTemp.getName() + "】 的内容不是正确的JSON格式！");
+            throw new OtterwoodException("模板表单 【" + formTemp.getName() + "】 的内容不是正确的JSON格式！");
         }
 
         SystemConfigFormItemVo systemConfigFormItemVo;
@@ -90,7 +90,7 @@ public class SystemFormTempServiceImpl extends ServiceImpl<SystemFormTempDao, Sy
             String model = systemConfigFormItemVo.get__vModel__(); //字段 name
 
             if(systemConfigFormItemVo.get__config__().getRequired() && map.get(model).equals("")) {
-                throw new CrmebException(systemConfigFormItemVo.get__config__().getLabel() + "不能为空！");
+                throw new OtterwoodException(systemConfigFormItemVo.get__config__().getLabel() + "不能为空！");
             }
             //正则验证
             checkRule(systemConfigFormItemVo.get__config__().getRegList(), map.get(model),  systemConfigFormItemVo.get__config__().getLabel());
@@ -106,7 +106,7 @@ public class SystemFormTempServiceImpl extends ServiceImpl<SystemFormTempDao, Sy
         try {
             JSONObject.parseObject(systemFormTempRequest.getContent(), SystemConfigFormVo.class);
         } catch (Exception e) {
-            throw new CrmebException("模板表单 【" + systemFormTempRequest.getName() + "】 的内容不是正确的JSON格式！");
+            throw new OtterwoodException("模板表单 【" + systemFormTempRequest.getName() + "】 的内容不是正确的JSON格式！");
         }
 
         SystemFormTemp systemFormTemp = new SystemFormTemp();
@@ -124,7 +124,7 @@ public class SystemFormTempServiceImpl extends ServiceImpl<SystemFormTempDao, Sy
         try {
             JSONObject.parseObject(systemFormTempRequest.getContent(), SystemConfigFormVo.class);
         } catch (Exception e) {
-            throw new CrmebException("模板表单 【" + systemFormTempRequest.getName() + "】 的内容不是正确的JSON格式！");
+            throw new OtterwoodException("模板表单 【" + systemFormTempRequest.getName() + "】 的内容不是正确的JSON格式！");
         }
 
         SystemFormTemp systemFormTemp = new SystemFormTemp();
@@ -146,7 +146,7 @@ public class SystemFormTempServiceImpl extends ServiceImpl<SystemFormTempDao, Sy
         if(regList.size() > 0) {
             for (SystemConfigFormItemConfigRegListVo systemConfigFormItemConfigRegListVo : regList) {
                 if(!ValidateFormUtil.regular(value, name, systemConfigFormItemConfigRegListVo.getPattern())) {
-                    throw new CrmebException(systemConfigFormItemConfigRegListVo.getMessage());
+                    throw new OtterwoodException(systemConfigFormItemConfigRegListVo.getMessage());
                 }
             }
         }

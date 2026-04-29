@@ -6,7 +6,7 @@ import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.PayConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.vo.CreateOrderRequestVo;
 import com.otterwood.common.vo.WxRefundVo;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -21,13 +21,13 @@ import java.util.*;
 /**
  * 微信支付工具类
  *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
  */
 public class WxPayUtil {
@@ -46,7 +46,7 @@ public class WxPayUtil {
         if (respData.containsKey(RETURN_CODE)) {
             return_code = (String) respData.get(RETURN_CODE);
         } else {
-            throw new CrmebException(String.format("No `return_code` in XML: %s", xmlStr));
+            throw new OtterwoodException(String.format("No `return_code` in XML: %s", xmlStr));
         }
 
         if (return_code.equals(Constants.FAIL)) {
@@ -54,7 +54,7 @@ public class WxPayUtil {
         } else if (return_code.equals(Constants.SUCCESS)) {
             return respData;
         } else {
-            throw new CrmebException(String.format("return_code value %s is invalid in XML: %s", return_code, xmlStr));
+            throw new OtterwoodException(String.format("return_code value %s is invalid in XML: %s", return_code, xmlStr));
         }
     }
 
@@ -62,7 +62,7 @@ public class WxPayUtil {
      * 获取随机字符串，长度要求在32位以内。
      */
     public static String getNonceStr() {
-        return DigestUtils.md5Hex(CrmebUtil.getUuid() + CrmebUtil.randomCount(111111, 666666));
+        return DigestUtils.md5Hex(OtterwoodUtil.getUuid() + OtterwoodUtil.randomCount(111111, 666666));
     }
 
     /**

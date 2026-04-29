@@ -53,13 +53,13 @@
 
 <script>
 // +----------------------------------------------------------------------
-// | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+// | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+// | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
 // +----------------------------------------------------------------------
-// | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+// | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
 // +----------------------------------------------------------------------
-// | Author: CRMEB Team <admin@crmeb.com>
+// | Author: OTTERWOOD Team <admin@otterwood.com>
 // +----------------------------------------------------------------------
 import { mapState, mapGetters } from 'vuex';
 export default {
@@ -91,7 +91,7 @@ export default {
     //图片背景
     boxBgStyle() {
       return {
-        backgroundImage: `url('https://api.admin.merchant.crmeb.xbdzz.cn/crmebimage/public/activitystyle/2023/05/30/5fb66919d78c4c2892fee5900915fba5bepulyen1m.png'),linear-gradient(${this.configObj.bgColor.color[0].item}, ${this.configObj.bgColor.color[1].item})`,
+        backgroundImage: `url('https://api.admin.merchant.otterwood.xbdzz.cn/otterwoodimage/public/activitystyle/2023/05/30/5fb66919d78c4c2892fee5900915fba5bepulyen1m.png'),linear-gradient(${this.configObj.bgColor.color[0].item}, ${this.configObj.bgColor.color[1].item})`,
       };
     },
     //图片样式
@@ -196,7 +196,7 @@ export default {
           tabTitle: '图标设置',
           title: '上传图标',
           tips: '建议：124px*32px',
-          url: localStorage.getItem('mediaDomain') + '/crmebimage/perset/202412/seckillTitle.png',
+          url: localStorage.getItem('mediaDomain') + '/otterwoodimage/perset/202412/seckillTitle.png',
         },
         titleConfig: {
           tabTitle: '标题设置',
@@ -398,7 +398,7 @@ export default {
         this.listStyle = this.configObj.tabConfig.tabVal;
         this.src = this.configObj.logoConfig.url
           ? this.configObj.logoConfig.url
-          : localStorage.getItem('mediaDomain') + '/crmebimage/perset/202412/seckillTitle.png';
+          : localStorage.getItem('mediaDomain') + '/otterwoodimage/perset/202412/seckillTitle.png';
         this.themeStyle = data.themeStyleConfig.tabVal;
       }
     },

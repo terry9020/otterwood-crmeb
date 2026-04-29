@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.otterwood.common.constants.Constants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.system.SystemAdmin;
 import com.otterwood.common.model.system.SystemMenu;
 import com.otterwood.common.model.system.SystemRole;
@@ -16,7 +16,7 @@ import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.request.SystemRoleRequest;
 import com.otterwood.common.request.SystemRoleSearchRequest;
 import com.otterwood.common.response.RoleInfoResponse;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.utils.SecurityUtil;
 import com.otterwood.common.vo.CategoryTreeVo;
 import com.otterwood.common.vo.LoginUserVo;
@@ -43,13 +43,13 @@ import java.util.stream.Stream;
 /**
  * SystemRoleServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -131,7 +131,7 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole
     public Boolean updateStatus(Integer id, Boolean status) {
         SystemRole role = getById(id);
         if (ObjectUtil.isNull(role)) {
-            throw new CrmebException("身份不存在");
+            throw new OtterwoodException("身份不存在");
         }
         if (role.getStatus().equals(status)) {
             return true;
@@ -149,7 +149,7 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole
     @Override
     public Boolean add(SystemRoleRequest systemRoleRequest) {
         if (existName(systemRoleRequest.getRoleName(), null)) {
-            throw new CrmebException("角色名称重复");
+            throw new OtterwoodException("角色名称重复");
         }
         List<Integer> ruleList = Stream.of(systemRoleRequest.getRules().split(",")).map(Integer::valueOf).distinct().collect(Collectors.toList());
         SystemRole systemRole = new SystemRole();
@@ -198,11 +198,11 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole
     public Boolean edit(SystemRoleRequest systemRoleRequest) {
         SystemRole role = getById(systemRoleRequest.getId());
         if (ObjectUtil.isNull(role)) {
-            throw new CrmebException("角色不存在");
+            throw new OtterwoodException("角色不存在");
         }
         if (!role.getRoleName().equals(systemRoleRequest.getRoleName())) {
             if (existName(systemRoleRequest.getRoleName(), systemRoleRequest.getId())) {
-                throw new CrmebException("角色名称重复");
+                throw new OtterwoodException("角色名称重复");
             }
         }
         SystemRole systemRole = new SystemRole();
@@ -233,7 +233,7 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole
     public Boolean delete(Integer id) {
         SystemRole systemRole = getById(id);
         if (ObjectUtil.isNull(systemRole)) {
-            throw new CrmebException("角色已删除");
+            throw new OtterwoodException("角色已删除");
         }
         return transactionTemplate.execute(e -> {
             dao.deleteById(id);
@@ -251,7 +251,7 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole
     public RoleInfoResponse getInfo(Integer id) {
         SystemRole systemRole = getById(id);
         if (ObjectUtil.isNull(systemRole)) {
-            throw new CrmebException("角色不存在");
+            throw new OtterwoodException("角色不存在");
         }
         // 查询角色对应的菜单(权限)
         List<SystemMenu> menuList = systemMenuService.getCacheList();
@@ -280,13 +280,13 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole
         LoginUserVo loginUserVo = SecurityUtil.getLoginUserVo();
         SystemAdmin systemAdmin = loginUserVo.getUser();
         if (null == systemAdmin || StringUtils.isBlank(systemAdmin.getRoles())){
-            throw new CrmebException("没有权限访问！");
+            throw new OtterwoodException("没有权限访问！");
         }
 
         //获取用户权限组
         List<SystemRole> systemRoleList = getVoListInId(systemAdmin.getRoles());
         if (systemRoleList.size() < 1){
-            throw new CrmebException("没有权限访问！");
+            throw new OtterwoodException("没有权限访问！");
         }
 
         //获取用户权限规则
@@ -296,7 +296,7 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole
                 continue;
             }
 
-            categoryIdList.addAll(CrmebUtil.stringToArray(systemRole.getRules()));
+            categoryIdList.addAll(OtterwoodUtil.stringToArray(systemRole.getRules()));
         }
 
         return categoryIdList;
@@ -304,7 +304,7 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole
 
     private List<SystemRole> getVoListInId(String roles) {
         LambdaQueryWrapper<SystemRole> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.in(SystemRole::getId, CrmebUtil.stringToArray(roles));
+        lambdaQueryWrapper.in(SystemRole::getId, OtterwoodUtil.stringToArray(roles));
         return dao.selectList(lambdaQueryWrapper);
     }
 

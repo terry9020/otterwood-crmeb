@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.otterwood.common.page.CommonPage;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.constants.Constants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.request.SystemStoreStaffRequest;
 import com.otterwood.common.response.SystemStoreStaffResponse;
 import com.github.pagehelper.Page;
@@ -36,13 +36,13 @@ import java.util.stream.Collectors;
 /**
  * SystemStoreStaffServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -125,7 +125,7 @@ public class SystemStoreStaffServiceImpl extends ServiceImpl<SystemStoreStaffDao
         List<Integer> userIds = new ArrayList<>();
         userIds.add(request.getUid());
         List<SystemStoreStaff> existStaffs = getByAdminUserIds(userIds);
-        if (CollUtil.isNotEmpty(existStaffs) && existStaffs.size() > 0) throw new CrmebException(Constants.RESULT_VERIFICATION_USER_EXIST);
+        if (CollUtil.isNotEmpty(existStaffs) && existStaffs.size() > 0) throw new OtterwoodException(Constants.RESULT_VERIFICATION_USER_EXIST);
         SystemStoreStaff systemStoreStaff = new SystemStoreStaff();
         BeanUtils.copyProperties(request, systemStoreStaff);
         return dao.insert(systemStoreStaff) > 0;
@@ -155,7 +155,7 @@ public class SystemStoreStaffServiceImpl extends ServiceImpl<SystemStoreStaffDao
     public Boolean updateStatus(Integer id, Integer status) {
         SystemStoreStaff systemStoreStaff = getById(id);
         if (ObjectUtil.isNull(systemStoreStaff)) {
-            throw new CrmebException("核销员不存在");
+            throw new OtterwoodException("核销员不存在");
         }
         if (systemStoreStaff.getStatus().equals(status)) {
             return true;

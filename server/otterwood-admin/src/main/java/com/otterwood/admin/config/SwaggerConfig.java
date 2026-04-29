@@ -23,13 +23,13 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * Swagger配置组件
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Configuration
@@ -43,7 +43,7 @@ public class SwaggerConfig{
     @Value("${server.port}")
     private String port;
 
-    @Value("${crmeb.domain}")
+    @Value("${otterwood.domain}")
     private String domain;
 
     @Bean("admin")
@@ -102,8 +102,8 @@ public class SwaggerConfig{
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Crmeb Java")
-                .description("Crmeb")
+                .title("Otterwood Java")
+                .description("Otterwood")
                 .termsOfServiceUrl("http://host:port")
                 .version("1.0.0").build();
     }

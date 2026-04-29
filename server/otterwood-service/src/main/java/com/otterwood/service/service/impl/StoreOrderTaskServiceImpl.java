@@ -8,12 +8,12 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.otterwood.common.constants.*;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.product.StoreProduct;
 import com.otterwood.common.model.sms.SmsTemplate;
 import com.otterwood.common.model.system.SystemNotification;
 import com.otterwood.common.model.user.*;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.model.bargain.StoreBargain;
 import com.otterwood.common.model.combination.StoreCombination;
 import com.otterwood.common.model.combination.StorePink;
@@ -42,13 +42,13 @@ import java.util.stream.Collectors;
 /**
  * StoreOrderTaskService实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -140,7 +140,7 @@ public class StoreOrderTaskServiceImpl implements StoreOrderTaskService {
      * @since 2020-07-09
      */
     @Override
-    @Transactional(rollbackFor = {RuntimeException.class, Error.class, CrmebException.class})
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class, OtterwoodException.class})
     public Boolean cancelByUser(StoreOrder storeOrder) {
         try{
             /*
@@ -163,7 +163,7 @@ public class StoreOrderTaskServiceImpl implements StoreOrderTaskService {
                 }
                 Boolean rollbackStock = rollbackStock(storeOrder);
                 if (!rollbackStock) {
-                    throw new CrmebException("回滚库存失败");
+                    throw new OtterwoodException("回滚库存失败");
                 }
                 return Boolean.TRUE;
             });
@@ -179,7 +179,7 @@ public class StoreOrderTaskServiceImpl implements StoreOrderTaskService {
      * @since 2020-07-09
      */
     @Override
-    @Transactional(rollbackFor = {RuntimeException.class, Error.class, CrmebException.class})
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class, OtterwoodException.class})
     public Boolean complete(StoreOrder storeOrder) {
         /*
          * 1、修改订单状态 （用户操作的时候已处理）
@@ -371,7 +371,7 @@ public class StoreOrderTaskServiceImpl implements StoreOrderTaskService {
             // 回滚库存
             Boolean rollbackStock = rollbackStock(storeOrder);
             if (!rollbackStock) {
-                throw new CrmebException("回滚库存失败");
+                throw new OtterwoodException("回滚库存失败");
             }
 
             tempOrder.setUpdateTime(DateUtil.date());
@@ -448,7 +448,7 @@ public class StoreOrderTaskServiceImpl implements StoreOrderTaskService {
             // 回滚库存
             Boolean rollbackStock = rollbackStock(storeOrder);
             if (!rollbackStock) {
-                throw new CrmebException("回滚库存失败");
+                throw new OtterwoodException("回滚库存失败");
             }
             return Boolean.TRUE;
         });
@@ -467,7 +467,7 @@ public class StoreOrderTaskServiceImpl implements StoreOrderTaskService {
     public Boolean orderReceiving(Integer orderId) {
         StoreOrder storeOrder = storeOrderService.getById(orderId);
         if (ObjectUtil.isNull(storeOrder)) {
-            throw new CrmebException(StrUtil.format("订单收货task处理，未找到订单，id={}", orderId));
+            throw new OtterwoodException(StrUtil.format("订单收货task处理，未找到订单，id={}", orderId));
         }
         User user = userService.getById(storeOrder.getUid());
 
@@ -476,7 +476,7 @@ public class StoreOrderTaskServiceImpl implements StoreOrderTaskService {
         logger.info("收货处理佣金条数：" + recordList.size());
         for (UserBrokerageRecord record : recordList) {
             if (!record.getStatus().equals(BrokerageRecordConstants.BROKERAGE_RECORD_STATUS_CREATE)) {
-                throw new CrmebException(StrUtil.format("订单收货task处理，订单佣金记录不是创建状态，id={}", orderId));
+                throw new OtterwoodException(StrUtil.format("订单收货task处理，订单佣金记录不是创建状态，id={}", orderId));
             }
             // 佣金进入冻结期
             record.setStatus(BrokerageRecordConstants.BROKERAGE_RECORD_STATUS_FROZEN);
@@ -570,7 +570,7 @@ public class StoreOrderTaskServiceImpl implements StoreOrderTaskService {
             temMap.put(Constants.WE_CHAT_TEMP_KEY_FIRST, "您购买的商品已确认收货！");
             temMap.put("keyword1", storeOrder.getOrderId());
             temMap.put("keyword2", "已收货");
-            temMap.put("keyword3", CrmebDateUtil.nowDateTimeStr());
+            temMap.put("keyword3", OtterwoodDateUtil.nowDateTimeStr());
             temMap.put("keyword4", "详情请进入订单查看");
             temMap.put(Constants.WE_CHAT_TEMP_KEY_END, "感谢你的使用。");
             templateMessageService.pushTemplateMessage(notification.getWechatId(), temMap, userToken.getToken());
@@ -595,7 +595,7 @@ public class StoreOrderTaskServiceImpl implements StoreOrderTaskService {
 //        temMap.put("thing1", storeNameAndCarNumString);
 //        temMap.put("thing5", "您购买的商品已确认收货！");
             temMap.put("character_string6", storeOrder.getOrderId());
-            temMap.put("date5", CrmebDateUtil.nowDateTimeStr());
+            temMap.put("date5", OtterwoodDateUtil.nowDateTimeStr());
             temMap.put("thing2", storeNameAndCarNumString);
             templateMessageService.pushMiniTemplateMessage(notification.getRoutineId(), temMap, userToken.getToken());
         }

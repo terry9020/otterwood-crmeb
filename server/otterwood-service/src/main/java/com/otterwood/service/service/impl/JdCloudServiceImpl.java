@@ -12,7 +12,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.otterwood.common.constants.SysConfigConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.service.service.JdCloudService;
 import com.otterwood.service.service.SystemConfigService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,13 +25,13 @@ import java.net.URL;
 /**
  * JdCloudServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Slf4j
@@ -64,7 +64,7 @@ public class JdCloudServiceImpl implements JdCloudService {
             log.info("京东云存储上传文件结束：{}", putObjectResult.getETag());
         } catch (Exception e) {
             log.error("upload JD OSS file error : ", e);
-            throw new CrmebException(e.getMessage());
+            throw new OtterwoodException(e.getMessage());
         } finally {
             s3.shutdown();
         }
@@ -86,7 +86,7 @@ public class JdCloudServiceImpl implements JdCloudService {
             log.info("create JD OSS bucket {} ", bucketName);
         } catch (AmazonServiceException e) {
             log.error("create JD OSS bucket err : ", e);
-            throw new CrmebException("京东云存储创建存储空间失败:" + e.getMessage());
+            throw new OtterwoodException("京东云存储创建存储空间失败:" + e.getMessage());
         } finally {
             s3.shutdown();
         }
@@ -94,7 +94,7 @@ public class JdCloudServiceImpl implements JdCloudService {
 
     /**
      * 获取文件URL
-     * eg: https://crmeb-ceshi.s3.cn-north-1.jdcloud-oss.com/w5.webp
+     * eg: https://otterwood-ceshi.s3.cn-north-1.jdcloud-oss.com/w5.webp
      * @param bucket 存储桶名称
      * @param fileName 文件名称
      */
@@ -107,7 +107,7 @@ public class JdCloudServiceImpl implements JdCloudService {
             urlPath = url.toString();
         } catch (Exception e) {
             log.error("get JD OSS file url err : ", e);
-            throw new CrmebException("京东云获取文件地址失败:" + e.getMessage());
+            throw new OtterwoodException("京东云获取文件地址失败:" + e.getMessage());
         } finally {
             s3.shutdown();
         }

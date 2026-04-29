@@ -50,7 +50,7 @@ export default {
             this.$modal
               .confirm(res.data.msg)
               .then(() => {
-                this.$router.push({ path: '/maintain/authCRMEB' });
+                this.$router.push({ path: '/maintain/authOTTERWOOD' });
               })
               .catch(() => {});
           }

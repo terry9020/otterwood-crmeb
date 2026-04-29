@@ -6,7 +6,7 @@ import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.request.SystemAttachmentMoveRequest;
 import com.otterwood.common.request.SystemAttachmentRequest;
 import com.otterwood.common.result.CommonResult;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.service.service.SystemAttachmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 附件管理表 前端控制器
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Slf4j
@@ -78,7 +78,7 @@ public class SystemAttachmentController {
     @ApiOperation(value = "删除")
     @RequestMapping(value = "/delete/{ids}", method = RequestMethod.GET)
     public CommonResult<String> delete(@PathVariable String ids) {
-        if (systemAttachmentService.removeByIds(CrmebUtil.stringToArray(ids))) {
+        if (systemAttachmentService.removeByIds(OtterwoodUtil.stringToArray(ids))) {
             return CommonResult.success();
         }
         return CommonResult.failed();

@@ -6,7 +6,7 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.UploadConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 
@@ -17,13 +17,13 @@ import java.util.List;
 /**
  * 导出工具类
  *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
  */
 public class ExportUtil {
@@ -38,16 +38,16 @@ public class ExportUtil {
      */
     public static String exportExecl(String fileName, String title, List<?> voList, LinkedHashMap<String, String> aliasMap) {
         if (StrUtil.isBlank(fileName)) {
-            throw new CrmebException("文件名不能为空");
+            throw new OtterwoodException("文件名不能为空");
         }
         if (StrUtil.isBlank(title)) {
-            throw new CrmebException("标题不能为空");
+            throw new OtterwoodException("标题不能为空");
         }
         if (CollUtil.isEmpty(voList)) {
-            throw new CrmebException("数据列表不能为空");
+            throw new OtterwoodException("数据列表不能为空");
         }
         if (CollUtil.isEmpty(aliasMap)) {
-            throw new CrmebException("别名map不能为空");
+            throw new OtterwoodException("别名map不能为空");
         }
 
         // 文件名部分
@@ -73,7 +73,7 @@ public class ExportUtil {
         aliasMap.forEach((key, value) -> writer.addHeaderAlias(key, value));
         // 合并单元格后的标题行，使用默认标题样式
         writer.merge(aliasMap.size() - 1, title);
-        writer.merge(aliasMap.size() - 1, StrUtil.format("生成时间:{}", CrmebDateUtil.nowDateTimeStr()));
+        writer.merge(aliasMap.size() - 1, StrUtil.format("生成时间:{}", OtterwoodDateUtil.nowDateTimeStr()));
         //设置宽度自适应
         writer.setColumnWidth(-1, 22);
         // 一次性写出内容，使用默认样式，强制输出标题
@@ -89,7 +89,7 @@ public class ExportUtil {
      */
     public static void setUpload(String rootPath, String modelPath, String type) {
         if (StrUtil.isBlank(rootPath) || StrUtil.isBlank(modelPath) || StrUtil.isBlank(type)) {
-            throw new CrmebException("请检查上传参数，上传参数不能为空");
+            throw new OtterwoodException("请检查上传参数，上传参数不能为空");
         }
         UploadUtil.setRootPath(rootPath);
         UploadUtil.setModelPath(UploadConstants.UPLOAD_FILE_KEYWORD +"/"+UploadConstants.DOWNLOAD_FILE_KEYWORD+"/"+modelPath);

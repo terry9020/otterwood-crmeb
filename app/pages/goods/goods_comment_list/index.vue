@@ -28,7 +28,7 @@
 			</view>
 			<view class='noCommodity' v-if="!(type==0&&replyData.sumCount||type==1&&replyData.goodCount||type==2&&replyData.inCount||type==3&&replyData.poorCount) && page > 1">
 				<view class='pictrue'>
-					<image :src="urlDomain+'crmebimage/perset/usersImg/noEvaluate.png'"></image>
+					<image :src="urlDomain+'otterwoodimage/perset/usersImg/noEvaluate.png'"></image>
 				</view>
 			</view>
 		</view>

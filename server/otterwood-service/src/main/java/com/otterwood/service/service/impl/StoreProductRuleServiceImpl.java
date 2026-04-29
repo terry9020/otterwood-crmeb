@@ -3,7 +3,7 @@ package com.otterwood.service.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.otterwood.common.request.PageParamRequest;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.request.StoreProductRuleRequest;
 import com.otterwood.common.request.StoreProductRuleSearchRequest;
 import com.github.pagehelper.PageHelper;
@@ -21,13 +21,13 @@ import java.util.List;
 /**
  * StoreProductRuleServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -65,7 +65,7 @@ public class StoreProductRuleServiceImpl extends ServiceImpl<StoreProductRuleDao
     @Override
     public boolean save(StoreProductRuleRequest storeProductRuleRequest) {
         if(getListByRuleName(storeProductRuleRequest.getRuleName()).size() > 0){
-            throw new CrmebException("此规格值已经存在");
+            throw new OtterwoodException("此规格值已经存在");
         }
         StoreProductRule storeProductRule = new StoreProductRule();
         BeanUtils.copyProperties(storeProductRuleRequest, storeProductRule);

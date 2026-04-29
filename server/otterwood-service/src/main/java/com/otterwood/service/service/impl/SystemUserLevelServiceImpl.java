@@ -5,7 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.system.SystemUserLevel;
 import com.otterwood.common.request.SystemUserLevelRequest;
 import com.otterwood.common.request.SystemUserLevelUpdateShowRequest;
@@ -25,13 +25,13 @@ import java.util.List;
 /**
  * SystemUserLevelServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -95,7 +95,7 @@ public class SystemUserLevelServiceImpl extends ServiceImpl<SystemUserLevelDao, 
         lqw.eq(SystemUserLevel::getIsDel, false);
         temp = dao.selectOne(lqw);
         if (ObjectUtil.isNotNull(temp)) {
-            throw new CrmebException("用户等级名称重复");
+            throw new OtterwoodException("用户等级名称重复");
         }
         // 校验等级级别
         lqw.clear();
@@ -106,7 +106,7 @@ public class SystemUserLevelServiceImpl extends ServiceImpl<SystemUserLevelDao, 
         lqw.eq(SystemUserLevel::getIsDel, false);
         temp = dao.selectOne(lqw);
         if (ObjectUtil.isNotNull(temp)) {
-            throw new CrmebException("用户等级级别重复");
+            throw new OtterwoodException("用户等级级别重复");
         }
         // 校验等级经验不能比上一级别的低,不能比下一级别高
         if (request.getGrade() > 1) {
@@ -120,7 +120,7 @@ public class SystemUserLevelServiceImpl extends ServiceImpl<SystemUserLevelDao, 
             lqw.last(" limit 1");
             temp = dao.selectOne(lqw);
             if (ObjectUtil.isNotNull(temp) && temp.getExperience() >= request.getExperience()) {
-                throw new CrmebException("当前等级的经验不能比上一级别的经验低");
+                throw new OtterwoodException("当前等级的经验不能比上一级别的经验低");
             }
         }
         lqw.clear();
@@ -133,7 +133,7 @@ public class SystemUserLevelServiceImpl extends ServiceImpl<SystemUserLevelDao, 
         lqw.last(" limit 1");
         temp = dao.selectOne(lqw);
         if (ObjectUtil.isNotNull(temp) && temp.getExperience() <= request.getExperience()) {
-            throw new CrmebException("当前等级的经验不能比下一级别的经验高");
+            throw new OtterwoodException("当前等级的经验不能比下一级别的经验高");
         }
     }
 
@@ -148,7 +148,7 @@ public class SystemUserLevelServiceImpl extends ServiceImpl<SystemUserLevelDao, 
     public Boolean update(Integer id, SystemUserLevelRequest request) {
         SystemUserLevel level = getById(id);
         if (ObjectUtil.isNull(level) || level.getIsDel()) {
-            throw new CrmebException("等级不存在");
+            throw new OtterwoodException("等级不存在");
         }
         request.setId(id);
         checkLevel(request);
@@ -198,7 +198,7 @@ public class SystemUserLevelServiceImpl extends ServiceImpl<SystemUserLevelDao, 
     public Boolean delete(Integer id) {
         SystemUserLevel level = getById(id);
         if (ObjectUtil.isNull(level) || level.getIsDel()) {
-            throw new CrmebException("系统等级不存在");
+            throw new OtterwoodException("系统等级不存在");
         }
         level.setIsDel(true);
         return transactionTemplate.execute(e -> {
@@ -220,7 +220,7 @@ public class SystemUserLevelServiceImpl extends ServiceImpl<SystemUserLevelDao, 
     public Boolean updateShow(SystemUserLevelUpdateShowRequest request) {
         SystemUserLevel level = getById(request.getId());
         if (ObjectUtil.isNull(level) || level.getIsDel()) {
-            throw new CrmebException("等级不存在");
+            throw new OtterwoodException("等级不存在");
         }
         if (level.getIsShow().equals(request.getIsShow())) {
             return Boolean.TRUE;

@@ -4,11 +4,11 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.user.UserGroup;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.request.UserGroupRequest;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.service.dao.UserGroupDao;
 import com.otterwood.service.service.UserGroupService;
 import org.springframework.beans.BeanUtils;
@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 /**
  * UserGroupServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -55,7 +55,7 @@ public class UserGroupServiceImpl extends ServiceImpl<UserGroupDao, UserGroup> i
     @Override
     public String getGroupNameInId(String groupIdValue) {
         LambdaQueryWrapper<UserGroup> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.in(UserGroup::getId, CrmebUtil.stringToArray(groupIdValue)).orderByDesc(UserGroup::getId);
+        lambdaQueryWrapper.in(UserGroup::getId, OtterwoodUtil.stringToArray(groupIdValue)).orderByDesc(UserGroup::getId);
         List<UserGroup> userTags = dao.selectList(lambdaQueryWrapper);
         if(null == userTags){
             return "无";
@@ -71,7 +71,7 @@ public class UserGroupServiceImpl extends ServiceImpl<UserGroupDao, UserGroup> i
     @Override
     public Boolean create(UserGroupRequest userGroupRequest) {
         if (isExistName(userGroupRequest.getGroupName(), null)) {
-            throw new CrmebException("分组名称已存在");
+            throw new OtterwoodException("分组名称已存在");
         }
         UserGroup userGroup = new UserGroup();
         BeanUtils.copyProperties(userGroupRequest, userGroup);
@@ -103,7 +103,7 @@ public class UserGroupServiceImpl extends ServiceImpl<UserGroupDao, UserGroup> i
     @Override
     public Boolean edit(Integer id, UserGroupRequest userGroupRequest) {
         if (isExistName(userGroupRequest.getGroupName(), id)) {
-            throw new CrmebException("分组名称已存在");
+            throw new OtterwoodException("分组名称已存在");
         }
         UserGroup userGroup = new UserGroup();
         BeanUtils.copyProperties(userGroupRequest, userGroup);

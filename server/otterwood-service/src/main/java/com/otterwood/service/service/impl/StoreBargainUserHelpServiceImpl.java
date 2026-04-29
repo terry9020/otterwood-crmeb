@@ -10,10 +10,10 @@ import com.otterwood.common.constants.BargainConstants;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.NotifyConstants;
 import com.otterwood.common.constants.UserConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.system.SystemNotification;
 import com.otterwood.common.request.BargainFrontRequest;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.model.bargain.StoreBargain;
 import com.otterwood.common.model.bargain.StoreBargainUser;
 import com.otterwood.common.model.bargain.StoreBargainUserHelp;
@@ -37,13 +37,13 @@ import java.util.stream.Collectors;
 /**
  * StoreBargainUserHelpService 实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -91,7 +91,7 @@ public class StoreBargainUserHelpServiceImpl extends ServiceImpl<StoreBargainUse
         List<StoreBargainUserHelpResponse> list = helpList.stream().map(help -> {
             StoreBargainUserHelpResponse helpResponse = new StoreBargainUserHelpResponse();
             BeanUtils.copyProperties(help, helpResponse);
-            helpResponse.setAddTime(CrmebDateUtil.timestamp2DateStr(help.getAddTime(), Constants.DATE_FORMAT));
+            helpResponse.setAddTime(OtterwoodDateUtil.timestamp2DateStr(help.getAddTime(), Constants.DATE_FORMAT));
             User user = userService.getById(help.getUid());
             helpResponse.setAvatar(user.getAvatar());
             helpResponse.setNickname(user.getNickname());
@@ -136,43 +136,43 @@ public class StoreBargainUserHelpServiceImpl extends ServiceImpl<StoreBargainUse
     @Override
     public Map<String, Object> help(BargainFrontRequest request) {
         if (ObjectUtil.isNull(request.getBargainUserId())) {
-            throw new CrmebException("砍价活动id不能为空");
+            throw new OtterwoodException("砍价活动id不能为空");
         }
 
         Map<String, Object> map = new HashMap<>();
         User user = userService.getInfoException();
         StoreBargain storeBargain = storeBargainService.getById(request.getBargainId());
         if (ObjectUtil.isNull(storeBargain) || storeBargain.getIsDel()) {
-            throw new CrmebException("对应的砍价商品不存在");
+            throw new OtterwoodException("对应的砍价商品不存在");
         }
         if (!storeBargain.getStatus()) {
-            throw new CrmebException("砍价商品已下架");
+            throw new OtterwoodException("砍价商品已下架");
         }
         if (storeBargain.getQuota() <= 0 || storeBargain.getStock() <= 0) {
-            throw new CrmebException("砍价商品已售罄");
+            throw new OtterwoodException("砍价商品已售罄");
         }
         long currentTimeMillis = System.currentTimeMillis();
         if (currentTimeMillis < storeBargain.getStartTime()) {
-            throw new CrmebException("砍价活动未开始");
+            throw new OtterwoodException("砍价活动未开始");
         }
         if (currentTimeMillis > storeBargain.getStopTime()) {
-            throw new CrmebException("砍价活动已结束");
+            throw new OtterwoodException("砍价活动已结束");
         }
         StoreBargainUser storeBargainUser = storeBargainUserService.getById(request.getBargainUserId());
         if (ObjectUtil.isNull(storeBargainUser)) {
-            throw new CrmebException("砍价商品用户信息不存在");
+            throw new OtterwoodException("砍价商品用户信息不存在");
         }
 
         // 判断是否砍价成功
         if (storeBargainUser.getStatus().equals(BargainConstants.BARGAIN_USER_STATUS_SUCCESS) || storeBargainUser.getBargainPriceMin().compareTo(storeBargainUser.getBargainPrice().subtract(storeBargainUser.getPrice())) >= 0) {
-            throw new CrmebException("商品已完成砍价");
+            throw new OtterwoodException("商品已完成砍价");
         }
 
         // 给自己砍价
         if (user.getUid().equals(storeBargainUser.getUid())) {
             StoreBargainUserHelp myHelp = getByUidAndBargainIdAndBargainUserId(user.getUid(), storeBargain.getId(), storeBargainUser.getId());
             if (ObjectUtil.isNotNull(myHelp)) {
-                throw new CrmebException("您已经砍过了");
+                throw new OtterwoodException("您已经砍过了");
             }
         } else {// 不是给自己砍价,不包含给自己砍的
             // 用户对本商品的砍价次数
@@ -181,7 +181,7 @@ public class StoreBargainUserHelpServiceImpl extends ServiceImpl<StoreBargainUse
                 List<Integer> tempUserIdList = tempUserList.stream().map(StoreBargainUser::getId).collect(Collectors.toList());
                 Integer helpCount = getUserHelpNum(user.getUid(), storeBargain.getId(), tempUserIdList);
                 if (helpCount >= storeBargain.getBargainNum()) {
-                    throw new CrmebException("您的帮砍次数已达上限");
+                    throw new OtterwoodException("您的帮砍次数已达上限");
                 }
             }
         }
@@ -225,7 +225,7 @@ public class StoreBargainUserHelpServiceImpl extends ServiceImpl<StoreBargainUse
         });
 
         if (!execute) {
-            throw new CrmebException("砍价失败!");
+            throw new OtterwoodException("砍价失败!");
         }
 
         try {

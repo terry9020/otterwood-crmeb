@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.product.StoreProductAttrValue;
 import com.otterwood.service.dao.StoreProductAttrValueDao;
 import com.otterwood.service.service.StoreProductAttrValueService;
@@ -20,13 +20,13 @@ import java.util.List;
 /**
  * StoreProductAttrValueServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -155,7 +155,7 @@ public class StoreProductAttrValueServiceImpl extends ServiceImpl<StoreProductAt
         updateWrapper.eq("version", version);
         boolean update = update(updateWrapper);
         if (!update) {
-            throw new CrmebException("更新商品attrValue失败，attrValueId = " + id);
+            throw new OtterwoodException("更新商品attrValue失败，attrValueId = " + id);
         }
         return update;
     }
@@ -180,7 +180,7 @@ public class StoreProductAttrValueServiceImpl extends ServiceImpl<StoreProductAt
         updateWrapper.eq("version", version);
         boolean update = update(updateWrapper);
         if (!update) {
-            throw new CrmebException("更新商品attrValue失败，attrValueId = " + id);
+            throw new OtterwoodException("更新商品attrValue失败，attrValueId = " + id);
         }
         return update;
     }

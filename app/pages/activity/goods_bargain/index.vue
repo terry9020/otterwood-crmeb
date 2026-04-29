@@ -62,7 +62,7 @@
 					</view>
 				</view>
 				<view v-else class="flex-center no_shop">
-					<image :src="urlDomain+'crmebimage/perset/staticImg/noShopper.png'" mode="aspectFit" style="width: 400rpx;"></image>
+					<image :src="urlDomain+'otterwoodimage/perset/staticImg/noShopper.png'" mode="aspectFit" style="width: 400rpx;"></image>
 				</view>
 			</view>
 		</view>
@@ -117,7 +117,7 @@
 				autoplay: true,
 				theme:app.globalData.theme,
 				imgHost:'',
-				backBg:'crmebimage/perset/bargain_header/bargain_header1.jpg',
+				backBg:'otterwoodimage/perset/bargain_header/bargain_header1.jpg',
 				navBgColor:'#e93323'
 			};
 		},
@@ -138,27 +138,27 @@
 			that.$set(that,'imgHost',that.$Cache.get('imgHost'));
 			switch (app.globalData.theme) {
 				case 'theme1':
-					that.backBg = 'crmebimage/perset/bargain_header/bargain_header1.jpg';
+					that.backBg = 'otterwoodimage/perset/bargain_header/bargain_header1.jpg';
 					that.bgColor.bgColor = '#e93323';
 					that.navBgColor = '#e93323';
 					break;
 				case 'theme2':
-					that.backBg = 'crmebimage/perset/bargain_header/bargain_header2.jpg';
+					that.backBg = 'otterwoodimage/perset/bargain_header/bargain_header2.jpg';
 					that.bgColor.bgColor = '#FE5C2D';
 					that.navBgColor = '#FE5C2D';
 					break;
 				case 'theme3':
-					that.backBg = 'crmebimage/perset/bargain_header/bargain_header3.jpg';
+					that.backBg = 'otterwoodimage/perset/bargain_header/bargain_header3.jpg';
 					that.bgColor.bgColor = '#42CA4D';
 					that.navBgColor = '#42CA4D';
 					break;
 				case 'theme4':
-					that.backBg = 'crmebimage/perset/bargain_header/bargain_header4.jpg';
+					that.backBg = 'otterwoodimage/perset/bargain_header/bargain_header4.jpg';
 					that.bgColor.bgColor = '#1DB0FC';
 					that.navBgColor = '#1DB0FC';
 					break;
 				case 'theme5':
-					that.backBg = 'crmebimage/perset/bargain_header/bargain_header5.jpg';
+					that.backBg = 'otterwoodimage/perset/bargain_header/bargain_header5.jpg';
 					that.bgColor.bgColor = '#FF448F';
 					that.navBgColor = '#FF448F';
 					break;

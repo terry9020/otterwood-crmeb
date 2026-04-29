@@ -14,13 +14,13 @@ import java.util.Objects;
 /**
  *  Request工具类
  *  +----------------------------------------------------------------------
- *  | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ *  | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  *  +----------------------------------------------------------------------
- *  | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ *  | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  *  +----------------------------------------------------------------------
- *  | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ *  | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  *  +----------------------------------------------------------------------
- *  | Author: CRMEB Team <admin@crmeb.com>
+ *  | Author: OTTERWOOD Team <admin@otterwood.com>
  *  +----------------------------------------------------------------------
  */
 public class RequestUtil extends HttpServlet{
@@ -98,7 +98,7 @@ public class RequestUtil extends HttpServlet{
 
     public static String getUri(HttpServletRequest request){
         String uri = request.getRequestURI();
-        List<String> list = CrmebUtil.stringToArrayStrRegex(uri, "/");
+        List<String> list = OtterwoodUtil.stringToArrayStrRegex(uri, "/");
         list.removeIf(StringUtils::isNumeric); //去掉url中的数字参数
         list.removeIf(c -> c.contains(","));// 去掉url中的逗号分隔参数
         return StringUtils.join(list, "/");

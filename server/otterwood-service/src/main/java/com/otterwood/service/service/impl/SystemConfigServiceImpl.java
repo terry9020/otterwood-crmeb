@@ -7,10 +7,10 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.otterwood.common.config.CrmebConfig;
+import com.otterwood.common.config.OtterwoodConfig;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.SysConfigConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.system.SystemConfig;
 import com.otterwood.common.request.SaveConfigRequest;
 import com.otterwood.common.request.SystemFormCheckRequest;
@@ -35,13 +35,13 @@ import java.util.List;
 /**
  * SystemConfigServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -60,7 +60,7 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigDao, System
     private RedisUtil redisUtil;
 
     @Autowired
-    private CrmebConfig crmebConfig;
+    private OtterwoodConfig otterwoodConfig;
 
     @Autowired
     private TransactionTemplate transactionTemplate;
@@ -86,7 +86,7 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigDao, System
     public String getValueByKeyException(String name) {
         String value = get(name);
         if (StrUtil.isBlank(value)) {
-            throw new CrmebException("没有找到或配置：" + name + "数据");
+            throw new OtterwoodException("没有找到或配置：" + name + "数据");
         }
         return value;
     }
@@ -135,7 +135,7 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigDao, System
             }
             return Boolean.TRUE;
         });
-        if (execute && crmebConfig.isAsyncConfig() && CollUtil.isNotEmpty(systemConfigOldList)) {
+        if (execute && otterwoodConfig.isAsyncConfig() && CollUtil.isNotEmpty(systemConfigOldList)) {
             asyncDelete(systemConfigOldList);
         }
         return execute;
@@ -165,7 +165,7 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigDao, System
         lambdaQueryWrapper.eq(SystemConfig::getName, name);
         List<SystemConfig> systemConfigs = dao.selectList(lambdaQueryWrapper);
         if (systemConfigs.size() > 1) {
-            throw new CrmebException("配置名称存在多个请检查配置 eb_system_config 重复数据：" + name + "条数：" + systemConfigs.size());
+            throw new OtterwoodException("配置名称存在多个请检查配置 eb_system_config 重复数据：" + name + "条数：" + systemConfigs.size());
         }
         boolean result;
         SystemConfig systemConfig;
@@ -178,7 +178,7 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigDao, System
             systemConfig.setUpdateTime(DateUtil.date());
             result = updateById(systemConfig);
         }
-        if (result && crmebConfig.isAsyncConfig()) {
+        if (result && otterwoodConfig.isAsyncConfig()) {
             async(systemConfig);
         }
         return result;
@@ -340,7 +340,7 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigDao, System
      * @return String
      */
     private String get(String name) {
-        if (!crmebConfig.isAsyncConfig()) {
+        if (!otterwoodConfig.isAsyncConfig()) {
             SystemConfig systemConfig = getByName(name);
             if (ObjectUtil.isNull(systemConfig) || StrUtil.isBlank(systemConfig.getValue())) {
                 return "";
@@ -385,7 +385,7 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigDao, System
      */
     @PostConstruct
     public void loadingConfigCache() {
-        if (!crmebConfig.isAsyncConfig()) {
+        if (!otterwoodConfig.isAsyncConfig()) {
             return;
         }
         if (redisUtil.exists(Constants.CONFIG_LIST)) {

@@ -8,13 +8,13 @@
 				<form @submit.prevent="submit">
 					<div class="item">
 						<div class="acea-row row-middle">
-							<image :src="urlDomain+'crmebimage/perset/staticImg/phone_1.png'"  style="width: 24rpx; height: 34rpx;"></image>
+							<image :src="urlDomain+'otterwoodimage/perset/staticImg/phone_1.png'"  style="width: 24rpx; height: 34rpx;"></image>
 							<input type="number" class="texts" placeholder="输入手机号码" v-model="account" maxlength="11" required/>
 						</div>
 					</div>
 					<div class="item">
 						<div class="acea-row row-middle">
-							<image :src="urlDomain+'crmebimage/perset/staticImg/code_2.png'" style="width: 28rpx; height: 32rpx;"></image>
+							<image :src="urlDomain+'otterwoodimage/perset/staticImg/code_2.png'" style="width: 28rpx; height: 32rpx;"></image>
 							<input type="password" class="texts" placeholder="填写登录密码" maxlength="18" v-model="password" required />
 						</div>
 					</div>
@@ -23,13 +23,13 @@
 			<div class="list" v-if="current !== 0 || appLoginStatus || appleLoginStatus">
 				<div class="item">
 					<div class="acea-row row-middle">
-						<image :src="urlDomain+'crmebimage/perset/staticImg/phone_1.png'" style="width: 24rpx; height: 34rpx;"></image>
+						<image :src="urlDomain+'otterwoodimage/perset/staticImg/phone_1.png'" style="width: 24rpx; height: 34rpx;"></image>
 						<input type="number" class="texts" placeholder="输入手机号码" v-model="account" maxlength="11"/>
 					</div>
 				</div>
 				<div class="item">
 					<div class="acea-row row-middle">
-						<image :src="urlDomain+'crmebimage/perset/staticImg/code_2.png'" style="width: 28rpx; height: 32rpx;"></image>
+						<image :src="urlDomain+'otterwoodimage/perset/staticImg/code_2.png'" style="width: 28rpx; height: 32rpx;"></image>
 						<input type="number" placeholder="填写验证码" class="codeIput" v-model="captcha" maxlength="6" />
 						<button class="code main_color" :disabled="disabled" :class="disabled === true ? 'on' : ''" @click="code">
 							{{ text }}
@@ -38,7 +38,7 @@
 				</div>
 				<div class="item" v-if="isShowCode">
 					<div class="acea-row row-middle">
-						<image :src="urlDomain+'crmebimage/perset/staticImg/code_2.png'" style="width: 28rpx; height: 32rpx;"></image>
+						<image :src="urlDomain+'otterwoodimage/perset/staticImg/code_2.png'" style="width: 28rpx; height: 32rpx;"></image>
 						<input type="number" placeholder="填写验证码" class="codeIput" v-model="codeVal" maxlength="6"/>
 						<div class="code" @click="again"><img :src="codeUrl" /></div>
 					</div>

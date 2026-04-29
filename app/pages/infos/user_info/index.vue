@@ -127,7 +127,7 @@
 				nickname: '',
 				wechat: false,
 				theme: app.globalData.theme,
-				editPng: `${this.$Cache.get("imgHost")}crmebimage/perset/staticImg/alert1.png`,
+				editPng: `${this.$Cache.get("imgHost")}otterwoodimage/perset/staticImg/alert1.png`,
 				publicLoginType: app.globalData.publicLoginType //公众号登录方式(单选),1微信授权，2手机号登录
 			};
 		},
@@ -136,7 +136,7 @@
 			if (!this.isLogin) {
 				toLogin();
 			}
-			this.newAvatar = this.userInfo.avatar ? this.userInfo.avatar : `${this.$Cache.get("imgHost")}crmebimage/perset/staticImg/f.png`;
+			this.newAvatar = this.userInfo.avatar ? this.userInfo.avatar : `${this.$Cache.get("imgHost")}otterwoodimage/perset/staticImg/f.png`;
 			this.nickname = this.userInfo.nickname ? this.userInfo.nickname : '-';
 			// #ifdef H5
 			let ua = navigator.userAgent.toLowerCase();
@@ -148,19 +148,19 @@
 			// #endif
 			switch (this.theme) {
 				case 'theme2':
-					this.editPng = `${this.$Cache.get("imgHost")}crmebimage/perset/staticImg/alert2.png`
+					this.editPng = `${this.$Cache.get("imgHost")}otterwoodimage/perset/staticImg/alert2.png`
 					break;
 				case 'theme3':
-					this.editPng = `${this.$Cache.get("imgHost")}crmebimage/perset/staticImg/alert3.png`
+					this.editPng = `${this.$Cache.get("imgHost")}otterwoodimage/perset/staticImg/alert3.png`
 					break;
 				case 'theme4':
-					this.editPng = `${this.$Cache.get("imgHost")}crmebimage/perset/staticImg/alert4.png`
+					this.editPng = `${this.$Cache.get("imgHost")}otterwoodimage/perset/staticImg/alert4.png`
 					break;
 				case 'theme5':
-					this.editPng = `${this.$Cache.get("imgHost")}crmebimage/perset/staticImg/alert5.png`
+					this.editPng = `${this.$Cache.get("imgHost")}otterwoodimage/perset/staticImg/alert5.png`
 					break;
 				default:
-					this.editPng = `${this.$Cache.get("imgHost")}crmebimage/perset/staticImg/alert1.png`
+					this.editPng = `${this.$Cache.get("imgHost")}otterwoodimage/perset/staticImg/alert1.png`
 					break;
 			}
 		},

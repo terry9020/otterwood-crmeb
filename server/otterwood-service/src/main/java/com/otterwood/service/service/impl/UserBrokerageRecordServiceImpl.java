@@ -16,7 +16,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.otterwood.common.utils.ArrayUtil;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.request.BrokerageRecordRequest;
 import com.otterwood.common.request.RetailShopStairUserRequest;
 import com.otterwood.common.model.user.User;
@@ -40,13 +40,13 @@ import java.util.Map;
 /**
  * 用户佣金记录服务接口实现类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -138,7 +138,7 @@ public class UserBrokerageRecordServiceImpl extends ServiceImpl<UserBrokerageRec
         LambdaQueryWrapper<UserBrokerageRecord> lqw = new LambdaQueryWrapper<>();
         lqw.select(UserBrokerageRecord::getPrice);
         lqw.eq(UserBrokerageRecord::getUid, uid);
-        DateLimitUtilVo dateLimit = CrmebDateUtil.getDateLimit(Constants.SEARCH_DATE_YESTERDAY);
+        DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(Constants.SEARCH_DATE_YESTERDAY);
         lqw.between(UserBrokerageRecord::getUpdateTime, dateLimit.getStartTime(), dateLimit.getEndTime());
         lqw.eq(UserBrokerageRecord::getType, 1);
         lqw.eq(UserBrokerageRecord::getLinkType, "order");
@@ -171,7 +171,7 @@ public class UserBrokerageRecordServiceImpl extends ServiceImpl<UserBrokerageRec
 
         List<SpreadCommissionDetailResponse> responseList = CollUtil.newArrayList();
         for (UserBrokerageRecord record : list) {
-            String month = CrmebDateUtil.dateToStr(record.getUpdateTime(), Constants.DATE_FORMAT_MONTH);
+            String month = OtterwoodDateUtil.dateToStr(record.getUpdateTime(), Constants.DATE_FORMAT_MONTH);
             responseList.add(new SpreadCommissionDetailResponse(month, getListByUidAndMonth(uid, month)));
         }
         return CommonPage.copyPageInfo(recordPage, responseList);
@@ -232,7 +232,7 @@ public class UserBrokerageRecordServiceImpl extends ServiceImpl<UserBrokerageRec
             lqw.like(UserBrokerageRecord::getLinkId, request.getNickName());
         }
         if (StrUtil.isNotBlank(request.getDateLimit())) {
-            DateLimitUtilVo dateLimit = CrmebDateUtil.getDateLimit(request.getDateLimit());
+            DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(request.getDateLimit());
             lqw.between(UserBrokerageRecord::getUpdateTime, dateLimit.getStartTime(), dateLimit.getEndTime());
         }
 
@@ -261,7 +261,7 @@ public class UserBrokerageRecordServiceImpl extends ServiceImpl<UserBrokerageRec
             return map;
         }
         list.forEach(record -> {
-            map.put(CrmebDateUtil.dateToStr(record.getUpdateTime(), Constants.DATE_FORMAT_MONTH), record.getUid());
+            map.put(OtterwoodDateUtil.dateToStr(record.getUpdateTime(), Constants.DATE_FORMAT_MONTH), record.getUid());
         });
         return map;
     }
@@ -277,7 +277,7 @@ public class UserBrokerageRecordServiceImpl extends ServiceImpl<UserBrokerageRec
         queryWrapper.select("uid", "sum(price) AS price");
         queryWrapper.eq("link_type", BrokerageRecordConstants.BROKERAGE_RECORD_LINK_TYPE_ORDER);
         queryWrapper.eq("status", BrokerageRecordConstants.BROKERAGE_RECORD_STATUS_COMPLETE);
-        DateLimitUtilVo dateLimit = CrmebDateUtil.getDateLimit(type);
+        DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(type);
         if(!StringUtils.isBlank(dateLimit.getStartTime())){
             queryWrapper.between("update_time", dateLimit.getStartTime(), dateLimit.getEndTime());
         }
@@ -314,7 +314,7 @@ public class UserBrokerageRecordServiceImpl extends ServiceImpl<UserBrokerageRec
         lqw.eq(UserBrokerageRecord::getType, BrokerageRecordConstants.BROKERAGE_RECORD_TYPE_ADD);
         lqw.eq(UserBrokerageRecord::getStatus, BrokerageRecordConstants.BROKERAGE_RECORD_STATUS_COMPLETE);
         if (StrUtil.isNotBlank(dateLimit)) {
-            DateLimitUtilVo dateLimitVo = CrmebDateUtil.getDateLimit(dateLimit);
+            DateLimitUtilVo dateLimitVo = OtterwoodDateUtil.getDateLimit(dateLimit);
             lqw.between(UserBrokerageRecord::getUpdateTime, dateLimitVo.getStartTime(), dateLimitVo.getEndTime());
         }
         List<UserBrokerageRecord> list = dao.selectList(lqw);
@@ -336,7 +336,7 @@ public class UserBrokerageRecordServiceImpl extends ServiceImpl<UserBrokerageRec
         lqw.eq(UserBrokerageRecord::getType, BrokerageRecordConstants.BROKERAGE_RECORD_TYPE_SUB);
         lqw.eq(UserBrokerageRecord::getStatus, BrokerageRecordConstants.BROKERAGE_RECORD_STATUS_COMPLETE);
         if (StrUtil.isNotBlank(dateLimit)) {
-            DateLimitUtilVo dateLimitVo = CrmebDateUtil.getDateLimit(dateLimit);
+            DateLimitUtilVo dateLimitVo = OtterwoodDateUtil.getDateLimit(dateLimit);
             lqw.between(UserBrokerageRecord::getUpdateTime, dateLimitVo.getStartTime(), dateLimitVo.getEndTime());
         }
         List<UserBrokerageRecord> list = dao.selectList(lqw);

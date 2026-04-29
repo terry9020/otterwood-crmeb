@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.otterwood.common.model.express.ShippingTemplatesFree;
 import com.otterwood.common.request.ShippingTemplatesFreeRequest;
 import com.otterwood.common.response.ShippingTemplatesFreeResponse;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.service.dao.ShippingTemplatesFreeDao;
 import com.otterwood.service.service.ShippingTemplatesFreeService;
 import com.otterwood.service.service.SystemCityService;
@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 /**
  * ShippingTemplatesFreeServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -69,7 +69,7 @@ public class ShippingTemplatesFreeServiceImpl extends ServiceImpl<ShippingTempla
                 shippingTemplatesFree.setPrice(shippingTemplatesFreeRequest.getPrice());
                 shippingTemplatesFreesList.add(shippingTemplatesFree);
             } else {
-                cityIdList = CrmebUtil.stringToArray(shippingTemplatesFreeRequest.getCityId());
+                cityIdList = OtterwoodUtil.stringToArray(shippingTemplatesFreeRequest.getCityId());
                 Map<Integer, String> cityMap = new HashMap<>();
                 titleArray.forEach(e -> {
                     JSONArray parseArray = JSONArray.parseArray(e);

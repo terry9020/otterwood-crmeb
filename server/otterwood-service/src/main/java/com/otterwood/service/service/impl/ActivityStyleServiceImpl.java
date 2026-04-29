@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.otterwood.common.config.CrmebConfig;
+import com.otterwood.common.config.OtterwoodConfig;
 import com.otterwood.common.constants.DateConstants;
 import com.otterwood.common.constants.ProductConstants;
 import com.otterwood.common.model.acticitystyle.ActivityStyle;
@@ -21,8 +21,8 @@ import com.otterwood.common.page.CommonPage;
 import com.otterwood.common.request.ActivityStyleSearchRequest;
 import com.otterwood.common.request.PageParamRequest;
 import com.otterwood.common.response.ActivityStyleResponse;
-import com.otterwood.common.utils.CrmebDateUtil;
-import com.otterwood.common.utils.CrmebUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.service.dao.ActivityStyleDao;
 import com.otterwood.service.service.ActivityStyleService;
@@ -56,7 +56,7 @@ public class ActivityStyleServiceImpl extends ServiceImpl<ActivityStyleDao, Acti
     private RedisUtil redisUtil;
 
     @Autowired
-    private CrmebConfig crmebConfig;
+    private OtterwoodConfig otterwoodConfig;
 
     /**
      * 列表
@@ -71,7 +71,7 @@ public class ActivityStyleServiceImpl extends ServiceImpl<ActivityStyleDao, Acti
     public PageInfo<ActivityStyleResponse> getList(ActivityStyleSearchRequest request, PageParamRequest pageParamRequest) {
         Page<ActivityStyle> stylePage = PageHelper.startPage(pageParamRequest.getPage(), pageParamRequest.getLimit());
 
-        Date currentDate = CrmebDateUtil.nowDateTime();
+        Date currentDate = OtterwoodDateUtil.nowDateTime();
 
         //带 ActivityStyle 类的多条件查询
         LambdaQueryWrapper<ActivityStyle> lambdaQueryWrapper = Wrappers.lambdaQuery();
@@ -169,19 +169,19 @@ public class ActivityStyleServiceImpl extends ServiceImpl<ActivityStyleDao, Acti
         LambdaQueryWrapper<ActivityStyle> lambdaQueryWrapper = Wrappers.lambdaQuery();
         lambdaQueryWrapper.eq(ActivityStyle::getType, type);
         lambdaQueryWrapper.eq(ActivityStyle::getStatus, Boolean.TRUE);
-        lambdaQueryWrapper.le(ActivityStyle::getStarttime, CrmebDateUtil.nowDateTime(DateConstants.DATE_FORMAT));
-        lambdaQueryWrapper.ge(ActivityStyle::getEndtime, CrmebDateUtil.nowDateTime(DateConstants.DATE_FORMAT));
+        lambdaQueryWrapper.le(ActivityStyle::getStarttime, OtterwoodDateUtil.nowDateTime(DateConstants.DATE_FORMAT));
+        lambdaQueryWrapper.ge(ActivityStyle::getEndtime, OtterwoodDateUtil.nowDateTime(DateConstants.DATE_FORMAT));
         List<ActivityStyle> activityStyles = dao.selectList(lambdaQueryWrapper);
         if (activityStyles.size() == 0) {
             return new ArrayList<>();
         }
         if (!type) {
             redisUtil.set(ProductConstants.PRODUCT_ACTIVITY_STYLE_BORDER, activityStyles,
-                    Long.parseLong(crmebConfig.getActivityStyleCachedTime().toString()), TimeUnit.SECONDS);
+                    Long.parseLong(otterwoodConfig.getActivityStyleCachedTime().toString()), TimeUnit.SECONDS);
             logger.info("新增缓存活动边框:${}", JSON.toJSONString(activityStyles));
         } else {
             redisUtil.set(ProductConstants.PRODUCT_ACTIVITY_STYLE_BACKGROUND, activityStyles,
-                    Long.parseLong(crmebConfig.getActivityStyleCachedTime().toString()), TimeUnit.SECONDS);
+                    Long.parseLong(otterwoodConfig.getActivityStyleCachedTime().toString()), TimeUnit.SECONDS);
             logger.info("新增缓存活动背景:${}", JSON.toJSONString(activityStyles));
         }
 
@@ -282,7 +282,7 @@ public class ActivityStyleServiceImpl extends ServiceImpl<ActivityStyleDao, Acti
                     if (StrUtil.isBlank(product.getActivityStyle())) {
                         for (String pcid : platCategoryIds) {
                             if (ObjectUtil.isNotEmpty(product.getCateId())) {
-                                List<Integer> proCateIdList = CrmebUtil.stringToArray(product.getCateId());
+                                List<Integer> proCateIdList = OtterwoodUtil.stringToArray(product.getCateId());
                                 if (proCateIdList.contains(Integer.valueOf(pcid))) {
                                     product.setActivityStyle(activityStyle.getStyle());
                                 }
@@ -410,9 +410,9 @@ public class ActivityStyleServiceImpl extends ServiceImpl<ActivityStyleDao, Acti
         Collections.sort(toSortActivityStyleByUpdateTime, new Comparator<ActivityStyle>() {
             @Override
             public int compare(ActivityStyle o1, ActivityStyle o2) {
-                return CrmebDateUtil.compareDate(
-                        CrmebDateUtil.dateToStr(o2.getUpdatetime(), DateConstants.DATE_FORMAT),
-                        CrmebDateUtil.dateToStr(o1.getUpdatetime(), DateConstants.DATE_FORMAT), DateConstants.DATE_FORMAT);
+                return OtterwoodDateUtil.compareDate(
+                        OtterwoodDateUtil.dateToStr(o2.getUpdatetime(), DateConstants.DATE_FORMAT),
+                        OtterwoodDateUtil.dateToStr(o1.getUpdatetime(), DateConstants.DATE_FORMAT), DateConstants.DATE_FORMAT);
             }
         });
     }

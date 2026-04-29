@@ -2,7 +2,7 @@ package com.otterwood.service.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.sms.SmsTemplate;
 import com.otterwood.service.dao.SmsTemplateDao;
 import com.otterwood.service.service.SmsTemplateService;
@@ -13,13 +13,13 @@ import javax.annotation.Resource;
 /**
  * SmsTemplateServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -37,7 +37,7 @@ public class SmsTemplateServiceImpl extends ServiceImpl<SmsTemplateDao, SmsTempl
     public SmsTemplate getDetail(Integer id) {
         SmsTemplate smsTemplate = getById(id);
         if (ObjectUtil.isNull(smsTemplate)) {
-            throw new CrmebException("短信模板不存在");
+            throw new OtterwoodException("短信模板不存在");
         }
         return smsTemplate;
     }

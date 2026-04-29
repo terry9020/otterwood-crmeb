@@ -12,7 +12,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.CouponConstants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.category.Category;
 import com.otterwood.common.model.coupon.StoreCoupon;
 import com.otterwood.common.model.coupon.StoreCouponUser;
@@ -24,8 +24,8 @@ import com.otterwood.common.request.StoreCouponRequest;
 import com.otterwood.common.request.StoreCouponSearchRequest;
 import com.otterwood.common.response.StoreCouponFrontResponse;
 import com.otterwood.common.response.StoreCouponInfoResponse;
-import com.otterwood.common.utils.CrmebUtil;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.service.dao.StoreCouponDao;
 import com.otterwood.service.service.*;
 import org.springframework.beans.BeanUtils;
@@ -42,13 +42,13 @@ import java.util.stream.Collectors;
 /**
  * StoreCouponServiceImpl 接口实现
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -111,31 +111,31 @@ public class StoreCouponServiceImpl extends ServiceImpl<StoreCouponDao, StoreCou
         StoreCoupon storeCoupon = new StoreCoupon();
         BeanUtils.copyProperties(request, storeCoupon);
         if (storeCoupon.getIsLimited() && (storeCoupon.getTotal() == null || storeCoupon.getTotal() == 0)) {
-            throw new CrmebException("请输入数量！");
+            throw new OtterwoodException("请输入数量！");
         }
 
         if (request.getUseType() > 1 && (StrUtil.isBlank(request.getPrimaryKey()))) {
-            throw new CrmebException("请选择商品/分类！");
+            throw new OtterwoodException("请选择商品/分类！");
         }
 
         storeCoupon.setLastTotal(storeCoupon.getTotal());
         if (!request.getIsForever()) {
-            storeCoupon.setReceiveStartTime(CrmebDateUtil.nowDateTime()); //开始时间设置为当前时间
+            storeCoupon.setReceiveStartTime(OtterwoodDateUtil.nowDateTime()); //开始时间设置为当前时间
         }else{
             if (storeCoupon.getReceiveStartTime() == null || storeCoupon.getReceiveEndTime() == null) {
-                throw new CrmebException("请选择领取时间范围！");
+                throw new OtterwoodException("请选择领取时间范围！");
             }
 
-            int compareDate = CrmebDateUtil.compareDate(CrmebDateUtil.dateToStr(storeCoupon.getReceiveStartTime(), Constants.DATE_FORMAT), CrmebDateUtil.dateToStr(storeCoupon.getReceiveEndTime(), Constants.DATE_FORMAT), Constants.DATE_FORMAT);
+            int compareDate = OtterwoodDateUtil.compareDate(OtterwoodDateUtil.dateToStr(storeCoupon.getReceiveStartTime(), Constants.DATE_FORMAT), OtterwoodDateUtil.dateToStr(storeCoupon.getReceiveEndTime(), Constants.DATE_FORMAT), Constants.DATE_FORMAT);
             if (compareDate > -1) {
-                throw new CrmebException("请选择正确的领取时间范围！");
+                throw new OtterwoodException("请选择正确的领取时间范围！");
             }
         }
 
         //非固定时间, 领取后多少天
         if (!request.getIsFixedTime()) {
             if (storeCoupon.getDay() == null || storeCoupon.getDay() == 0) {
-                throw new CrmebException("请输入天数！");
+                throw new OtterwoodException("请输入天数！");
             }
             storeCoupon.setUseStartTime(null);
             storeCoupon.setUseEndTime(null);
@@ -165,17 +165,17 @@ public class StoreCouponServiceImpl extends ServiceImpl<StoreCouponDao, StoreCou
      */
     private void checkException(StoreCoupon storeCoupon) {
         if (storeCoupon == null || storeCoupon.getIsDel() || !storeCoupon.getStatus()) {
-            throw new CrmebException("优惠券信息不存在或者已失效！");
+            throw new OtterwoodException("优惠券信息不存在或者已失效！");
         }
 
         //看是否过期
         if (!(storeCoupon.getReceiveEndTime() == null || storeCoupon.getReceiveEndTime().equals(""))) {
             //非永久可领取
-            String date = CrmebDateUtil.nowDateTimeStr();
-            int result = CrmebDateUtil.compareDate(date, CrmebDateUtil.dateToStr(storeCoupon.getReceiveEndTime(), Constants.DATE_FORMAT), Constants.DATE_FORMAT);
+            String date = OtterwoodDateUtil.nowDateTimeStr();
+            int result = OtterwoodDateUtil.compareDate(date, OtterwoodDateUtil.dateToStr(storeCoupon.getReceiveEndTime(), Constants.DATE_FORMAT), Constants.DATE_FORMAT);
             if (result == 1) {
                 //过期了
-                throw new CrmebException("已超过优惠券领取最后期限！");
+                throw new OtterwoodException("已超过优惠券领取最后期限！");
             }
         }
 
@@ -183,7 +183,7 @@ public class StoreCouponServiceImpl extends ServiceImpl<StoreCouponDao, StoreCou
         if (storeCoupon.getIsLimited()) {
             //考虑到并发溢出的问题用大于等于
             if (storeCoupon.getLastTotal() < 1) {
-                throw new CrmebException("此优惠券已经被领完了！");
+                throw new OtterwoodException("此优惠券已经被领完了！");
             }
         }
     }
@@ -197,13 +197,13 @@ public class StoreCouponServiceImpl extends ServiceImpl<StoreCouponDao, StoreCou
     public StoreCouponInfoResponse info(Integer id) {
         StoreCoupon storeCoupon = getById(id);
         if (ObjectUtil.isNull(storeCoupon) || storeCoupon.getIsDel() || !storeCoupon.getStatus()) {
-            throw new CrmebException("优惠券信息不存在或者已失效！");
+            throw new OtterwoodException("优惠券信息不存在或者已失效！");
         }
 
         List<StoreProduct> productList = null;
         List<Category> categoryList = null;
         if (StrUtil.isNotBlank(storeCoupon.getPrimaryKey()) && storeCoupon.getUseType() > 1) {
-            List<Integer> primaryIdList = CrmebUtil.stringToArray(storeCoupon.getPrimaryKey());
+            List<Integer> primaryIdList = OtterwoodUtil.stringToArray(storeCoupon.getPrimaryKey());
             if (storeCoupon.getUseType() == 2) {
                 productList = storeProductService.getListInIds(primaryIdList);
             }
@@ -259,7 +259,7 @@ public class StoreCouponServiceImpl extends ServiceImpl<StoreCouponDao, StoreCou
      */
     @Override
     public List<StoreCoupon> findRegisterList() {
-        String dateStr = CrmebDateUtil.nowDate(Constants.DATE_FORMAT);
+        String dateStr = OtterwoodDateUtil.nowDate(Constants.DATE_FORMAT);
         LambdaQueryWrapper<StoreCoupon> lqw = new LambdaQueryWrapper<>();
         lqw.eq(StoreCoupon::getType, 2);
         lqw.eq(StoreCoupon::getStatus, true);
@@ -277,7 +277,7 @@ public class StoreCouponServiceImpl extends ServiceImpl<StoreCouponDao, StoreCou
             // 判断是否达到可领取时间
             if (ObjectUtil.isNotNull(coupon.getReceiveStartTime())) {
                 //非永久可领取
-                int result = CrmebDateUtil.compareDate(dateStr, CrmebDateUtil.dateToStr(coupon.getReceiveStartTime(), Constants.DATE_FORMAT), Constants.DATE_FORMAT);
+                int result = OtterwoodDateUtil.compareDate(dateStr, OtterwoodDateUtil.dateToStr(coupon.getReceiveStartTime(), Constants.DATE_FORMAT), Constants.DATE_FORMAT);
                 if (result == -1) {
                     // 未开始
                     return false;
@@ -286,7 +286,7 @@ public class StoreCouponServiceImpl extends ServiceImpl<StoreCouponDao, StoreCou
 
             // 是否有领取结束时间
             if (ObjectUtil.isNotNull(coupon.getReceiveEndTime())) {
-                int compareDate = CrmebDateUtil.compareDate(dateStr, CrmebDateUtil.dateToStr(coupon.getReceiveEndTime(), Constants.DATE_FORMAT), Constants.DATE_FORMAT);
+                int compareDate = OtterwoodDateUtil.compareDate(dateStr, OtterwoodDateUtil.dateToStr(coupon.getReceiveEndTime(), Constants.DATE_FORMAT), Constants.DATE_FORMAT);
                 if (compareDate > 0) {
                     return false;
                 }
@@ -320,7 +320,7 @@ public class StoreCouponServiceImpl extends ServiceImpl<StoreCouponDao, StoreCou
             lqw.like(StoreCoupon::getName, request.getKeywords());
         }
         lqw.and(o -> o.eq(StoreCoupon::getIsLimited, false).or().ge(StoreCoupon::getLastTotal, 0));
-        lqw.and(o -> o.isNull(StoreCoupon::getReceiveEndTime).or().gt(StoreCoupon::getReceiveEndTime, CrmebDateUtil.nowDate(Constants.DATE_FORMAT)));
+        lqw.and(o -> o.isNull(StoreCoupon::getReceiveEndTime).or().gt(StoreCoupon::getReceiveEndTime, OtterwoodDateUtil.nowDate(Constants.DATE_FORMAT)));
         lqw.orderByDesc(StoreCoupon::getSort, StoreCoupon::getId);
         return dao.selectList(lqw);
     }
@@ -334,7 +334,7 @@ public class StoreCouponServiceImpl extends ServiceImpl<StoreCouponDao, StoreCou
     public Boolean delete(Integer id) {
         StoreCoupon coupon = getById(id);
         if (ObjectUtil.isNull(coupon) || coupon.getIsDel()) {
-            throw new CrmebException("优惠券不存在");
+            throw new OtterwoodException("优惠券不存在");
         }
         coupon.setIsDel(true);
         coupon.setUpdateTime(DateUtil.date());
@@ -379,8 +379,8 @@ public class StoreCouponServiceImpl extends ServiceImpl<StoreCouponDao, StoreCou
             }
 
             // 更改使用时间格式，去掉时分秒
-            response.setUseStartTimeStr(CrmebDateUtil.dateToStr(storeCoupon.getUseStartTime(), Constants.DATE_FORMAT_DATE));
-            response.setUseEndTimeStr(CrmebDateUtil.dateToStr(storeCoupon.getUseEndTime(), Constants.DATE_FORMAT_DATE));
+            response.setUseStartTimeStr(OtterwoodDateUtil.dateToStr(storeCoupon.getUseStartTime(), Constants.DATE_FORMAT_DATE));
+            response.setUseEndTimeStr(OtterwoodDateUtil.dateToStr(storeCoupon.getUseEndTime(), Constants.DATE_FORMAT_DATE));
             storeCouponFrontResponseArrayList.add(response);
         }
 
@@ -396,10 +396,10 @@ public class StoreCouponServiceImpl extends ServiceImpl<StoreCouponDao, StoreCou
     public Boolean updateStatus(Integer id, Boolean status) {
         StoreCoupon coupon = getById(id);
         if (ObjectUtil.isNull(coupon)) {
-            throw new CrmebException("优惠券不存在");
+            throw new OtterwoodException("优惠券不存在");
         }
         if (coupon.getStatus().equals(status)) {
-            throw new CrmebException("优惠券状态无需变更");
+            throw new OtterwoodException("优惠券状态无需变更");
         }
         StoreCoupon storeCoupon = new StoreCoupon();
         storeCoupon.setId(id);
@@ -414,7 +414,7 @@ public class StoreCouponServiceImpl extends ServiceImpl<StoreCouponDao, StoreCou
      * @return PageInfo<StoreCoupon>
      */
     private PageInfo<StoreCoupon> getListByReceive(Integer type, Integer productId, PageParamRequest pageParamRequest) {
-        Date date = CrmebDateUtil.nowDateTime();
+        Date date = OtterwoodDateUtil.nowDateTime();
         //带 StoreCoupon 类的多条件查询
         LambdaQueryWrapper<StoreCoupon> lqw = new LambdaQueryWrapper<>();
         lqw.eq(StoreCoupon::getIsDel, false);
@@ -453,12 +453,12 @@ public class StoreCouponServiceImpl extends ServiceImpl<StoreCouponDao, StoreCou
             return;
         }
 
-        List<Integer> categoryIdList = storeProductService.getProductAllCategoryIdByProductIds(CrmebUtil.stringToArray(productIdStr));
+        List<Integer> categoryIdList = storeProductService.getProductAllCategoryIdByProductIds(OtterwoodUtil.stringToArray(productIdStr));
         lambdaQueryWrapper.and(i -> i.and(
                 //通用券  商品券  品类券
                 t -> t.eq(StoreCoupon::getUseType, 1)
-                .or(p -> p.eq(StoreCoupon::getUseType , 2).apply(CrmebUtil.getFindInSetSql("primary_key", productIdStr)))
-                .or(c -> c.eq(StoreCoupon::getUseType , 3).apply(CrmebUtil.getFindInSetSql("primary_key", (ArrayList<Integer>) categoryIdList)))
+                .or(p -> p.eq(StoreCoupon::getUseType , 2).apply(OtterwoodUtil.getFindInSetSql("primary_key", productIdStr)))
+                .or(c -> c.eq(StoreCoupon::getUseType , 3).apply(OtterwoodUtil.getFindInSetSql("primary_key", (ArrayList<Integer>) categoryIdList)))
         ));
     }
 }

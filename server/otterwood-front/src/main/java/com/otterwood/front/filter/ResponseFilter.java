@@ -1,7 +1,7 @@
 package com.otterwood.front.filter;
 
 
-import com.otterwood.common.config.CrmebConfig;
+import com.otterwood.common.config.OtterwoodConfig;
 import com.otterwood.common.utils.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,13 +14,13 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  * 返回值输出过滤器
  */
@@ -28,7 +28,7 @@ import java.nio.charset.StandardCharsets;
 public class ResponseFilter implements Filter {
 
     @Autowired
-    CrmebConfig crmebConfig;
+    OtterwoodConfig otterwoodConfig;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
@@ -43,7 +43,7 @@ public class ResponseFilter implements Filter {
 
             try {
                 HttpServletRequest req = (HttpServletRequest) request;
-                str = new ResponseRouter().filter(str, RequestUtil.getUri(req), crmebConfig);
+                str = new ResponseRouter().filter(str, RequestUtil.getUri(req), otterwoodConfig);
             } catch (Exception e) {
                 e.printStackTrace();
             }

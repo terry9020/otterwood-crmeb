@@ -2,7 +2,7 @@ package com.otterwood.common.response;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -12,13 +12,13 @@ import java.util.Objects;
 /**
  * StoreSeckillMsnsgerResponse
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Data
@@ -33,7 +33,7 @@ public class StoreSeckillManagerResponse {
     // 秒杀状态【仅仅前端用】 killStatus 1=即将开始 0=关闭 2=进行中 -1=已结束
     public String getStatusName() {
         String _statusName = null;
-        int currentHour = CrmebDateUtil.getCurrentHour();
+        int currentHour = OtterwoodDateUtil.getCurrentHour();
         if(Objects.equals(status, "'1'") && currentHour < startTime){
             _statusName = "即将开始";
         }
@@ -51,17 +51,17 @@ public class StoreSeckillManagerResponse {
 
     public Integer getKillStatus() {
         Integer _killStatus = null;
-        if(Objects.equals(status, "'1'") && CrmebDateUtil.getCurrentHour() < startTime){
+        if(Objects.equals(status, "'1'") && OtterwoodDateUtil.getCurrentHour() < startTime){
             _killStatus = 1;
         }
         else if(Objects.equals(status, "'0'")) {
             _killStatus = 0;
         }
-        else if(Objects.equals(status, "'1'") && CrmebDateUtil.getCurrentHour() >= startTime
-                && CrmebDateUtil.getCurrentHour() < endTime) {
+        else if(Objects.equals(status, "'1'") && OtterwoodDateUtil.getCurrentHour() >= startTime
+                && OtterwoodDateUtil.getCurrentHour() < endTime) {
             _killStatus = 2;
         }
-        else if(Objects.equals(status, "'1'") && CrmebDateUtil.getCurrentHour() >= endTime) {
+        else if(Objects.equals(status, "'1'") && OtterwoodDateUtil.getCurrentHour() >= endTime) {
             _killStatus = -1;
         }
         return _killStatus;

@@ -15,7 +15,7 @@ public interface Assert {
     /**
      * 创建异常
      */
-    CrmebException newException();
+    OtterwoodException newException();
 
     /**
      * 断言对象不为空

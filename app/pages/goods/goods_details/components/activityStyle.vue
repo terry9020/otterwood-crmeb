@@ -6,7 +6,7 @@
 					<span class="price-icon">￥</span>{{productInfo.price}}
 				</view>
 				<view class="vip-price" v-if="productInfo.vipPrice">
-					<image :src="urlDomain+'crmebimage/perset/staticImg/vip_badge.png'" class="vip_icon"></image>
+					<image :src="urlDomain+'otterwoodimage/perset/staticImg/vip_badge.png'" class="vip_icon"></image>
 					<view
 						class='vip_money skeleton-rect'>￥{{productInfo.vipPrice}}</view>
 				</view>

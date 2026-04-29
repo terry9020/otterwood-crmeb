@@ -3,7 +3,7 @@ package com.otterwood.service.delete;
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson.JSON;
 import com.otterwood.common.constants.Constants;
-import com.otterwood.common.exception.CrmebException;
+import com.otterwood.common.exception.OtterwoodException;
 import com.otterwood.common.model.bargain.StoreBargain;
 import com.otterwood.common.model.combination.StoreCombination;
 import com.otterwood.common.model.product.StoreProduct;
@@ -12,8 +12,8 @@ import com.otterwood.common.model.seckill.StoreSeckill;
 import com.otterwood.common.model.seckill.StoreSeckillManger;
 import com.otterwood.common.request.StoreProductRequest;
 import com.otterwood.common.response.ProductActivityItemResponse;
-import com.otterwood.common.utils.CrmebUtil;
-import com.otterwood.common.utils.CrmebDateUtil;
+import com.otterwood.common.utils.OtterwoodUtil;
+import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.UrlUtil;
 import com.otterwood.service.service.*;
 import org.apache.commons.lang3.StringUtils;
@@ -37,13 +37,13 @@ import java.util.List;
 /**
  * 商品工具类
  * +----------------------------------------------------------------------
- * | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+ * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
- * | Copyright (c) 2016~2025 https://www.crmeb.com All rights reserved.
+ * | Copyright (c) 2016~2025 https://www.otterwood.com All rights reserved.
  * +----------------------------------------------------------------------
- * | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+ * | Licensed OTTERWOOD并不是自由软件，未经许可不能去掉OTTERWOOD相关版权
  * +----------------------------------------------------------------------
- * | Author: CRMEB Team <admin@crmeb.com>
+ * | Author: OTTERWOOD Team <admin@otterwood.com>
  * +----------------------------------------------------------------------
  */
 @Service
@@ -83,9 +83,9 @@ public class ProductUtils {
         JSONObject tbJsonData = getRequestFromUrl(baseUrl + rightUrl);
 //        JSONObject tbJsonData = new JSONObject(JSONExample.tbJson); // just Test
         JSONObject data = tbJsonData.getJSONObject("data");
-        if (null == data) throw new CrmebException("复制商品失败--返回数据格式错误--未找到data");
+        if (null == data) throw new OtterwoodException("复制商品失败--返回数据格式错误--未找到data");
         JSONObject item = data.getJSONObject("item");
-        if (null == item) throw new CrmebException("复制商品失败--返回数据格式错误--未找到item");
+        if (null == item) throw new OtterwoodException("复制商品失败--返回数据格式错误--未找到item");
 
         StoreProductRequest productRequest = new StoreProductRequest();
         StoreProduct product = new StoreProduct();
@@ -100,7 +100,7 @@ public class ProductUtils {
 
         productRequest.setSpecType(true);
         JSONArray props = item.getJSONArray("props");
-//        if (null == props) throw new CrmebException("复制商品失败--返回数据格式错误--未找到props");
+//        if (null == props) throw new OtterwoodException("复制商品失败--返回数据格式错误--未找到props");
         if (null == props || props.length() < 1) {
             productRequest.setSpecType(false);
             return productRequest;
@@ -136,9 +136,9 @@ public class ProductUtils {
         JSONObject tbJsonData = getRequestFromUrl(baseUrl + rightUrl);
 //        JSONObject tbJsonData = new JSONObject(JSONExample.jdJson); // just Test
         JSONObject data = tbJsonData.getJSONObject("data");
-        if (null == data) throw new CrmebException("复制商品失败--返回数据格式错误--未找到data");
+        if (null == data) throw new OtterwoodException("复制商品失败--返回数据格式错误--未找到data");
         JSONObject item = data.getJSONObject("item");
-        if (null == item) throw new CrmebException("复制商品失败--返回数据格式错误--未找到item");
+        if (null == item) throw new OtterwoodException("复制商品失败--返回数据格式错误--未找到item");
 
         StoreProductRequest productRequest = new StoreProductRequest();
         StoreProduct product = new StoreProduct();
@@ -152,7 +152,7 @@ public class ProductUtils {
         productRequest.setContent(item.getString("desc"));
 
         JSONObject props = item.getJSONObject("skuProps");
-        if (null == props) throw new CrmebException("复制商品失败--返回数据格式错误--未找到props");
+        if (null == props) throw new OtterwoodException("复制商品失败--返回数据格式错误--未找到props");
         List<StoreProductAttr> spaAttes = new ArrayList<>();
         JSONObject saleJson = item.getJSONObject("saleProp");
         int attrValueIsNullCount = 0;
@@ -192,9 +192,9 @@ public class ProductUtils {
         JSONObject tbJsonData = getRequestFromUrl(baseUrl + rightUrl);
 //        JSONObject tbJsonData = new JSONObject(JSONExample.tmallJson); // just Test
         JSONObject data = tbJsonData.getJSONObject("data");
-        if (null == data) throw new CrmebException("复制商品失败--返回数据格式错误--未找到data");
+        if (null == data) throw new OtterwoodException("复制商品失败--返回数据格式错误--未找到data");
         JSONObject item = data.getJSONObject("item");
-        if (null == item) throw new CrmebException("复制商品失败--返回数据格式错误--未找到item");
+        if (null == item) throw new OtterwoodException("复制商品失败--返回数据格式错误--未找到item");
 
         StoreProductRequest productRequest = new StoreProductRequest();
         StoreProduct product = new StoreProduct();
@@ -209,7 +209,7 @@ public class ProductUtils {
 
         productRequest.setSpecType(true);
         JSONArray props = item.getJSONArray("props");
-//        if (null == props) throw new CrmebException("复制商品失败--返回数据格式错误--未找到props");
+//        if (null == props) throw new OtterwoodException("复制商品失败--返回数据格式错误--未找到props");
         if (null == props || props.length() < 1) {
             // 无规格商品
             productRequest.setSpecType(false);
@@ -246,9 +246,9 @@ public class ProductUtils {
         JSONObject tbJsonData = getRequestFromUrl(baseUrl + rightUrl);
 //        JSONObject tbJsonData = new JSONObject(JSONExample.pddJson); // just Test
         JSONObject data = tbJsonData.getJSONObject("data");
-        if (null == data) throw new CrmebException("复制商品失败--返回数据格式错误--未找到data");
+        if (null == data) throw new OtterwoodException("复制商品失败--返回数据格式错误--未找到data");
         JSONObject item = data.getJSONObject("item");
-        if (null == item) throw new CrmebException("复制商品失败--返回数据格式错误--未找到item");
+        if (null == item) throw new OtterwoodException("复制商品失败--返回数据格式错误--未找到item");
 
         StoreProductRequest productRequest = new StoreProductRequest();
         StoreProduct product = new StoreProduct();
@@ -262,7 +262,7 @@ public class ProductUtils {
         BeanUtils.copyProperties(product, productRequest);
 
         JSONArray props = item.getJSONArray("skus");
-        if (null == props) throw new CrmebException("复制商品失败--返回数据格式错误--未找到props");
+        if (null == props) throw new OtterwoodException("复制商品失败--返回数据格式错误--未找到props");
         if (props.length() > 0) {
             List<StoreProductAttr> spaAttes = new ArrayList<>();
             HashMap<String, List<String>> tempAttr = new HashMap<>();
@@ -313,7 +313,7 @@ public class ProductUtils {
         System.out.println("tbJsonData:" + tbJsonData);
 //        JSONObject tbJsonData = new JSONObject(JSONExample.snJson); // just Test
         JSONObject data = tbJsonData.getJSONObject("data");
-        if (null == data) throw new CrmebException("复制商品失败--返回数据格式错误--未找到data");
+        if (null == data) throw new OtterwoodException("复制商品失败--返回数据格式错误--未找到data");
 
         StoreProductRequest productRequest = new StoreProductRequest();
         StoreProduct product = new StoreProduct();
@@ -374,10 +374,10 @@ public class ProductUtils {
 //        String token = systemConfigService.getValueByKey("importProductToken");
         String token = systemConfigService.getValueByKey("copy_product_apikey");
         if (StringUtils.isBlank(token)) {
-            throw new CrmebException("请配置复制产品平台的Token -- www.99api.com");
+            throw new OtterwoodException("请配置复制产品平台的Token -- www.99api.com");
         }
         if (StringUtils.isBlank(baseUrl)) {
-            throw new CrmebException("请配置复制产品平台的Url-- www.99api.com");
+            throw new OtterwoodException("请配置复制产品平台的Url-- www.99api.com");
         }
 //        rightUrl = "?apikey="+systemConfigService.getValueByKey("importProductToken")+rightEndUrl;
         rightUrl = "?apikey=" + systemConfigService.getValueByKey("copy_product_apikey") + rightEndUrl;
@@ -437,7 +437,7 @@ public class ProductUtils {
         }
         result = new HashMap<>();
 
-        List<Integer> activitys = CrmebUtil.stringToArrayInt(activity);
+        List<Integer> activitys = OtterwoodUtil.stringToArrayInt(activity);
         for (Integer code : activitys) {
             if (code == 1) { // 查找秒杀信息
                 List<StoreSeckill> currentSecKills = storeSeckillService.getCurrentSecKillByProductId(productId);
@@ -446,7 +446,7 @@ public class ProductUtils {
                     StoreSeckillManger secKillManager = storeSeckillMangerService.getById(currentSecKills.get(0).getTimeId());
                     // 将当前时间段转化成时间戳
                     int secKillEndSecondTimestamp =
-                            CrmebDateUtil.getSecondTimestamp(CrmebDateUtil.nowDateTime("yyyy-MM-dd " + secKillManager.getEndTime() + ":00:00"));
+                            OtterwoodDateUtil.getSecondTimestamp(OtterwoodDateUtil.nowDateTime("yyyy-MM-dd " + secKillManager.getEndTime() + ":00:00"));
                     ProductActivityItemResponse secKillResponse = new ProductActivityItemResponse();
                     secKillResponse.setId(currentSecKills.get(0).getId());
                     secKillResponse.setTime(secKillEndSecondTimestamp);
@@ -459,7 +459,7 @@ public class ProductUtils {
                 if (CollUtil.isNotEmpty(currentBargains)) {
                     ProductActivityItemResponse bargainResponse = new ProductActivityItemResponse();
                     bargainResponse.setId(currentBargains.get(0).getId());
-                    bargainResponse.setTime(CrmebDateUtil.getSecondTimestamp(currentBargains.get(0).getStopTime()));
+                    bargainResponse.setTime(OtterwoodDateUtil.getSecondTimestamp(currentBargains.get(0).getStopTime()));
                     bargainResponse.setType(Constants.PRODUCT_TYPE_BARGAIN + "");
                     result.put(code, bargainResponse);
                 }
@@ -469,7 +469,7 @@ public class ProductUtils {
                 if (CollUtil.isNotEmpty(currentCombinations)) {
                     ProductActivityItemResponse bargainResponse = new ProductActivityItemResponse();
                     bargainResponse.setId(currentCombinations.get(0).getId());
-                    bargainResponse.setTime(CrmebDateUtil.getSecondTimestamp(currentCombinations.get(0).getStopTime()));
+                    bargainResponse.setTime(OtterwoodDateUtil.getSecondTimestamp(currentCombinations.get(0).getStopTime()));
                     bargainResponse.setType(Constants.PRODUCT_TYPE_PINGTUAN + "");
                     result.put(code, bargainResponse);
                 }
@@ -489,7 +489,7 @@ public class ProductUtils {
                 = getActivityByProduct(storeProduct.getId(), storeProduct.getActivity());
         if (StringUtils.isBlank(storeProduct.getActivity())) return new ArrayList<>();
         List<ProductActivityItemResponse> activityH5 = new ArrayList<>();
-        List<Integer> activityList = CrmebUtil.stringToArrayInt(storeProduct.getActivity());
+        List<Integer> activityList = OtterwoodUtil.stringToArrayInt(storeProduct.getActivity());
         for (Integer code : activityList) {
             if (null != currentActivityList.get(code)) {
                 activityH5.add(currentActivityList.get(code));
@@ -508,7 +508,7 @@ public class ProductUtils {
         HashMap<Integer, ProductActivityItemResponse> currentActivityList
                 = getActivityByProduct(storeProduct.getId(), storeProduct.getActivity());
         if (StringUtils.isBlank(storeProduct.getActivity())) return null;
-        List<Integer> activityList = CrmebUtil.stringToArrayInt(storeProduct.getActivity());
+        List<Integer> activityList = OtterwoodUtil.stringToArrayInt(storeProduct.getActivity());
 
         return currentActivityList.get(activityList.get(0));
     }

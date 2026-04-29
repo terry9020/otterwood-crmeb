@@ -8,7 +8,7 @@
 						<view class="user-card">
 							<view class="user-info" @click="goEdit()">
 								<image class="avatar" :src='userInfo.avatar' v-if="userInfo.avatar && uid"></image>
-								<image v-else class="avatar" :src="urlDomain+'crmebimage/perset/staticImg/f.png'" mode=""></image>
+								<image v-else class="avatar" :src="urlDomain+'otterwoodimage/perset/staticImg/f.png'" mode=""></image>
 								<view class="info">
 									<view class="name" v-if="!isLogin" @tap="openAuto">
 										请点击登录
@@ -24,7 +24,7 @@
 									<view class="num" v-if="userInfo && userInfo.phone && uid">
 										<view class="num-txt">{{userInfo.phone}}</view>
 										<view class="icon">
-											<image :src="urlDomain+'crmebimage/perset/staticImg/edit.png'" mode=""></image>
+											<image :src="urlDomain+'otterwoodimage/perset/staticImg/edit.png'" mode=""></image>
 										</view>
 									</view>
 									<view class="phone" v-if="!userInfo.phone && isLogin" @tap.stop="bindPhone">绑定手机号</view>
@@ -175,7 +175,7 @@
 				orderStatusNum: {},
 				MyMenus: [],
 				wechatUrl: [],
-				servicePic: `${this.$Cache.get("imgHost")}crmebimage/perset/staticImg/customer.png`,
+				servicePic: `${this.$Cache.get("imgHost")}otterwoodimage/perset/staticImg/customer.png`,
 				sysHeight: sysHeight,
 				// #ifdef MP
 				pageHeight: '100%',
@@ -284,7 +284,7 @@
 					if (res.data) {
 						this.copyImage = res.data.companyImage;
 					} else {
-						this.copyImage = `${this.urlDomain}crmebimage/perset/staticImg/support.png`;
+						this.copyImage = `${this.urlDomain}otterwoodimage/perset/staticImg/support.png`;
 					}
 				}).catch(err => {
 					return this.$util.Tips({
