@@ -1,17 +1,24 @@
 package com.otterwood.common.config;
 
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.convert.DurationStyle;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import redis.clients.jedis.JedisPoolConfig;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
+import java.util.Objects;
 
 /**
  * Redis配置组件
@@ -43,25 +50,25 @@ public class RedisConfig {
     @Value("${spring.redis.timeout}")
     private String timeout;
 
-    @Value("${spring.redis.jedis.pool.max-active}")
+    @Value("${spring.redis.lettuce.pool.max-active}")
     private int maxTotal;
 
-    @Value("${spring.redis.jedis.pool.max-idle}")
+    @Value("${spring.redis.lettuce.pool.max-idle}")
     private int maxIdle;
 
-    @Value("${spring.redis.jedis.pool.min-idle}")
+    @Value("${spring.redis.lettuce.pool.min-idle}")
     private int minIdle;
 
-    @Value("${spring.redis.jedis.pool.max-wait}")
+    @Value("${spring.redis.lettuce.pool.max-wait}")
     private int maxWaitMillis;
 
-    @Value("${spring.redis.jedis.pool.time-between-eviction-runs}")
+    @Value("${spring.redis.lettuce.pool.time-between-eviction-runs}")
     private String timeBetweenEvictionRunsMillis;
 
-    @Value("${spring.redis.jedis.pool.test-on-borrow:false}")
+    @Value("${spring.redis.lettuce.pool.test-on-borrow:false}")
     private boolean testOnBorrow;
 
-    @Value("${spring.redis.jedis.pool.test-while-idle:false}")
+    @Value("${spring.redis.lettuce.pool.test-while-idle:false}")
     private boolean testWhileIdle;
 
     @Value("${spring.redis.second.database}")
@@ -75,20 +82,13 @@ public class RedisConfig {
         config.setPort(redisPort);
         config.setHostName(redisHost);
         config.setDatabase(redisDb);
-        config.setPassword(redisPass);
-        //获得默认的连接池构造
-        //这里需要注意的是，RedisConnectionFactoryJ对于Standalone模式的没有（RedisStandaloneConfiguration，jedisPoolConfig）的构造函数，对此
-        //我们用JedisClientConfiguration接口的builder方法实例化一个构造器，还得类型转换
-        JedisClientConfiguration.DefaultJedisClientConfigurationBuilder jpConfigBuilder = (JedisClientConfiguration.DefaultJedisClientConfigurationBuilder) JedisClientConfiguration.builder();
-        //修改我们的连接池配置
-        jpConfigBuilder.usePooling();
-        jpConfigBuilder.poolConfig(jedisPoolConfig());
-        jpConfigBuilder.readTimeout(Duration.ofMillis(Integer.parseInt(timeout)));
-        jpConfigBuilder.connectTimeout(Duration.ofMillis(Integer.parseInt(timeout)));
-        //通过构造器来构造jedis客户端配置
-        JedisClientConfiguration jedisClientConfiguration = jpConfigBuilder.build();
-        //配置连接池属性
-        return new JedisConnectionFactory(config, jedisClientConfiguration);
+        config.setPassword(resolveRedisPassword(redisPass));
+        LettuceClientConfiguration lettuceClientConfiguration = LettucePoolingClientConfiguration.builder()
+                .poolConfig(lettucePoolConfig())
+                .commandTimeout(parseDuration(timeout))
+                .shutdownTimeout(Duration.ZERO)
+                .build();
+        return new LettuceConnectionFactory(config, lettuceClientConfiguration);
     }
 
     @Bean(name = "secondRedisConnectionFactory")
@@ -98,33 +98,72 @@ public class RedisConfig {
         config.setPort(redisPort);
         config.setHostName(redisHost);
         config.setDatabase(redisSecondDatabase);
-        config.setPassword(redisPass);
-        //获得默认的连接池构造
-        //这里需要注意的是，RedisConnectionFactoryJ对于Standalone模式的没有（RedisStandaloneConfiguration，jedisPoolConfig）的构造函数，对此
-        //我们用JedisClientConfiguration接口的builder方法实例化一个构造器，还得类型转换
-        JedisClientConfiguration.DefaultJedisClientConfigurationBuilder jpConfigBuilder = (JedisClientConfiguration.DefaultJedisClientConfigurationBuilder) JedisClientConfiguration.builder();
-        //修改我们的连接池配置
-        jpConfigBuilder.usePooling();
-        jpConfigBuilder.poolConfig(jedisPoolConfig());
-        jpConfigBuilder.readTimeout(Duration.ofMillis(Integer.parseInt(timeout)));
-        jpConfigBuilder.connectTimeout(Duration.ofMillis(Integer.parseInt(timeout)));
-        //通过构造器来构造jedis客户端配置
-        JedisClientConfiguration jedisClientConfiguration = jpConfigBuilder.build();
-        //配置连接池属性
-        return new JedisConnectionFactory(config, jedisClientConfiguration);
+        config.setPassword(resolveRedisPassword(redisPass));
+        LettuceClientConfiguration lettuceClientConfiguration = LettucePoolingClientConfiguration.builder()
+                .poolConfig(lettucePoolConfig())
+                .commandTimeout(parseDuration(timeout))
+                .shutdownTimeout(Duration.ZERO)
+                .build();
+        return new LettuceConnectionFactory(config, lettuceClientConfiguration);
     }
 
-    @Bean
-    public JedisPoolConfig jedisPoolConfig() {
-        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMaxIdle(maxIdle);
-        jedisPoolConfig.setMaxTotal(maxTotal);
-        jedisPoolConfig.setMaxWaitMillis(maxWaitMillis);
-        jedisPoolConfig.setMinIdle(minIdle);
-        jedisPoolConfig.setTimeBetweenEvictionRunsMillis(Integer.parseInt(timeBetweenEvictionRunsMillis));
-        jedisPoolConfig.setTestOnBorrow(testOnBorrow);
-        jedisPoolConfig.setTestWhileIdle(testWhileIdle);
-        return jedisPoolConfig;
+    @Bean(name = "redisTemplate")
+    @Primary
+    public RedisTemplate<String, Object> redisTemplate(
+            @Qualifier("redisConnectionFactory") RedisConnectionFactory redisConnectionFactory) {
+        return buildRedisTemplate(redisConnectionFactory);
+    }
+
+    @Bean(name = "secondRedisTemplate")
+    public RedisTemplate<String, Object> secondRedisTemplate(
+            @Qualifier("secondRedisConnectionFactory") RedisConnectionFactory secondRedisConnectionFactory) {
+        return buildRedisTemplate(secondRedisConnectionFactory);
+    }
+
+    private GenericObjectPoolConfig<?> lettucePoolConfig() {
+        GenericObjectPoolConfig<?> poolConfig = new GenericObjectPoolConfig<>();
+        poolConfig.setMaxIdle(maxIdle);
+        poolConfig.setMaxTotal(maxTotal);
+        poolConfig.setMaxWait(Duration.ofMillis(maxWaitMillis));
+        poolConfig.setMinIdle(minIdle);
+        poolConfig.setTimeBetweenEvictionRuns(parseDuration(timeBetweenEvictionRunsMillis));
+        poolConfig.setTestOnBorrow(testOnBorrow);
+        poolConfig.setTestWhileIdle(testWhileIdle);
+        return poolConfig;
+    }
+
+    private RedisPassword resolveRedisPassword(String password) {
+        if (Objects.isNull(password) || password.trim().isEmpty()) {
+            return RedisPassword.none();
+        }
+        return RedisPassword.of(password);
+    }
+
+    /**
+     * 兼容 "30000"（毫秒）与 "30s"/"1m" 等 Spring Duration 风格。
+     */
+    private Duration parseDuration(String value) {
+        String source = value == null ? "" : value.trim();
+        if (source.isEmpty()) {
+            return Duration.ZERO;
+        }
+        if (source.chars().allMatch(Character::isDigit)) {
+            return Duration.ofMillis(Long.parseLong(source));
+        }
+        return DurationStyle.detectAndParse(source);
+    }
+
+    private RedisTemplate<String, Object> buildRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(connectionFactory);
+        StringRedisSerializer stringSerializer = new StringRedisSerializer();
+        GenericJackson2JsonRedisSerializer jackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer();
+        redisTemplate.setKeySerializer(stringSerializer);
+        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
+        redisTemplate.setHashKeySerializer(stringSerializer);
+        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
     }
 
 }

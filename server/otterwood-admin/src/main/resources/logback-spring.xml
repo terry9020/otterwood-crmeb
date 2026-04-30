@@ -205,9 +205,6 @@
         </filter>
     </appender>
 
-    <!-- Jedis 连接池验证失败属于正常防御行为，降为 WARN 避免刷屏 -->
-    <logger name="redis.clients.jedis.JedisFactory" level="WARN"/>
-
     <!-- 日志输出级别 -->
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

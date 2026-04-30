@@ -63,6 +63,11 @@ public class LoginUserVo implements UserDetails {
      */
     private SystemAdmin user;
 
+    /**
+     * 历史兼容字段：旧缓存中可能包含 username
+     */
+    private String username;
+
     public LoginUserVo() {
     }
 
@@ -89,7 +94,10 @@ public class LoginUserVo implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        if (username != null) {
+            return username;
+        }
+        return user == null ? null : user.getAccount();
     }
 
     /**
@@ -199,6 +207,10 @@ public class LoginUserVo implements UserDetails {
 
     public void setUser(SystemAdmin user) {
         this.user = user;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 }
