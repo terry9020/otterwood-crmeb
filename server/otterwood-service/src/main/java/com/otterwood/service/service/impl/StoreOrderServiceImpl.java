@@ -30,7 +30,6 @@ import com.otterwood.common.model.user.UserBrokerageRecord;
 import com.otterwood.common.model.user.UserToken;
 import com.otterwood.common.page.CommonPage;
 import com.otterwood.common.request.*;
-import com.otterwood.common.request.onepass.OnePassShipmentCreateOrderRequest;
 import com.otterwood.common.response.*;
 import com.otterwood.common.utils.OtterwoodDateUtil;
 import com.otterwood.common.utils.OtterwoodUtil;
@@ -117,9 +116,6 @@ public class StoreOrderServiceImpl extends ServiceImpl<StoreOrderDao, StoreOrder
 
     @Autowired
     private TransactionTemplate transactionTemplate;
-
-    @Autowired
-    private OnePassService onePassService;
 
     @Autowired
     private UserTokenService userTokenService;
@@ -1559,94 +1555,27 @@ public class StoreOrderServiceImpl extends ServiceImpl<StoreOrderDao, StoreOrder
 
 
     /**
-     *  一号通商家寄件
-     * @param request 订单发货请求对象
-     * @param storeOrder 主订单请求对象
+     * 一号通商家寄件（已移除）
      */
     @Override
     public void expressForOnePassShipment(StoreOrderSendRequest request, StoreOrder storeOrder) {
-        // 校验快递发货参数
-//        validateExpressSend(request);
-        OnePassShipmentCreateOrderRequest shipment = request.getShipment();
-        shipment.setManName(storeOrder.getRealName());
-        shipment.setPhone(storeOrder.getUserPhone());
-        shipment.setAddress(storeOrder.getUserAddress());
-
-        if(ObjectUtil.isNotNull(shipment.getKuaidicom()) &&
-                (shipment.getKuaidicom().equalsIgnoreCase("jd") || shipment.getKuaidicom().equalsIgnoreCase("yuantong"))){
-            List<StoreOrderInfo> listByOrderNo = storeOrderInfoService.getListByOrderNo(storeOrder.getOrderId());
-            shipment.setCargo(listByOrderNo.get(0).getProductName().substring(0,10));
-        }
-        JSONObject jsonObject = onePassService.shipmentCreateOrder(shipment);
-        // 任务订单号（需要在系统回调中使用
-        String orderId = jsonObject.getString("order_id");
-        // 任务ID（需要在系统回调中使用）
-        String taskId = jsonObject.getString("task_id");
-        // 物流单号
-        String kuaidinum = jsonObject.getString("kuaidinum");
-
-        logger.info("一号通-商家寄件结果:{}", jsonObject);
-        storeOrder.setShipmentTaskId(taskId);
-        storeOrder.setShipmentOrderId(orderId);
-        storeOrder.setShipmentPic(kuaidinum);
-        storeOrder.setDeliveryCode(request.getShipment().getKuaidicom());
-        storeOrder.setDeliveryName(request.getShipment().getSendRealName());
-        // 更新商家发货结果到数据库，再根据任务订单id在回调中更新最终的发货状态
-        storeOrder.setUpdateTime(DateUtil.date());
-        updateById(storeOrder);
+        throw new UnsupportedOperationException("一号通商家寄件功能已移除");
     }
 
     /**
-     * 商家寄件 取件 回调方法
-     * @param jsonObject 回调数据
+     * 商家寄件 取件 回调方法（已移除）
      */
     @Override
     public void expressForOnePassShipmentTakeCallBack(JSONObject jsonObject){
-        String orderId = jsonObject.getString("id");
-        StoreOrder currentStoreOrder = getByOderId(orderId);
-        currentStoreOrder.setStatus(1);
-        currentStoreOrder.setDeliveryType(Constants.ORDER_LOG_SHIPMENT);
-
-        String message = Constants.ORDER_LOG_MESSAGE_EXPRESS.replace("{deliveryName}", currentStoreOrder.getShipmentNum()).replace("{deliveryCode}", currentStoreOrder.getShipmentNum());
-
-        Boolean execute = transactionTemplate.execute(i -> {
-            currentStoreOrder.setUpdateTime(DateUtil.date());
-            updateById(currentStoreOrder);
-            //订单记录增加
-            storeOrderStatusService.createLog(currentStoreOrder.getId(), Constants.ORDER_LOG_SHIPMENT, message);
-            return Boolean.TRUE;
-        });
-
-        if (!execute) throw new OtterwoodException("一号通-商家寄件 发货失败！");
-
-        sendGoodsNotify(currentStoreOrder);
+        throw new UnsupportedOperationException("一号通商家寄件功能已移除");
     }
 
     /**
-     * 一号通商家寄件 取消寄件回调
-     *
-     * @param jsonObject 回调结果
+     * 一号通商家寄件 取消寄件回调（已移除）
      */
     @Override
     public void expressForOnePassShipmentCancelCallBack(JSONObject jsonObject) {
-        String orderId = jsonObject.getString("id");
-        StoreOrder currentStoreOrder = getByOderId(orderId);
-        currentStoreOrder.setStatus(0);
-        currentStoreOrder.setDeliveryType("");
-        currentStoreOrder.setShipmentPic("");
-        currentStoreOrder.setShipmentOrderId("");
-        currentStoreOrder.setShipmentNum("");
-        currentStoreOrder.setShipmentTaskId("");
-
-        Boolean execute = transactionTemplate.execute(i -> {
-            currentStoreOrder.setUpdateTime(DateUtil.date());
-            updateById(currentStoreOrder);
-            //订单记录增加
-            storeOrderStatusService.createLog(currentStoreOrder.getId(), Constants.ORDER_LOG_SHIPMENT, "一号通 商家寄件 取消寄件");
-            return Boolean.TRUE;
-        });
-
-        if (!execute) throw new OtterwoodException("一号通-商家寄件 取消失败！");
+        throw new UnsupportedOperationException("一号通商家寄件功能已移除");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////// 以下为自定义方法
@@ -1689,8 +1618,8 @@ public class StoreOrderServiceImpl extends ServiceImpl<StoreOrderDao, StoreOrder
             validateExpressSend(request); // 校验快递发货参数
             mianDianResult = expressDump(request, storeOrder, express);
         }
-        if(request.getExpressRecordType().equals("3")){ // 一号通-商家发货
-            expressForOnePassShipment(request, storeOrder);
+        if(request.getExpressRecordType().equals("3")){ // 一号通-商家发货（已移除）
+            throw new UnsupportedOperationException("一号通商家寄件功能已移除");
         }
 
         storeOrder.setDeliveryCode(express.getCode());
@@ -1841,10 +1770,8 @@ public class StoreOrderServiceImpl extends ServiceImpl<StoreOrderDao, StoreOrder
             record.set("net", express.getNetName());// 收件网点名称(部分快递公司必选)
         }
 
-        MyRecord myRecord = onePassService.expressDump(record);
-        logger.info("电子面单的返回数据:{}", JSONObject.toJSONString(myRecord));
-        storeOrder.setDeliveryId(myRecord.getStr("kuaidinum"));
-        return myRecord.getStr("label");
+        // 电子面单（一号通功能，已移除）
+        throw new UnsupportedOperationException("一号通电子面单功能已移除");
     }
 
     /**

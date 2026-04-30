@@ -376,9 +376,6 @@
 		silenceBindingSpread
 	} from "@/utils";
 	import parser from "@/components/jyf-parser/jyf-parser";
-	import {
-		computeUser
-	} from "@/api/user.js";
 	// #ifdef MP
 	import {
 		base64src
@@ -614,9 +611,6 @@
 			this.$store.commit("PRODUCT_TYPE", this.type);
 			// 客服配置
 			this.$set(this, 'chatConfig', this.$Cache.getItem('chatConfig'));
-			// #ifdef H5
-			computeUser();
-			// #endif
 
 			if (options.spread) this.$Cache.set('spread',options.spread);
 

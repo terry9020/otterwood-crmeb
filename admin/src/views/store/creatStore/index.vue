@@ -12,8 +12,7 @@
           >您当前剩余{{ copyConfig.copyNum }}条采集次数。
         </span>
         <div class="tips-bottom">
-          商品采集设置：设置 > 系统设置 > 第三方接口设置 >
-          采集商品配置（如配置一号通采集，请先登录一号通账号，无一号通，请选择99Api设置）
+          商品采集设置：设置 > 系统设置 > 第三方接口设置 > 采集商品配置
         </div>
       </div>
       <div :span="24" v-if="copyConfig.copyType">
@@ -602,7 +601,7 @@ import { clearTreeData } from '@/utils/ZBKJIutil';
 import CreatTemplates from '@/views/systemSetting/deliverGoods/freightSet/creatTemplates';
 import Templates from '../../appSetting/wxAccount/wxTemplate/index';
 import { Debounce } from '@/utils/validate';
-import { copyConfigApi, copyProductApi } from '@/api/store';
+import { copyConfigApi } from '@/api/store';
 const defaultObj = {
   image: '',
   sliderImages: [],
@@ -794,108 +793,7 @@ export default {
   },
   methods: {
     addProduct() {
-      if (this.url) {
-        this.loading = true;
-        this.copyConfig.copyType == 1
-          ? copyProductApi({ url: this.url })
-              .then((res) => {
-                let info = res.info;
-                this.formValidate = {
-                  image: this.$selfUtil.setDomain(info.image),
-                  sliderImage: info.sliderImage,
-                  storeName: info.storeName,
-                  keyword: info.keyword,
-                  cateIds: info.cateId ? info.cateId.split(',') : [], // 商品分类id
-                  cateId: info.cateId, // 商品分类id传值
-                  unitName: info.unitName,
-                  sort: 0,
-                  isShow: 0,
-                  isBenefit: false,
-                  isNew: false,
-                  isGood: false,
-                  isHot: false,
-                  isBest: false,
-                  tempId: info.tempId,
-                  attrValue: info.attrValue,
-                  attr: info.attr || [],
-                  selectRule: info.selectRule,
-                  isSub: false,
-                  content: this.$selfUtil.replaceImgSrcHttps(info.content),
-                  specType: info.attr.length ? true : false,
-                  id: info.id,
-                  giveIntegral: info.giveIntegral,
-                  ficti: info.ficti,
-                };
-                if (info.isHot) this.checkboxGroup.push('isHot');
-                if (info.isGood) this.checkboxGroup.push('isGood');
-                if (info.isBenefit) this.checkboxGroup.push('isBenefit');
-                if (info.isBest) this.checkboxGroup.push('isBest');
-                if (info.isNew) this.checkboxGroup.push('isNew');
-                let imgs = JSON.parse(info.sliderImage);
-                let imgss = [];
-                Object.keys(imgs).map((i) => {
-                  imgss.push(this.$selfUtil.setDomain(imgs[i]));
-                });
-                this.formValidate.sliderImages = imgss;
-                if (this.formValidate.attr.length) {
-                  this.oneFormBatch[0].image = this.$selfUtil.setDomain(info.image);
-                  for (var i = 0; i < this.formValidate.attr.length; i++) {
-                    this.formValidate.attr[i].attrValue = JSON.parse(this.formValidate.attr[i].attrValues);
-                  }
-                }
-                this.loading = false;
-              })
-              .catch(() => {
-                this.loading = false;
-              })
-          : importProductApi({ url: this.url, form: this.form })
-              .then((res) => {
-                this.formValidate = {
-                  image: this.$selfUtil.setDomain(res.image),
-                  sliderImage: res.sliderImage,
-                  storeName: res.storeName,
-                  keyword: res.keyword,
-                  cateIds: res.cateId ? res.cateId.split(',') : [], // 商品分类id
-                  cateId: res.cateId, // 商品分类id传值
-                  unitName: res.unitName,
-                  sort: 0,
-                  isShow: 0,
-                  isBenefit: false,
-                  isNew: false,
-                  isGood: false,
-                  isHot: false,
-                  isBest: false,
-                  tempId: res.tempId,
-                  attrValue: res.attrValue,
-                  attr: res.attr || [],
-                  selectRule: res.selectRule,
-                  isSub: false,
-                  content: res.content,
-                  specType: res.attr.length ? true : false,
-                  id: res.id,
-                  giveIntegral: res.giveIntegral,
-                  ficti: res.ficti,
-                };
-                let imgs = JSON.parse(res.sliderImage);
-                let imgss = [];
-                Object.keys(imgs).map((i) => {
-                  imgss.push(this.$selfUtil.setDomain(imgs[i]));
-                });
-                this.formValidate.sliderImages = imgss;
-                if (this.formValidate.attr.length) {
-                  this.oneFormBatch[0].image = this.$selfUtil.setDomain(res.image);
-                  for (var i = 0; i < this.formValidate.attr.length; i++) {
-                    this.formValidate.attr[i].attrValue = JSON.parse(this.formValidate.attr[i].attrValues);
-                  }
-                }
-                this.loading = false;
-              })
-              .catch(() => {
-                this.loading = false;
-              });
-      } else {
-        this.$message.warning('请输入链接地址！');
-      }
+      this.$message.warning('商品采集功能已移除');
     },
     getCopyConfig() {
       copyConfigApi().then((res) => {

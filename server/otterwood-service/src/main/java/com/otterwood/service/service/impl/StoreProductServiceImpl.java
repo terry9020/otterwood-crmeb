@@ -113,9 +113,6 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
     private StoreSeckillService storeSeckillService;
 
     @Autowired
-    private OnePassService onePassService;
-
-    @Autowired
     private StoreCartService storeCartService;
 
     @Autowired
@@ -1004,32 +1001,19 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
      */
     @Override
     public MyRecord copyConfig() {
-        String copyType = systemConfigService.getValueByKey("system_product_copy_type");
-        if (StrUtil.isBlank(copyType)) {
-            throw new OtterwoodException("请先进行采集商品配置");
-        }
-        int copyNum = 0;
-        if (copyType.equals("1")) {// 一号通
-            JSONObject info = onePassService.info();
-            copyNum = Optional.ofNullable(info.getJSONObject("copy").getInteger("num")).orElse(0);
-        }
+        // 一号通已移除，返回空配置
         MyRecord record = new MyRecord();
-        record.set("copyType", copyType);
-        record.set("copyNum", copyNum);
+        record.set("copyType", "");
+        record.set("copyNum", 0);
         return record;
     }
 
     /**
-     * 复制平台商品
-     * @param url 商品链接
-     * @return MyRecord
+     * 复制平台商品（一号通功能，已移除）
      */
     @Override
     public MyRecord copyProduct(String url) {
-        JSONObject jsonObject = onePassService.copyGoods(url);
-        StoreProductRequest storeProductRequest = ProductUtils.onePassCopyTransition(jsonObject);
-        MyRecord record = new MyRecord();
-        return record.set("info", storeProductRequest);
+        throw new UnsupportedOperationException("一号通商品采集功能已移除");
     }
 
     /**

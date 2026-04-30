@@ -265,18 +265,6 @@ export function importProductApi(params) {
 }
 
 /**
- * 商品复制 一号通
- * @param pram
- */
-export function copyProductApi(data) {
-  return request({
-    url: `/admin/store/product/copy/product`,
-    method: 'post',
-    data,
-  });
-}
-
-/**
  * 恢复
  * @param pram
  */

@@ -160,28 +160,6 @@ export function updateHoneApi(data) {
 }
 
 /**
- * @description 一号通 -- 服务开通
- */
-export function serviceOpenApi(data) {
-  return request({
-    url: '/admin/pass/service/open',
-    method: 'post',
-    data,
-  });
-}
-
-/**
- * @description 一号通 -- 电子面单模板
- */
-export function exportTempApi(params) {
-  return request({
-    url: '/admin/express/template',
-    method: 'get',
-    params,
-  });
-}
-
-/**
  * @description 全部物流公司
  */
 export function expressAllApi(params) {
@@ -211,15 +189,5 @@ export function phoneValidatorApi(data) {
     url: 'admin/pass/update/phone/validator',
     method: 'post',
     data,
-  });
-}
-
-/**
- * @description 一号通 商家寄件 快递列表
- */
-export function shipmentExpressApi() {
-  return request({
-    url: '/admin/pass/shipment/express',
-    method: 'get',
   });
 }

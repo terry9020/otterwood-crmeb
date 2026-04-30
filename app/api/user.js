@@ -418,25 +418,6 @@ export function getuserDalance()
 	return request.get("user/balance");
 }
 
-/*
-统计
-*
-*/
-export function computeUser(){
-	uni.request({
-	    url: document.location.protocol + '//shop.otterwood.net/index.php/admin/server.upgrade_api/updatewebinfo',
-		method:'POST',
-		data: {
-	        host:window.location.host,
-			https:document.location.protocol,
-			version:'OTTERWOOD-JAVA-SY-V2.0',
-			ip:Cache.has('Ip') ? Cache.get('Ip') : ''
-	    },
-		dataType:'json',
-	    success: (res) => {}
-	});
-}
-
 /**
  * 账单记录；
  * 

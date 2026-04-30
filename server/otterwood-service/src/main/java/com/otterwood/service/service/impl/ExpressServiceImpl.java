@@ -8,17 +8,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.otterwood.common.request.PageParamRequest;
-import com.otterwood.common.constants.OnePassConstants;
+import com.otterwood.common.request.ExpressUpdateShowRequest;
 import com.otterwood.common.exception.OtterwoodException;
 import com.github.pagehelper.PageHelper;
 import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.model.express.Express;
 import com.otterwood.common.request.ExpressSearchRequest;
 import com.otterwood.common.request.ExpressUpdateRequest;
-import com.otterwood.common.request.ExpressUpdateShowRequest;
 import com.otterwood.service.dao.ExpressDao;
 import com.otterwood.service.service.ExpressService;
-import com.otterwood.service.util.OnePassUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,9 +50,6 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
 
     @Autowired
     private RedisUtil redisUtil;
-
-    @Autowired
-    private OnePassUtil onePassUtil;
 
     /**
      * 分页显示快递公司表
@@ -113,17 +108,11 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
     }
 
     /**
-     * 同步物流公司
+     * 同步物流公司（一号通功能，已移除）
      */
     @Override
     public Boolean syncExpress() {
-        if (redisUtil.exists(OnePassConstants.ONE_PASS_EXPRESS_CACHE_KEY)) {
-            return Boolean.TRUE;
-        }
-        getExpressList();
-
-        redisUtil.set(OnePassConstants.ONE_PASS_EXPRESS_CACHE_KEY, 1, 3600L, TimeUnit.SECONDS);
-        return Boolean.TRUE;
+        throw new UnsupportedOperationException("一号通功能已移除");
     }
 
     /**
@@ -143,22 +132,16 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
     }
 
     /**
-     * 查询物流公司面单模板
-     * @param com 快递公司编号
+     * 查询物流公司面单模板（一号通功能，已移除）
      */
     @Override
     public JSONObject template(String com) {
-        String token = onePassUtil.getToken();
-        HashMap<String, String> header = onePassUtil.getCommonHeader(token);
-        return onePassUtil.getData(OnePassConstants.ONE_PASS_API_URL + OnePassConstants.ONE_PASS_API_EXPRESS_TEMP_URI
-                +"?com="+com+"&is_shipment=1", header);
+        throw new UnsupportedOperationException("一号通功能已移除");
     }
 
     @Override
     public JSONObject templateFor(String com, String type, String is_shipment, String page, String limit) {
-        String token = onePassUtil.getToken();
-        HashMap<String, String> header = onePassUtil.getCommonHeader(token);
-        return onePassUtil.getData(OnePassConstants.ONE_PASS_API_URL + OnePassConstants.ONE_PASS_API_EXPRESS_DUMP_RECORD_URI +"?com="+com+"&type="+type+"&is_shipment="+is_shipment+"&page="+page+"&limit="+limit, header);
+        throw new UnsupportedOperationException("一号通功能已移除");
     }
 
     /**
@@ -185,8 +168,7 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
     }
 
     /**
-     * 获取快递公司详情
-     * @param id 快递公司id
+     * 获取快递公司详情（一号通功能，已移除）
      */
     @Override
     public Express getInfo(Integer id) {
@@ -195,60 +177,6 @@ public class ExpressServiceImpl extends ServiceImpl<ExpressDao, Express> impleme
             throw new OtterwoodException("快递公司不存在");
         }
         return express;
-    }
-
-    /**
-     * 从平台获取物流公司
-     * 并存入数据库
-     */
-    private void getExpressList() {
-        String token = onePassUtil.getToken();
-        HashMap<String, String> header = onePassUtil.getCommonHeader(token);
-        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
-        //        param.add("type", 1);// 快递类型：1，国内运输商；2，国际运输商；3，国际邮政 不传获取全部
-        param.add("page", 0);
-        param.add("limit", 9999);
-
-        JSONObject post = onePassUtil.getFrom(OnePassConstants.ONE_PASS_API_URL + OnePassConstants.ONE_PASS_API_EXPRESS_URI, param, header);
-        System.out.println("OnePass Express ALL post = " + post);
-        JSONObject jsonObject = post.getJSONObject("data");
-        JSONArray jsonArray = jsonObject.getJSONArray("data");
-        if (CollUtil.isEmpty(jsonArray)) return;
-
-        List<Express> expressList = CollUtil.newArrayList();
-        List<String> codeList = getAllCode();
-        for (int i = 0; i < jsonArray.size(); i++) {
-            JSONObject object = jsonArray.getJSONObject(i);
-            if (StrUtil.isNotBlank(object.getString("code")) && !codeList.contains(object.getString("code"))) {
-                Express express = new Express();
-                express.setName(Optional.ofNullable(object.getString("name")).orElse(""));
-                express.setCode(Optional.ofNullable(object.getString("code")).orElse(""));
-                express.setPartnerId(false);
-                express.setPartnerKey(false);
-                express.setNet(false);
-                if (ObjectUtil.isNotNull(object.getInteger("partner_id"))) {
-                    express.setPartnerId(object.getInteger("partner_id") == 1);
-                }
-                if (ObjectUtil.isNotNull(object.getInteger("partner_key"))) {
-                    express.setPartnerKey(object.getInteger("partner_key") == 1);
-                }
-                if (ObjectUtil.isNotNull(object.getInteger("net"))) {
-                    express.setNet(object.getInteger("net") == 1);
-                }
-                express.setIsShow(true);
-                express.setStatus(false);
-                if (!express.getPartnerId() && !express.getPartnerKey() && !express.getNet()) {
-                    express.setStatus(true);
-                }
-                expressList.add(express);
-            }
-        }
-
-
-        if (CollUtil.isNotEmpty(expressList)) {
-            boolean saveBatch = saveBatch(expressList);
-            if (!saveBatch) throw new OtterwoodException("同步物流公司失败");
-        }
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.otterwood.common.request;
 
-import com.otterwood.common.request.onepass.OnePassShipmentCreateOrderRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -68,7 +67,4 @@ public class StoreOrderSendRequest {
 
     @ApiModelProperty(value = "送货人电话,送货类型必传")
     private String deliveryTel;
-
-    @ApiModelProperty(value = "商家发货一号通内置功能")
-    private OnePassShipmentCreateOrderRequest shipment;
 }

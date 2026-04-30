@@ -11,9 +11,7 @@ import com.otterwood.common.utils.RedisUtil;
 import com.otterwood.common.utils.RestTemplateUtil;
 import com.otterwood.common.vo.LogisticsResultListVo;
 import com.otterwood.common.vo.LogisticsResultVo;
-import com.otterwood.common.vo.OnePassLogisticsQueryVo;
 import com.otterwood.service.service.LogisticService;
-import com.otterwood.service.service.OnePassService;
 import com.otterwood.service.service.SystemConfigService;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -50,9 +48,6 @@ public class LogisticsServiceImpl implements LogisticService {
     @Autowired
     private RedisUtil redisUtil;
 
-    @Autowired
-    private OnePassService onePassService;
-
     private String redisKey = Constants.LOGISTICS_KEY;
     private Long redisCacheSeconds = 1800L;
 
@@ -76,16 +71,6 @@ public class LogisticsServiceImpl implements LogisticService {
             return JSONObject.toJavaObject(result, LogisticsResultVo.class);
         }
         String logisticsType = systemConfigService.getValueByKeyException("logistics_type");
-        if (logisticsType.equals("1")) {// 平台查询
-            OnePassLogisticsQueryVo queryVo = onePassService.exprQuery(expressNo, com);
-            if (ObjectUtil.isNull(queryVo)) {
-                return resultVo;
-            }
-            // 一号通vo转公共返回vo
-            resultVo = queryToResultVo(queryVo);
-            String jsonString = JSONObject.toJSONString(resultVo);
-            saveCache(JSONObject.parseObject(jsonString));
-        }
         if (logisticsType.equals("2")) {// 阿里云查询
             String appCode = systemConfigService.getValueByKey(Constants.CONFIG_KEY_LOGISTICS_APP_CODE);
 
@@ -107,29 +92,6 @@ public class LogisticsServiceImpl implements LogisticService {
             result = data.getJSONObject("result");
             saveCache(result);
             resultVo = JSONObject.toJavaObject(result, LogisticsResultVo.class);
-        }
-        return resultVo;
-    }
-
-    /**
-     * 一号通vo转公共返回vo
-     */
-    private LogisticsResultVo queryToResultVo(OnePassLogisticsQueryVo queryVo) {
-        LogisticsResultVo resultVo = new LogisticsResultVo();
-        resultVo.setNumber(queryVo.getNum());
-        resultVo.setExpName(queryVo.getCom());
-        resultVo.setIsSign(queryVo.getIscheck());
-        resultVo.setDeliveryStatus(queryVo.getStatus());
-
-        if (CollUtil.isNotEmpty(queryVo.getContent())) {
-            List<LogisticsResultListVo> list = CollUtil.newArrayList();
-            queryVo.getContent().forEach(i -> {
-                LogisticsResultListVo listVo = new LogisticsResultListVo();
-                listVo.setTime(i.getTime());
-                listVo.setStatus(i.getStatus());
-                list.add(listVo);
-            });
-            resultVo.setList(list);
         }
         return resultVo;
     }
