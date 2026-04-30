@@ -24,7 +24,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_shipping_templates")
+@TableName("tb_shipping_templates")
 @ApiModel(value="ShippingTemplatesSearchRequest对象", description="模板搜索")
 public class ShippingTemplatesSearchRequest implements Serializable {
 

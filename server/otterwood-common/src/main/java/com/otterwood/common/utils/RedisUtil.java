@@ -16,6 +16,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -163,7 +164,8 @@ public class RedisUtil {
                     getRedisTemplate().delete(key[0]);
                 }
             } else {
-                getRedisTemplate().delete(CollectionUtils.arrayToList(key));
+                List<String> keys = Arrays.asList(key);
+                getRedisTemplate().delete(keys);
             }
         }
     }
@@ -778,7 +780,8 @@ public class RedisUtil {
                     getSecondRedisTemplate().delete(key[0]);
                 }
             } else {
-                getSecondRedisTemplate().delete(CollectionUtils.arrayToList(key));
+                List<String> keys = Arrays.asList(key);
+                getSecondRedisTemplate().delete(keys);
             }
         }
     }

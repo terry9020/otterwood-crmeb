@@ -4,11 +4,11 @@
 
     <select id="getSpreadPeopleList" resultType="com.otterwood.common.response.UserSpreadPeopleItemResponse" parameterType="map">
         SELECT u.uid,u.nickname, u.avatar, DATE_FORMAT(u.spread_time, '%Y-%m-%d %H:%i:%s') AS `time`, u.spread_count AS childCount,
-        (SELECT count( * ) AS num FROM eb_store_order AS o RIGHT JOIN eb_user_brokerage_record AS br ON br.link_id = o.order_id AND br.STATUS = 3
+        (SELECT count( * ) AS num FROM tb_store_order AS o RIGHT JOIN tb_user_brokerage_record AS br ON br.link_id = o.order_id AND br.STATUS = 3
         WHERE o.uid = u.uid AND br.uid = u.spread_uid AND o.STATUS > 1) AS orderCount,
-        (SELECT IFNULL( sum( o.pay_price ), 0 ) AS price FROM eb_store_order AS o RIGHT JOIN eb_user_brokerage_record AS br ON br.link_id = o.order_id AND br.STATUS = 3
+        (SELECT IFNULL( sum( o.pay_price ), 0 ) AS price FROM tb_store_order AS o RIGHT JOIN tb_user_brokerage_record AS br ON br.link_id = o.order_id AND br.STATUS = 3
         WHERE o.uid = u.uid AND br.uid = u.spread_uid AND o.STATUS > 1) AS numberCount
-        FROM eb_user AS u
+        FROM tb_user AS u
         where
         u.uid in
             <foreach item="uid" collection="userIdList" open="(" separator="," close=")">
@@ -21,12 +21,12 @@
     </select>
 
     <select id="findAdminList" resultType="com.otterwood.common.model.user.User" parameterType="Map">
-        SELECT u.* FROM eb_user AS u
+        SELECT u.* FROM tb_user AS u
         <if test='userType != null and userType != "" and userType == "wechat"'>
-            INNER JOIN eb_user_token AS ut on u.uid = ut.uid and ut.type = 1
+            INNER JOIN tb_user_token AS ut on u.uid = ut.uid and ut.type = 1
         </if>
         <if test='userType != null and userType != "" and userType == "routine"'>
-            INNER JOIN eb_user_token AS ut on u.uid = ut.uid and ut.type = 2
+            INNER JOIN tb_user_token AS ut on u.uid = ut.uid and ut.type = 2
         </if>
         where 1 = 1
         <if test="isPromoter != null and isPromoter !='' or isPromoter == 0 ">

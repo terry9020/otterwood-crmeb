@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -27,7 +27,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_order")
+@TableName("tb_store_order")
 @ApiModel(value="StoreOrderSearchRequest对象", description="订单列表请求对象")
 public class StoreOrderSearchRequest implements Serializable {
     private static final long serialVersionUID=1L;

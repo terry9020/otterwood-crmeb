@@ -29,7 +29,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -164,7 +164,7 @@ public class UserRechargeServiceImpl extends ServiceImpl<UserRechargeDao, UserRe
         wrapper.select("id");
         wrapper.eq("paid", 1);
         wrapper.apply("date_format(create_time, '%Y-%m-%d') = {0}", date);
-        return dao.selectCount(wrapper);
+        return Math.toIntExact(dao.selectCount(wrapper));
     }
 
     /**

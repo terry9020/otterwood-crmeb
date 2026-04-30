@@ -10,7 +10,7 @@ import com.otterwood.service.dao.StoreProductAttrDao;
 import com.otterwood.service.service.StoreProductAttrService;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 
 /**

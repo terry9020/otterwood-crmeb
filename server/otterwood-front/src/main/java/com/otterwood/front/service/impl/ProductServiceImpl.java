@@ -1,6 +1,7 @@
 package com.otterwood.front.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -207,7 +208,7 @@ public class ProductServiceImpl implements ProductService {
         productDetailResponse.setProductAttr(attrList);
 
         // 根据制式设置sku属性
-        HashMap<String, Object> skuMap = CollUtil.newHashMap();
+        HashMap<String, Object> skuMap = MapUtil.newHashMap();
         List<StoreProductAttrValue> storeProductAttrValues = storeProductAttrValueService.getListByProductIdAndType(storeProduct.getId(), Constants.PRODUCT_TYPE_NORMAL);
         for (StoreProductAttrValue storeProductAttrValue : storeProductAttrValues) {
             StoreProductAttrValueResponse atr = new StoreProductAttrValueResponse();
@@ -289,7 +290,7 @@ public class ProductServiceImpl implements ProductService {
         productDetailResponse.setProductAttr(attrList);
 
         // 根据制式设置sku属性
-        HashMap<String, Object> skuMap = CollUtil.newHashMap();
+        HashMap<String, Object> skuMap = MapUtil.newHashMap();
         List<StoreProductAttrValue> storeProductAttrValues = storeProductAttrValueService.getListByProductIdAndType(storeProduct.getId(), Constants.PRODUCT_TYPE_NORMAL);
         for (StoreProductAttrValue storeProductAttrValue : storeProductAttrValues) {
             StoreProductAttrValueResponse atr = new StoreProductAttrValueResponse();

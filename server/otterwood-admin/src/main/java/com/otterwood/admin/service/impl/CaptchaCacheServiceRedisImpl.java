@@ -3,7 +3,7 @@ package com.otterwood.admin.service.impl;
 import com.anji.captcha.service.CaptchaCacheService;
 import com.otterwood.common.utils.RedisUtil;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
 /**

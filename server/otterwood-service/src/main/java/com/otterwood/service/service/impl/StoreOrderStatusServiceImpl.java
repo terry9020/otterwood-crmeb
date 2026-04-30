@@ -19,7 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -138,7 +138,7 @@ public class StoreOrderStatusServiceImpl extends ServiceImpl<StoreOrderStatusDao
         wrapper.select("oid");
         wrapper.eq("change_type", "refund_price");
         wrapper.apply("date_format(create_time, '%Y-%m-%d') = {0}", date);
-        return dao.selectCount(wrapper);
+        return Math.toIntExact(dao.selectCount(wrapper));
     }
 
     /**

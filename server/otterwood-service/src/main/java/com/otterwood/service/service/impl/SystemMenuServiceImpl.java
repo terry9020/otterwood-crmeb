@@ -20,7 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +54,7 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
     @Override
     public List<SystemMenu> findCatalogueByPermission(List<String> permissionsList) {
         LambdaQueryWrapper<SystemMenu> lqw = Wrappers.lambdaQuery();
-        lqw.eq(SystemMenu::getIsDelte, false);
+        lqw.eq(SystemMenu::getIsDelete, false);
         lqw.eq(SystemMenu::getIsShow, true);
         lqw.ne(SystemMenu::getMenuType, "A");
         lqw.in(SystemMenu::getPerms, permissionsList);
@@ -69,7 +69,7 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
     @Override
     public List<SystemMenu> findAllCatalogue() {
         LambdaQueryWrapper<SystemMenu> lqw = Wrappers.lambdaQuery();
-        lqw.eq(SystemMenu::getIsDelte, false);
+        lqw.eq(SystemMenu::getIsDelete, false);
         lqw.eq(SystemMenu::getIsShow, true);
         lqw.ne(SystemMenu::getMenuType, "A");
         return dao.selectList(lqw);
@@ -88,7 +88,7 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
         if (StrUtil.isNotEmpty(request.getMenuType())) {
             lqw.eq(SystemMenu::getMenuType, request.getMenuType());
         }
-        lqw.eq(SystemMenu::getIsDelte, false);
+        lqw.eq(SystemMenu::getIsDelete, false);
         lqw.orderByDesc(SystemMenu::getSort);
         lqw.orderByAsc(SystemMenu::getId);
         return dao.selectList(lqw);
@@ -125,7 +125,7 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
     @Override
     public Boolean deleteById(Integer id) {
         SystemMenu systemMenu = getInfoById(id);
-        systemMenu.setIsDelte(true);
+        systemMenu.setIsDelete(true);
         if (systemMenu.getMenuType().equals("A")) {
             systemMenu.setUpdateTime(DateUtil.date());
             boolean update = updateById(systemMenu);
@@ -143,7 +143,7 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
             }
             return update;
         }
-        childList.forEach(e -> e.setIsDelte(true).setUpdateTime(DateUtil.date()));
+        childList.forEach(e -> e.setIsDelete(true).setUpdateTime(DateUtil.date()));
         childList.add(systemMenu);
         boolean updateBatch = updateBatchById(childList);
         if (updateBatch) {
@@ -186,7 +186,7 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
     @Override
     public SystemMenu getInfo(Integer id) {
         SystemMenu systemMenu = getInfoById(id);
-        systemMenu.setIsDelte(null);
+        systemMenu.setIsDelete(null);
         systemMenu.setCreateTime(null);
         systemMenu.setUpdateTime(null);
         return systemMenu;
@@ -218,7 +218,7 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
             return redisUtil.get(CACHE_LIST_KEY);
         }
         LambdaQueryWrapper<SystemMenu> lqw = Wrappers.lambdaQuery();
-        lqw.eq(SystemMenu::getIsDelte, false);
+        lqw.eq(SystemMenu::getIsDelete, false);
         List<SystemMenu> systemMenuList = dao.selectList(lqw);
         redisUtil.set(CACHE_LIST_KEY, systemMenuList);
         return systemMenuList;
@@ -243,7 +243,7 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
     @Override
     public List<SystemMenu> getAllPermissions() {
         LambdaQueryWrapper<SystemMenu> lqw = Wrappers.lambdaQuery();
-        lqw.eq(SystemMenu::getIsDelte, false);
+        lqw.eq(SystemMenu::getIsDelete, false);
         lqw.ne(SystemMenu::getMenuType, "M");
         return dao.selectList(lqw);
     }
@@ -276,7 +276,7 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
     private List<SystemMenu> findAllChildListByPid(Integer pid) {
         LambdaQueryWrapper<SystemMenu> lqw = Wrappers.lambdaQuery();
         lqw.eq(SystemMenu::getPid, pid);
-        lqw.eq(SystemMenu::getIsDelte, false);
+        lqw.eq(SystemMenu::getIsDelete, false);
         return dao.selectList(lqw);
     }
 
@@ -287,7 +287,7 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
      */
     private SystemMenu getInfoById(Integer id) {
         SystemMenu systemMenu = getById(id);
-        if (ObjectUtil.isNull(systemMenu) || systemMenu.getIsDelte()) {
+        if (ObjectUtil.isNull(systemMenu) || systemMenu.getIsDelete()) {
             throw new OtterwoodException("系统菜单不存在");
         }
         return systemMenu;

@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
 

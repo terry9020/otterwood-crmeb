@@ -1,5 +1,6 @@
 package com.otterwood.service.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -39,7 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -132,7 +133,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public PageInfo<UserResponse> getList(UserSearchRequest request, PageParamRequest pageParamRequest) {
         Page<User> pageUser = PageHelper.startPage(pageParamRequest.getPage(), pageParamRequest.getLimit());
         LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        Map<String, Object> map = CollUtil.newHashMap();
+        Map<String, Object> map = MapUtil.newHashMap();
 
         if (request.getIsPromoter() != null) {
             map.put("isPromoter", request.getIsPromoter() ? 1 : 0);
@@ -1317,7 +1318,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public Integer getCountByPayCount(int minPayCount, int maxPayCount) {
         LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.between(User::getPayCount, minPayCount, maxPayCount);
-        return userDao.selectCount(lambdaQueryWrapper);
+        return Math.toIntExact(userDao.selectCount(lambdaQueryWrapper));
     }
 
     /**
@@ -1641,7 +1642,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public Integer getTotalNum() {
         LambdaQueryWrapper<User> lqw = Wrappers.lambdaQuery();
         lqw.select(User::getUid);
-        return userDao.selectCount(lqw);
+        return Math.toIntExact(userDao.selectCount(lqw));
     }
 
     /**
@@ -1655,7 +1656,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         QueryWrapper<User> wrapper = Wrappers.query();
         wrapper.select("uid");
         wrapper.apply("date_format(create_time, '%Y-%m-%d') between {0} and {1}", startDate, endDate);
-        return userDao.selectCount(wrapper);
+        return Math.toIntExact(userDao.selectCount(wrapper));
     }
 
     /**
@@ -1740,7 +1741,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         QueryWrapper<User> wrapper = Wrappers.query();
         wrapper.select("uid");
         wrapper.apply("date_format(create_time, '%Y-%m-%d') = {0}", date);
-        return userDao.selectCount(wrapper);
+        return Math.toIntExact(userDao.selectCount(wrapper));
     }
 
     /**

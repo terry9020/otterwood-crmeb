@@ -32,7 +32,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_product")
+@TableName("tb_store_product")
 @ApiModel(value="StoreProduct对象", description="商品表")
 public class StoreProductResponse implements Serializable {
 

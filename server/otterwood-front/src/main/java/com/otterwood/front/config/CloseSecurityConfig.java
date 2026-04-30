@@ -1,26 +1,26 @@
 package com.otterwood.front.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * 访问接口不在调用security
- * @Author 指缝de阳光
- * @Date 2021/11/26 14:27
- * @Version 1.0
+ * Front 端不启用 Spring Security 认证（全放行）。
+ * Spring Security 6 / Spring Boot 3 写法：基于 SecurityFilterChain Bean。
  */
 @Configuration
 @EnableWebSecurity
-public class CloseSecurityConfig extends WebSecurityConfigurerAdapter {
+public class CloseSecurityConfig {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        //super.configure(http);
-        http.csrf().disable();
-        //配置不需要登陆验证
-        http.authorizeRequests().anyRequest().permitAll().and().logout().permitAll();
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .logout(Customizer.withDefaults());
+        return http.build();
     }
-
 }

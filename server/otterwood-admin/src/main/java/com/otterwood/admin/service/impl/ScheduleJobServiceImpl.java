@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import java.util.List;
 
 /**
@@ -68,7 +68,7 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobDao, Schedule
     @Order
     public List<ScheduleJob> getAll() {
         LambdaQueryWrapper<ScheduleJob> lqw = Wrappers.lambdaQuery();
-        lqw.eq(ScheduleJob::getIsDelte, false);
+        lqw.eq(ScheduleJob::getIsDelete, false);
         lqw.orderByDesc(ScheduleJob::getJobId);
         return dao.selectList(lqw);
     }
@@ -84,7 +84,7 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobDao, Schedule
         BeanUtils.copyProperties(request, scheduleJob);
         scheduleJob.setJobId(null);
         scheduleJob.setStatus(ScheduleConstants.PAUSE);
-        scheduleJob.setIsDelte(false);
+        scheduleJob.setIsDelete(false);
         boolean save = save(scheduleJob);
         if (save) {
             scheduleManager.createScheduleJob(scheduleJob);
@@ -163,7 +163,7 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobDao, Schedule
         if (scheduleJob.getStatus().equals(ScheduleConstants.NORMAL)) {
             throw new OtterwoodException("请先暂停定时任务");
         }
-        scheduleJob.setIsDelte(true);
+        scheduleJob.setIsDelete(true);
         boolean delete = updateById(scheduleJob);
         if (delete) {
             scheduleManager.deleteScheduleJob(scheduleJob);
@@ -185,7 +185,7 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobDao, Schedule
 
     private ScheduleJob getByIdException(Integer jobId) {
         ScheduleJob scheduleJob = getById(jobId);
-        if (ObjectUtil.isNull(scheduleJob) || scheduleJob.getIsDelte()) {
+        if (ObjectUtil.isNull(scheduleJob) || scheduleJob.getIsDelete()) {
             throw new OtterwoodException("定时任务不存在");
         }
         return scheduleJob;

@@ -5,7 +5,7 @@
 
     <select id="getListByPreOrderNo" resultType="com.otterwood.common.model.coupon.StoreCouponUser" parameterType="Map">
         SELECT *
-        FROM eb_store_coupon_user
+        FROM tb_store_coupon_user
         where
         `status` = 0
         AND min_price &lt;= #{maxPrice}

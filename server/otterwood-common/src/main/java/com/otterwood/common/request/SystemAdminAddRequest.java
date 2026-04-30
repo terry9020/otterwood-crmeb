@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 
 /**
@@ -29,7 +29,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_admin")
+@TableName("tb_system_admin")
 @ApiModel(value="SystemAdminAddRequest对象", description="后台管理员表")
 public class SystemAdminAddRequest implements Serializable {
 

@@ -98,11 +98,6 @@ public interface SystemConfigService extends IService<SystemConfig> {
     Boolean clearCache();
 
     /**
-     * 获取授权地址
-     */
-    SystemConfig getAuthHost();
-
-    /**
      * 获取主题色
      */
     SystemConfig getChangeColor();

@@ -27,7 +27,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_store_staff")
+@TableName("tb_system_store_staff")
 @ApiModel(value="SystemStoreStaff对象", description="门店店员表")
 public class SystemStoreStaff implements Serializable {
 

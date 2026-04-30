@@ -4,7 +4,7 @@
 
     <select id="getListGroup" resultType="com.otterwood.common.response.ShippingTemplatesFreeResponse" parameterType="integer">
         SELECT group_concat(`title`) AS title, `number`, price, uniqid
-        FROM eb_shipping_templates_free
+        FROM tb_shipping_templates_free
         where temp_id = #{tempId, jdbcType=INTEGER}
         GROUP BY `uniqid` ORDER BY id ASC
     </select>

@@ -1,5 +1,6 @@
 package com.otterwood.service.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -57,7 +58,7 @@ public class PageLayoutServiceImpl implements PageLayoutService {
      */
     @Override
     public HashMap<String, Object> index() {
-        HashMap<String, Object> map = CollUtil.newHashMap();
+        HashMap<String, Object> map = MapUtil.newHashMap();
         // 首页banner
         List<SystemGroupData> bannerList = systemGroupDataService.findListByGid(Constants.GROUP_DATA_ID_INDEX_BANNER);
         map.put("indexBanner", convertData(bannerList));
@@ -252,7 +253,7 @@ public class PageLayoutServiceImpl implements PageLayoutService {
             groupData.setSort(e.getInteger("sort"));
             groupData.setStatus(e.getBoolean("status"));
             // 组装json
-            Map<String, Object> jsonMap = CollUtil.newHashMap();
+            Map<String, Object> jsonMap = MapUtil.newHashMap();
             jsonMap.put("id", e.getInteger("tempid"));
             jsonMap.put("sort", groupData.getSort());
             jsonMap.put("status", groupData.getStatus());
@@ -263,7 +264,7 @@ public class PageLayoutServiceImpl implements PageLayoutService {
             e.remove("status");
             e.remove("tempid");
             e.forEach((key, value) -> {
-                Map<String, Object> map = CollUtil.newHashMap();
+                Map<String, Object> map = MapUtil.newHashMap();
                 map.put("name", key);
                 map.put("title", key);
                 map.put("value", value);
@@ -286,7 +287,7 @@ public class PageLayoutServiceImpl implements PageLayoutService {
      */
     private List<HashMap<String, Object>> convertData(List<SystemGroupData> dataList) {
         return dataList.stream().map(data -> {
-            HashMap<String, Object> map = CollUtil.newHashMap();
+            HashMap<String, Object> map = MapUtil.newHashMap();
             map.put("id", data.getId());
             map.put("gid", data.getGid());
             map.put("sort", data.getSort());

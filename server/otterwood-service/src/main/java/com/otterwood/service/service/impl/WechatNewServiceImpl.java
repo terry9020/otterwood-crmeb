@@ -1,5 +1,6 @@
 package com.otterwood.service.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -606,7 +607,7 @@ public class WechatNewServiceImpl implements WechatNewService {
     public WxRefundResponseVo payRefund(WxRefundVo wxRefundVo, String path) {
         String xmlStr = XmlUtil.objectToXml(wxRefundVo);
         String url = WeChatConstants.PAY_API_URL + WeChatConstants.PAY_REFUND_API_URI_WECHAT;
-        HashMap<String, Object> map = CollUtil.newHashMap();
+        HashMap<String, Object> map = MapUtil.newHashMap();
         String xml = "";
         try {
             xml = restTemplateUtil.postWXRefundXml(url, xmlStr, wxRefundVo.getMch_id(), path);

@@ -27,7 +27,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_user_integral_record")
+@TableName("tb_user_integral_record")
 @ApiModel(value="UserIntegralRecord对象", description="用户积分记录表")
 public class UserIntegralRecord implements Serializable {
 

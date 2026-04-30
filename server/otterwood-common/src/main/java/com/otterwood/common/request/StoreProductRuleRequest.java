@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.List;
 
@@ -27,7 +27,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_product_rule")
+@TableName("tb_store_product_rule")
 @ApiModel(value="StoreProductRuleRequest对象", description="商品规则值(规格)表")
 public class StoreProductRuleRequest implements Serializable {
 

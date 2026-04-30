@@ -35,7 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -456,7 +456,7 @@ public class UserExtractServiceImpl extends ServiceImpl<UserExtractDao, UserExtr
     public Integer getNotAuditNum() {
         LambdaQueryWrapper<UserExtract> lqw = Wrappers.lambdaQuery();
         lqw.eq(UserExtract::getStatus, 0);
-        return dao.selectCount(lqw);
+        return Math.toIntExact(dao.selectCount(lqw));
     }
 }
 

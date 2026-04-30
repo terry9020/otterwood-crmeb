@@ -44,7 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -1282,7 +1282,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
         lqw.select(StoreProduct::getId);
         lqw.eq(StoreProduct::getIsDel, 0);
         lqw.apply("date_format(add_time, '%Y-%m-%d') = {0}", date);
-        return dao.selectCount(lqw);
+        return Math.toIntExact(dao.selectCount(lqw));
     }
 
     /**
@@ -1322,7 +1322,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
         lambdaQueryWrapper.le(StoreProduct::getStock, stock);
         lambdaQueryWrapper.eq(StoreProduct::getIsRecycle, false);
         lambdaQueryWrapper.eq(StoreProduct::getIsDel, false);
-        return dao.selectCount(lambdaQueryWrapper);
+        return Math.toIntExact(dao.selectCount(lambdaQueryWrapper));
     }
 
     /**
@@ -1335,7 +1335,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
         lambdaQueryWrapper.eq(StoreProduct::getIsShow, true);
         lambdaQueryWrapper.eq(StoreProduct::getIsRecycle, false);
         lambdaQueryWrapper.eq(StoreProduct::getIsDel, false);
-        return dao.selectCount(lambdaQueryWrapper);
+        return Math.toIntExact(dao.selectCount(lambdaQueryWrapper));
     }
 
     /**
@@ -1348,7 +1348,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
         lambdaQueryWrapper.eq(StoreProduct::getIsShow, false);
         lambdaQueryWrapper.eq(StoreProduct::getIsRecycle, false);
         lambdaQueryWrapper.eq(StoreProduct::getIsDel, false);
-        return dao.selectCount(lambdaQueryWrapper);
+        return Math.toIntExact(dao.selectCount(lambdaQueryWrapper));
     }
 
     /**
@@ -1364,7 +1364,7 @@ public class StoreProductServiceImpl extends ServiceImpl<StoreProductDao, StoreP
         queryWrapper.eq("is_recycle", false);
         queryWrapper.eq("is_del", false);
         queryWrapper.last("limit 10");
-        Integer count = dao.selectCount(queryWrapper);
+        Long count = dao.selectCount(queryWrapper);
         if (count < 4) {
             return CollUtil.newArrayList();
         }

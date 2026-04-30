@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -29,7 +29,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_coupon")
+@TableName("tb_store_coupon")
 @ApiModel(value="StoreCouponRequest对象", description="优惠券表")
 public class StoreCouponRequest implements Serializable {
 

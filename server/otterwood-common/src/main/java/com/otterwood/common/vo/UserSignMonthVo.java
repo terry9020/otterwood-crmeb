@@ -25,7 +25,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_user_sign")
+@TableName("tb_user_sign")
 @ApiModel(value="UserSign对象", description="签到记录表")
 public class UserSignMonthVo implements Serializable {
 

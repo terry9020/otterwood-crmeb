@@ -7,7 +7,7 @@ import com.otterwood.service.dao.UserVisitRecordDao;
 import com.otterwood.service.service.UserVisitRecordService;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * UserVisitRecordServiceImpl 接口实现
@@ -37,7 +37,7 @@ public class UserVisitRecordServiceImpl extends ServiceImpl<UserVisitRecordDao, 
         QueryWrapper<UserVisitRecord> wrapper = new QueryWrapper<>();
         wrapper.select("id");
         wrapper.eq("date", date);
-        return dao.selectCount(wrapper);
+        return Math.toIntExact(dao.selectCount(wrapper));
     }
 
     /**
@@ -51,7 +51,7 @@ public class UserVisitRecordServiceImpl extends ServiceImpl<UserVisitRecordDao, 
         QueryWrapper<UserVisitRecord> wrapper = new QueryWrapper<>();
         wrapper.select("id");
         wrapper.between("date", startDate, endDate);
-        return dao.selectCount(wrapper);
+        return Math.toIntExact(dao.selectCount(wrapper));
     }
 
     /**

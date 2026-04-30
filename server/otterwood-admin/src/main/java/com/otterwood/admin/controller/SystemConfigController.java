@@ -93,13 +93,6 @@ public class SystemConfigController {
         return CommonResult.failed("保存失败");
     }
 
-    @PreAuthorize("hasAuthority('admin:system:config:auth:host:get')")
-    @ApiOperation(value = "获取授权地址")
-    @RequestMapping(value = "/get/auth/host", method = RequestMethod.GET)
-    public CommonResult<SystemConfig> getAuthHost() {
-        return CommonResult.success(systemConfigService.getAuthHost());
-    }
-
     @PreAuthorize("hasAuthority('admin:system:config:change:color:get')")
     @ApiOperation(value = "获取主题色")
     @RequestMapping(value = "/get/change/color", method = RequestMethod.GET)

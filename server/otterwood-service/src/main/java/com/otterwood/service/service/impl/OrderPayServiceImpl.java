@@ -1,5 +1,6 @@
 package com.otterwood.service.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
@@ -1027,7 +1028,7 @@ public class OrderPayServiceImpl implements OrderPayService {
             return;
         }
         List<StoreCouponUser> couponUserList = CollUtil.newArrayList();
-        Map<Integer, Boolean> couponMap = CollUtil.newHashMap();
+        Map<Integer, Boolean> couponMap = MapUtil.newHashMap();
         for (StoreOrderInfoOldVo order : orders) {
             List<StoreProductCoupon> couponsForGiveUser = storeProductCouponService.getListByProductId(order.getProductId());
             for (int i = 0; i < couponsForGiveUser.size();) {

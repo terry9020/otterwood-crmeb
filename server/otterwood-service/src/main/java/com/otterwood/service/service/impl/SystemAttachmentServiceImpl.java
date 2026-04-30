@@ -20,9 +20,10 @@ import com.otterwood.service.service.SystemConfigService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.List;
 
 /**
@@ -45,6 +46,7 @@ public class SystemAttachmentServiceImpl extends ServiceImpl<SystemAttachmentDao
     private SystemAttachmentDao dao;
 
     @Autowired
+    @Lazy // 打破 SystemConfigService ↔ SystemAttachmentService 的循环依赖（Spring Boot 2.6+ 默认禁止）
     private SystemConfigService systemConfigService;
 
     /**

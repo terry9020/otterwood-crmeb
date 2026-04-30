@@ -3,7 +3,7 @@ package com.otterwood.common.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * 活动边框 更新状态

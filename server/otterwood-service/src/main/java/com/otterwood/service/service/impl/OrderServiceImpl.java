@@ -1,5 +1,6 @@
 package com.otterwood.service.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
@@ -1934,7 +1935,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // 按模板构建MAP
-        Map<Integer, MyRecord> tempMap = CollUtil.newHashMap();
+        Map<Integer, MyRecord> tempMap = MapUtil.newHashMap();
         orderInfoVo.getOrderDetailList().forEach(e -> {
             Integer tempId = e.getTempId();
             if (tempMap.containsKey(tempId)) {

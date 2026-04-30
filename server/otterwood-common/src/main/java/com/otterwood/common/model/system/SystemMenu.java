@@ -28,7 +28,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_menu")
+@TableName("tb_system_menu")
 @ApiModel(value="SystemMenu对象", description="系统菜单表")
 public class SystemMenu implements Serializable {
 
@@ -63,7 +63,7 @@ public class SystemMenu implements Serializable {
 
     @ApiModelProperty(value = "是否删除")
     @JsonIgnore
-    private Boolean isDelte;
+    private Boolean isDelete;
 
     @ApiModelProperty(value = "创建时间")
     private Date createTime;

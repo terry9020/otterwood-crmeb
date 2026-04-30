@@ -27,7 +27,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_wechat_reply")
+@TableName("tb_wechat_reply")
 @ApiModel(value="WechatReply对象", description="微信关键字回复表")
 public class WechatReply implements Serializable {
 

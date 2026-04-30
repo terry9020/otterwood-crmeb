@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * 微信小程序回调Service

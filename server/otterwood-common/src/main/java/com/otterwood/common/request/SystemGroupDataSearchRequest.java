@@ -27,7 +27,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_group_data")
+@TableName("tb_system_group_data")
 @ApiModel(value="SystemGroupDataSearchRequest对象", description="组合数据详情表")
 public class SystemGroupDataSearchRequest implements Serializable {
 

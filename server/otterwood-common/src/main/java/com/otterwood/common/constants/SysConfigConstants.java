@@ -79,15 +79,6 @@ public class SysConfigConstants {
     /** 支付宝支付状态 */
     public static final String CONFIG_ALI_PAY_STATUS = "ali_pay_status";
 
-    /** 版权-授权标签 */
-    public static final String CONFIG_COPYRIGHT_LABEL = "copyright_label";
-    /** 版权-公司信息 */
-    public static final String CONFIG_COPYRIGHT_COMPANY_INFO = "copyright_company_name";
-    /** 版权-公司图片 */
-    public static final String CONFIG_COPYRIGHT_COMPANY_IMAGE = "copyright_company_image";
-    /** 版权-授权地址 */
-    public static final String CONFIG_COPYRIGHT_AUTH_HOST = "authHost";
-
     /** 主题测配置 */
     public static final String CONFIG_CHANGE_COLOR = "change_color_config";
 

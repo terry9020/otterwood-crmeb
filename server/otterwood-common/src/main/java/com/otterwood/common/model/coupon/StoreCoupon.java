@@ -29,7 +29,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_coupon")
+@TableName("tb_store_coupon")
 @ApiModel(value="StoreCoupon对象", description="优惠券表")
 public class StoreCoupon implements Serializable {
 

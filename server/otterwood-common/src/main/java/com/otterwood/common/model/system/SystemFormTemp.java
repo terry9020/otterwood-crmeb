@@ -26,7 +26,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_form_temp")
+@TableName("tb_system_form_temp")
 @ApiModel(value="SystemFormTemp对象", description="表单模板")
 public class SystemFormTemp implements Serializable {
 

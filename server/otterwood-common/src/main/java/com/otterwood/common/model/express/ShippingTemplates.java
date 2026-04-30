@@ -27,7 +27,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_shipping_templates")
+@TableName("tb_shipping_templates")
 @ApiModel(value="ShippingTemplates对象", description="")
 public class ShippingTemplates implements Serializable {
 

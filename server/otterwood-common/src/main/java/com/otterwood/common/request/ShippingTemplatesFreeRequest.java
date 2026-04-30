@@ -7,9 +7,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_shipping_templates_free")
+@TableName("tb_shipping_templates_free")
 @ApiModel(value="ShippingTemplatesFreeRequest对象", description="免费")
 public class ShippingTemplatesFreeRequest implements Serializable {
 

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.Min;
 import java.io.Serializable;
 
 /**

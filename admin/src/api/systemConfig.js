@@ -158,16 +158,6 @@ export function getHomeStyleApi() {
 }
 
 /**
- * @description 获取移动端首页列表样式
- */
-export function getAuthHostApi() {
-  return request({
-    url: '/admin/system/config/get/auth/host',
-    method: 'GET',
-  });
-}
-
-/**
  * @description 清除config缓存
  */
 export function clearCacheApi() {

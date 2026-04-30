@@ -3,18 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
+
     <modules>
         <module>otterwood-common</module>
         <module>otterwood-service</module>
         <module>otterwood-admin</module>
         <module>otterwood-front</module>
     </modules>
-    <!--<parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.6.RELEASE</version>
-        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;
-    </parent>-->
+
     <groupId>com.otterwood</groupId>
     <artifactId>otterwood</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -22,312 +18,364 @@
     <description>Otterwood project for Spring Boot</description>
 
     <properties>
-        <java.version>1.8</java.version>
-        <springfox.version>2.9.2</springfox.version>
-        <swagger-models.version>1.5.22</swagger-models.version>
-        <swagger-bootstrap-ui.version>1.9.3</swagger-bootstrap-ui.version>
-<!--        兼容个别 mav 环境 GBK问题-->
+        <!-- JDK -->
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Spring Boot 3.x（JDK 17+） -->
+        <spring-boot.version>3.3.5</spring-boot.version>
+
+        <!-- ORM / DB -->
+        <!-- MyBatis-Plus 3.5.7+ 把 count() 返回类型由 Integer 改为 Long，为避免大面积改源码保持 3.5.5 -->
+        <mybatis-plus.version>3.5.5</mybatis-plus.version>
+        <mysql.version>8.4.0</mysql.version>
+        <druid.version>1.2.24</druid.version>
+        <pagehelper.version>2.0.0</pagehelper.version>
+
+        <!-- 工具库 -->
+        <!-- Hutool 5.8.22+ StrUtil.split(String, char) 返回由 String[] 改为 List，保持 5.8.21 -->
+        <hutool.version>5.8.21</hutool.version>
+        <fastjson.version>1.2.83</fastjson.version>
+        <fastjson2.version>2.0.53</fastjson2.version>
+        <commons-lang3.version>3.17.0</commons-lang3.version>
+        <commons-io.version>2.17.0</commons-io.version>
+        <commons-fileupload.version>1.5</commons-fileupload.version>
+        <httpclient.version>4.5.14</httpclient.version>
+
+        <!-- 日志 -->
+        <logstash-logback.version>7.4</logstash-logback.version>
+
+        <!-- API 文档（Spring Boot 3 对应 Jakarta 版本） -->
+        <knife4j.version>4.5.0</knife4j.version>
+        <swagger.version>1.6.14</swagger.version>
+
+        <!-- 图形 / Excel / XML -->
+        <poi.version>5.3.0</poi.version>
+        <thumbnailator.version>0.4.20</thumbnailator.version>
+        <xstream.version>1.4.21</xstream.version>
+        <dom4j.version>2.1.4</dom4j.version>
+        <zxing.version>3.5.3</zxing.version>
+
+        <!-- 数据库/中间件 -->
+        <mongodb.version>4.11.5</mongodb.version>
+
+        <!-- 云存储 -->
+        <aliyun-oss.version>3.18.1</aliyun-oss.version>
+        <cos.version>5.6.227</cos.version>
+        <qiniu.version>7.15.0</qiniu.version>
+        <aws-s3.version>1.12.787</aws-s3.version>
+
+        <!-- 验证码 / JWT / 支付 / 其他 -->
+        <captcha.version>1.3.0</captcha.version>
+        <jjwt.version>0.9.1</jjwt.version>
+        <jwks-rsa.version>0.22.1</jwks-rsa.version>
+        <alipay-sdk.version>4.40.771.ALL</alipay-sdk.version>
+        <pinyin4j.version>2.5.1</pinyin4j.version>
+        <oshi.version>6.6.5</oshi.version>
+        <jna.version>5.14.0</jna.version>
+        <android-json.version>0.0.20131108.vaadin1</android-json.version>
+        <jsonpath.version>2.9.0</jsonpath.version>
+        <gson.version>2.11.0</gson.version>
+        <lombok.version>1.18.34</lombok.version>
     </properties>
 
-    <!-- 依赖声明 -->
+    <!-- 依赖版本集中管理 -->
     <dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-dependencies</artifactId>
-            <version>2.2.6.RELEASE</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
+        <dependencies>
+            <!-- Spring Boot BOM -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.83</version>
-        </dependency>
+            <!-- Fastjson 1.x（保留历史兼容；CVE 已在 1.2.83 修复） -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <!-- Fastjson2（推荐新代码使用） -->
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson2.version}</version>
+            </dependency>
 
-        <!--添加 Alibaba 数据源-->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>1.1.20</version>
-        </dependency>
+            <!-- Druid（Spring Boot 3 专用 starter） -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-3-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
 
-        <!--访问mysql-->
-        <!--JDBC-->
-        <!-- MySql 5.5 Connector -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.24</version>
-        </dependency>
+            <!-- MySQL 8.x -->
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
 
-        <!--代码自动生成工具-->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.3.1</version>
-        </dependency>
+            <!-- MyBatis-Plus（Spring Boot 3 版本） -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
+            <!-- 分页插件（Jakarta / Spring Boot 3 版本） -->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.mybatis</groupId>
+                        <artifactId>mybatis</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>5.2.5.RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
+            <!-- API 文档 Knife4j（替代 springfox，支持 SB3/Jakarta） -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>2.2.24</version>
+            </dependency>
+            <!-- 兼容旧版 Swagger 1.x 注解（@Api/@ApiOperation/@ApiModel 等），允许旧代码编译通过 -->
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus</artifactId>
-            <version>3.3.1</version>
-        </dependency>
+            <!-- 日志 -->
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logstash-logback.version}</version>
+            </dependency>
 
-        <!--generator-->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-generator</artifactId>
-            <version>3.3.1</version>
-        </dependency>
+            <!-- 工具库 -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>${httpclient.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>${commons-fileupload.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>1.5.21</version>
-        </dependency>
+            <!-- Excel / 图片 -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.coobird</groupId>
+                <artifactId>thumbnailator</artifactId>
+                <version>${thumbnailator.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-models</artifactId>
-            <version>1.5.21</version>
-        </dependency>
+            <!-- 云存储 -->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun-oss.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.qcloud</groupId>
+                <artifactId>cos_api</artifactId>
+                <version>${cos.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.qiniu</groupId>
+                <artifactId>qiniu-java-sdk</artifactId>
+                <version>${qiniu.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-s3</artifactId>
+                <version>${aws-s3.version}</version>
+            </dependency>
 
-        <!-- doc -->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.swagger</groupId>
-                    <artifactId>swagger-models</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+            <!-- XML / MongoDB / 二维码 -->
+            <dependency>
+                <groupId>org.dom4j</groupId>
+                <artifactId>dom4j</artifactId>
+                <version>${dom4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.thoughtworks.xstream</groupId>
+                <artifactId>xstream</artifactId>
+                <version>${xstream.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-core</artifactId>
+                <version>${mongodb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>${zxing.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>javase</artifactId>
+                <version>${zxing.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vaadin.external.google</groupId>
+                <artifactId>android-json</artifactId>
+                <version>${android-json.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-models</artifactId>
-            <version>${swagger-models.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>swagger-bootstrap-ui</artifactId>
-            <version>${swagger-bootstrap-ui.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.logstash.logback</groupId>
-            <artifactId>logstash-logback-encoder</artifactId>
-            <version>5.3</version>
-        </dependency>
-
-        <!-- Spring Boot Redis 依赖 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-            <version>2.2.0.RELEASE</version>
-        </dependency>
-
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>3.1.0</version>
-        </dependency>
-
-        <!-- 分页插件 -->
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>1.2.5</version>
-<!--            mybatis plus 和 pagehelper 冲突-->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.mybatis</groupId>
-                    <artifactId>mybatis</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>1.1.0.Final</version>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>4.5.7</version>
-        </dependency>
-
-        <!--httpclient-->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.6</version>
-        </dependency>
-
-        <!--字符串操作-->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.5</version>
-        </dependency>
-
-        <!--导出excel-->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.17</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.17</version>
-        </dependency>
-
-        <!-- Apache Commons FileUpload -->
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.3.3</version>
-        </dependency>
-        <!-- Apache Commons IO  -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.4</version>
-        </dependency>
-        <!-- thumbnailator 图片压缩工具 -->
-        <dependency>
-            <groupId>net.coobird</groupId>
-            <artifactId>thumbnailator</artifactId>
-            <version>0.4.8</version>
-        </dependency>
-
-        <!--阿里云oss上传-->
-        <dependency>
-            <groupId>com.aliyun.oss</groupId>
-            <artifactId>aliyun-sdk-oss</artifactId>
-            <version>3.5.0</version>
-        </dependency>
-
-        <!--腾讯云COS-->
-        <dependency>
-            <groupId>com.qcloud</groupId>
-            <artifactId>cos_api</artifactId>
-            <version>5.6.22</version>
-        </dependency>
-
-        <!-- 七牛云 -->
-        <dependency>
-            <groupId>com.qiniu</groupId>
-            <artifactId>qiniu-java-sdk</artifactId>
-            <version>7.2.28</version>
-        </dependency>
-
-        <!--xml-->
-        <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.thoughtworks.xstream</groupId>
-            <artifactId>xstream</artifactId>
-            <version>1.4.18</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-core</artifactId>
-            <version>3.8.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin.external.google</groupId>
-            <artifactId>android-json</artifactId>
-            <version>0.0.20131108.vaadin1</version>
-            <scope>compile</scope>
-        </dependency>
-        <!--图片上传-->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-            <version>4.5.2</version>
-        </dependency>
-
-        <!--谷歌二维码-->
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>core</artifactId>
-            <version>3.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>javase</artifactId>
-            <version>3.3.3</version>
-        </dependency>
-
-        <!--中文转拼音-->
-        <dependency>
-            <groupId>com.belerweb</groupId>
-            <artifactId>pinyin4j</artifactId>
-            <version>2.5.0</version>
-        </dependency>
-
-        <!--解析JWT-->
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <version>0.9.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>jwks-rsa</artifactId>
-            <version>0.9.0</version>
-        </dependency>
-
-    </dependencies>
+            <!-- 其他 -->
+            <dependency>
+                <groupId>com.belerweb</groupId>
+                <artifactId>pinyin4j</artifactId>
+                <version>${pinyin4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.auth0</groupId>
+                <artifactId>jwks-rsa</artifactId>
+                <version>${jwks-rsa.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sdk</groupId>
+                <artifactId>alipay-sdk-java</artifactId>
+                <version>${alipay-sdk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.anji-plus</groupId>
+                <artifactId>spring-boot-starter-captcha</artifactId>
+                <version>${captcha.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core</artifactId>
+                <version>${oshi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna</artifactId>
+                <version>${jna.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna-platform</artifactId>
+                <version>${jna.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path</artifactId>
+                <version>${jsonpath.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
+        </dependencies>
     </dependencyManagement>
 
+    <!-- 所有子模块共享的基础依赖（版本由 dependencyManagement 控制） -->
+    <dependencies>
+        <!-- Lombok：编译期注解处理器，optional 不传递到运行期 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.3.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>3.13.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
-                    <!-- java8 保留参数名编译参数 -->
-                    <compilerArgument>-parameters</compilerArgument>
-                    <compilerArguments>
-                        <verbose/>
-                    </compilerArguments>
-                    <!-- <failOnMissingWebXml>false</failOnMissingWebXml> -->
+                    <release>${java.version}</release>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <parameters>true</parameters>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>

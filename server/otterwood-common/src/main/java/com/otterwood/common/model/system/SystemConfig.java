@@ -27,7 +27,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_config")
+@TableName("tb_system_config")
 @ApiModel(value="SystemConfig对象", description="配置表")
 public class SystemConfig implements Serializable {
 

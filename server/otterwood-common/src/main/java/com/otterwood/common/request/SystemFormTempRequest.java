@@ -10,8 +10,8 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -30,7 +30,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_form_temp")
+@TableName("tb_system_form_temp")
 @ApiModel(value="SystemFormTempRequest对象", description="表单模板")
 public class SystemFormTempRequest implements Serializable {
 

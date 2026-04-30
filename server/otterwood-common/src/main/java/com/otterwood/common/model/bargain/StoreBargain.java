@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_bargain")
+@TableName("tb_store_bargain")
 @ApiModel(value="StoreBargain对象", description="砍价表")
 public class StoreBargain implements Serializable {
 

@@ -28,7 +28,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_user_level")
+@TableName("tb_system_user_level")
 @ApiModel(value="SystemUserLevel对象", description="用户等级表")
 public class SystemUserLevel implements Serializable {
 

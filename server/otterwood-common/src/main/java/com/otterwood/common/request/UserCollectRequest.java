@@ -8,8 +8,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -27,7 +27,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_product_relation")
+@TableName("tb_store_product_relation")
 @ApiModel(value="UserCollectRequest对象", description="商品点赞和收藏表")
 public class UserCollectRequest implements Serializable {
 

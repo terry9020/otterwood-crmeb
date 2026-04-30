@@ -1,5 +1,6 @@
 package com.otterwood.service.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -40,7 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -266,7 +267,7 @@ public class StoreCouponUserServiceImpl extends ServiceImpl<StoreCouponUserDao, 
         BigDecimal maxPrice = orderInfoVo.getProTotalFee();
 
         Date date = OtterwoodDateUtil.nowDateTime();
-        Map<String, Object> map = CollUtil.newHashMap();
+        Map<String, Object> map = MapUtil.newHashMap();
         map.put("date", date);
         map.put("maxPrice", maxPrice);
         map.put("uid", userService.getUserIdException());

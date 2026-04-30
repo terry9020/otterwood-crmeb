@@ -28,7 +28,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_cart")
+@TableName("tb_store_cart")
 @ApiModel(value="StoreCart对象", description="购物车表")
 public class StoreCart implements Serializable {
 

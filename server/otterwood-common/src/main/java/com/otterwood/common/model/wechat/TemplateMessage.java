@@ -29,7 +29,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_template_message")
+@TableName("tb_template_message")
 @ApiModel(value="TemplateMessage对象", description="微信模板")
 public class TemplateMessage implements Serializable {
 

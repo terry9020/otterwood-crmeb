@@ -27,7 +27,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_role")
+@TableName("tb_system_role")
 @ApiModel(value="SystemRole对象", description="身份管理表")
 public class SystemRole implements Serializable {
 

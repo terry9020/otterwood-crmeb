@@ -34,7 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -186,7 +186,7 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole
             lqw.ne(SystemRole::getId, id);
         }
         lqw.last(" limit 1");
-        Integer count = dao.selectCount(lqw);
+        Long count = dao.selectCount(lqw);
         return count > 0;
     }
 

@@ -26,7 +26,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_group_data")
+@TableName("tb_system_group_data")
 @ApiModel(value="SystemGroupData对象", description="组合数据详情表")
 public class SystemGroupData implements Serializable {
 

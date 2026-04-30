@@ -10,8 +10,8 @@ import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
 import javax.management.MXBean;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -29,7 +29,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_city")
+@TableName("tb_system_city")
 @ApiModel(value="SystemCity对象", description="城市表")
 public class SystemCityRequest implements Serializable {
 

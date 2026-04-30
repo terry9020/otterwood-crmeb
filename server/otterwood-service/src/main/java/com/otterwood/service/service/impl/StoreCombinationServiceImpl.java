@@ -1,5 +1,6 @@
 package com.otterwood.service.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -38,7 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -465,7 +466,7 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
         StorePink spavPink = new StorePink();
         spavPink.setKId(0);
         List<StorePink> pinkList = storePinkService.getByEntity(spavPink);
-        Map<String, Object> map = CollUtil.newHashMap();
+        Map<String, Object> map = MapUtil.newHashMap();
         map.put("countPeople", 0);
         map.put("countTeam", 0);
         if (CollUtil.isNotEmpty(pinkList)) {
@@ -558,7 +559,7 @@ public class StoreCombinationServiceImpl extends ServiceImpl<StoreCombinationDao
         detailResponse.setProductAttr(attrList);
 
         // 根据制式设置sku属性
-        HashMap<String, Object> skuMap = CollUtil.newHashMap();
+        HashMap<String, Object> skuMap = MapUtil.newHashMap();
         // 获取主商品sku
         List<StoreProductAttrValue> storeProductAttrValues = storeProductAttrValueService.getListByProductIdAndType(storeCombination.getProductId(), Constants.PRODUCT_TYPE_NORMAL);
         // 获取拼团商品sku

@@ -1,5 +1,6 @@
 package com.otterwood.service.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -32,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -189,7 +190,7 @@ public class UserBrokerageRecordServiceImpl extends ServiceImpl<UserBrokerageRec
         lqw.eq(UserBrokerageRecord::getUid, uid);
         lqw.eq(UserBrokerageRecord::getLinkType, BrokerageRecordConstants.BROKERAGE_RECORD_LINK_TYPE_ORDER);
         lqw.eq(UserBrokerageRecord::getStatus, BrokerageRecordConstants.BROKERAGE_RECORD_STATUS_COMPLETE);
-        return dao.selectCount(lqw);
+        return Math.toIntExact(dao.selectCount(lqw));
     }
 
     /**
@@ -256,7 +257,7 @@ public class UserBrokerageRecordServiceImpl extends ServiceImpl<UserBrokerageRec
         queryWrapper.apply(StrUtil.format("left(update_time, 7) in ({})", ArrayUtil.strListToSqlJoin(monthList)));
         queryWrapper.groupBy("left(update_time, 7)");
         List<UserBrokerageRecord> list = dao.selectList(queryWrapper);
-        Map<String, Integer> map = CollUtil.newHashMap();
+        Map<String, Integer> map = MapUtil.newHashMap();
         if (CollUtil.isEmpty(list)) {
             return map;
         }

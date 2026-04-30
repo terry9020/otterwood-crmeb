@@ -25,7 +25,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_activity_style")
+@TableName("tb_activity_style")
 @ApiModel(value="ActivityStyle对象", description="")
 public class ActivityStyle implements Serializable {
 

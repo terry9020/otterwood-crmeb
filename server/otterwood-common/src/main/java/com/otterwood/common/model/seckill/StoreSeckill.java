@@ -28,7 +28,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_seckill")
+@TableName("tb_store_seckill")
 @ApiModel(value="StoreSeckill对象", description="商品秒杀产品表")
 public class StoreSeckill implements Serializable {
 

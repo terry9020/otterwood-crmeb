@@ -29,7 +29,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_user_bill")
+@TableName("tb_user_bill")
 @ApiModel(value="UserBill对象", description="用户账单表")
 public class UserBillResponse implements Serializable {
 

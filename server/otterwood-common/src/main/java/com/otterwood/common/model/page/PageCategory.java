@@ -23,7 +23,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_page_category")
+@TableName("tb_page_category")
 @ApiModel(value="PageCategory对象", description="页面链接分类")
 public class PageCategory implements Serializable {
 

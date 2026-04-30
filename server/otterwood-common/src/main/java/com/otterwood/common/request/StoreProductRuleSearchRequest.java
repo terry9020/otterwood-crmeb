@@ -24,7 +24,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_product_rule")
+@TableName("tb_store_product_rule")
 @ApiModel(value="StoreProductRuleSearchRequest对象", description="商品规则值(规格)表")
 public class StoreProductRuleSearchRequest implements Serializable {
 

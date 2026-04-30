@@ -2,31 +2,19 @@ package com.otterwood.front.config;
 
 import com.otterwood.common.config.OtterwoodConfig;
 import com.otterwood.common.constants.Constants;
-import com.google.common.base.Predicate;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.SecurityReference;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spi.service.contexts.SecurityContext;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.google.common.collect.Lists.newArrayList;
 
 /**
- * Swagger配置组件
+ * Swagger / OpenAPI 3 配置组件（基于 springdoc-openapi + knife4j-openapi3）
  * +----------------------------------------------------------------------
  * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
@@ -38,94 +26,59 @@ import static com.google.common.collect.Lists.newArrayList;
  * +----------------------------------------------------------------------
  */
 @Configuration
-@EnableSwagger2
 @ConfigurationProperties(prefix = "api.doc")
-public class SwaggerConfig{
+public class SwaggerConfig {
 
-    //是否开启swagger，正式环境一般是需要关闭的，可根据springboot的多环境配置进行设置
-    Boolean swaggerEnabled = true;
+    /** 是否开启 swagger，正式环境一般是需要关闭的，可根据 springboot 的多环境配置进行设置 */
+    private Boolean swaggerEnabled = true;
 
     @Autowired
-    OtterwoodConfig otterwoodConfig;
+    private OtterwoodConfig otterwoodConfig;
 
-    @Bean("front")
-    public Docket create1RestApis() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("front")
-                .host(otterwoodConfig.getDomain())
-                .apiInfo(apiInfo())
-                // 是否开启
-                .enable(swaggerEnabled)
-                .select()
-                // 扫描的路径包
-                .apis(RequestHandlerSelectors.basePackage("com.otterwood.front"))
-                // 指定路径处理PathSelectors.any()代表所有的路径
-                .paths(frontPathsAnt()) //只监听
-                .build()
-                .securitySchemes(security())
-                .securityContexts(securityContexts())
-//                .globalOperationParameters(pars) // 针对单个url的验证 如果需要的话
-                .pathMapping("/");
+    /**
+     * 全局 OpenAPI 元信息 + 鉴权方案
+     */
+    @Bean
+    public OpenAPI otterwoodOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Otterwood Java")
+                        .description("Otterwood")
+                        .version("1.0.0"))
+                .addSecurityItem(new SecurityRequirement().addList(Constants.HEADER_AUTHORIZATION_KEY))
+                .components(new Components()
+                        .addSecuritySchemes(Constants.HEADER_AUTHORIZATION_KEY,
+                                new SecurityScheme()
+                                        .type(SecurityScheme.Type.APIKEY)
+                                        .in(SecurityScheme.In.HEADER)
+                                        .name(Constants.HEADER_AUTHORIZATION_KEY)));
     }
 
-    @Bean("public")
-    public Docket create2RestApis() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("public")
-                .host(otterwoodConfig.getDomain())
-                .apiInfo(apiInfo())
-                // 是否开启
-                .enable(swaggerEnabled)
-                .select()
-                // 扫描的路径包
-                .apis(RequestHandlerSelectors.basePackage("com.otterwood.front"))
-                // 指定路径处理PathSelectors.any()代表所有的路径
-                .paths(publicPathsAnt()) //只监听
-                .build()
-                .securitySchemes(security())
-                .securityContexts(securityContexts())
-//                .globalOperationParameters(pars) // 针对单个url的验证 如果需要的话
-                .pathMapping("/");
+    /** front 分组：/api/front/** */
+    @Bean
+    public GroupedOpenApi frontApi() {
+        return GroupedOpenApi.builder()
+                .group("front")
+                .packagesToScan("com.otterwood.front")
+                .pathsToMatch("/api/front/**")
+                .build();
     }
 
-    private Predicate<String> frontPathsAnt() {
-        return PathSelectors.ant("/api/front/**");
+    /** public 分组：/api/public/** */
+    @Bean
+    public GroupedOpenApi publicApi() {
+        return GroupedOpenApi.builder()
+                .group("public")
+                .packagesToScan("com.otterwood.front")
+                .pathsToMatch("/api/public/**")
+                .build();
     }
 
-    private Predicate<String> publicPathsAnt() {
-        return PathSelectors.ant("/api/public/**");
+    public Boolean getSwaggerEnabled() {
+        return swaggerEnabled;
     }
 
-    private List<ApiKey> security() {
-        return newArrayList(
-                new ApiKey(Constants.HEADER_AUTHORIZATION_KEY, Constants.HEADER_AUTHORIZATION_KEY, "header")
-        );
-    }
-
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                .title("Otterwood Java")
-                .description("Otterwood")
-                .termsOfServiceUrl("http://host:port")
-                .version("1.0.0").build();
-    }
-
-
-    private List<SecurityContext> securityContexts() {
-        List<SecurityContext> res = new ArrayList<>();
-        res.add(SecurityContext.builder()
-                .securityReferences(defaultAuth())
-                .forPaths(PathSelectors.regex("/.*"))
-                .build());
-        return res;
-    }
-
-    private List<SecurityReference> defaultAuth() {
-        List<SecurityReference> res = new ArrayList<>();
-        AuthorizationScope authorizationScope = new AuthorizationScope("global", Constants.HEADER_AUTHORIZATION_KEY);
-        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-        authorizationScopes[0] = authorizationScope;
-        res.add(new SecurityReference(Constants.HEADER_AUTHORIZATION_KEY, authorizationScopes));
-        return res;
+    public void setSwaggerEnabled(Boolean swaggerEnabled) {
+        this.swaggerEnabled = swaggerEnabled;
     }
 }

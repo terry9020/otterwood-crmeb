@@ -28,7 +28,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_shipping_templates_free")
+@TableName("tb_shipping_templates_free")
 @ApiModel(value="ShippingTemplatesFree对象", description="")
 public class ShippingTemplatesFree implements Serializable {
 

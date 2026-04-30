@@ -27,7 +27,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_sms_template")
+@TableName("tb_sms_template")
 @ApiModel(value="SmsTemplate对象", description="短信模板表")
 public class SmsTemplate implements Serializable {
 

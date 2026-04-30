@@ -7,28 +7,13 @@
 // +----------------------------------------------------------------------
 // | Author: OTTERWOOD Team <admin@otterwood.com>
 // +----------------------------------------------------------------------
-import { copyrightInfoApi } from '@/api/authInformation';
+
 /**
  * @description 短信是否登录
  */
 export function isLogin() {
   return new Promise((resolve, reject) => {
     isLoginApi()
-      .then(async (res) => {
-        resolve(res);
-      })
-      .catch((res) => {
-        reject(res);
-      });
-  });
-}
-
-/**
- * @description 获取授权
- */
-export function getCopyrightInfo() {
-  return new Promise((resolve, reject) => {
-    copyrightInfoApi()
       .then(async (res) => {
         resolve(res);
       })

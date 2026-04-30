@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -28,7 +28,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_user_group")
+@TableName("tb_user_group")
 @ApiModel(value="UserGroup对象", description="用户分组表")
 public class UserGroupRequest implements Serializable {
 

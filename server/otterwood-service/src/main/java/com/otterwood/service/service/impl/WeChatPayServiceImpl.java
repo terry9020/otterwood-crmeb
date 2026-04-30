@@ -1,5 +1,6 @@
 package com.otterwood.service.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
@@ -363,7 +364,7 @@ public class WeChatPayServiceImpl implements WeChatPayService {
      * @return
      */
     private Map<String, String> getWxChantQueryPayVo(String orderNo, String appId, String mchId, String signKey) {
-        Map<String, String> map = CollUtil.newHashMap();
+        Map<String, String> map = MapUtil.newHashMap();
         map.put("appid", appId);
         map.put("mch_id", mchId);
         map.put("out_trade_no", orderNo);

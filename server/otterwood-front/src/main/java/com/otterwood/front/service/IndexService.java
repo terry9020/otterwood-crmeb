@@ -3,7 +3,6 @@ package com.otterwood.front.service;
 import com.otterwood.common.model.system.SystemConfig;
 import com.otterwood.common.page.CommonPage;
 import com.otterwood.common.request.PageParamRequest;
-import com.otterwood.common.response.CopyrightConfigInfoResponse;
 import com.otterwood.common.response.IndexInfoResponse;
 import com.otterwood.common.response.IndexProductResponse;
 import com.otterwood.common.response.pagelayout.PageLayoutBottomNavigationResponse;
@@ -68,11 +67,6 @@ public interface IndexService{
      * @return String
      */
     String getImageDomain();
-
-    /**
-     * 获取公司版权图片
-     */
-    CopyrightConfigInfoResponse getCopyrightInfo();
 
     /**
      * 获取底部导航信息

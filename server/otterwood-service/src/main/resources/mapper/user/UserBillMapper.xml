@@ -3,8 +3,8 @@
 <mapper namespace="com.otterwood.service.dao.UserBillDao">
 
     <select id="getListAdminAndIntegeal" resultType="com.otterwood.common.response.UserBillResponse" parameterType="map">
-        SELECT ub.id,ub.link_id AS linkId,ub.pm,ub.title,ub.category,ub.type,ub.number,ub.balance,ub.mark,ub.status,ub.create_time AS createTime,ub.update_time AS updateTime,u.nickname,ub.uid FROM eb_user_bill ub
-        LEFT JOIN eb_user u ON ub.uid = u.uid
+        SELECT ub.id,ub.link_id AS linkId,ub.pm,ub.title,ub.category,ub.type,ub.number,ub.balance,ub.mark,ub.status,ub.create_time AS createTime,ub.update_time AS updateTime,u.nickname,ub.uid FROM tb_user_bill ub
+        LEFT JOIN tb_user u ON ub.uid = u.uid
         where 1 = 1
         <if test="keywords != '' and keywords != null ">
             and ( ub.id like #{keywords} or ub.uid like #{keywords} or ub.link_id like #{keywords, jdbcType=VARCHAR} or ub.title like #{keywords, jdbcType=VARCHAR} or u.nickname like #{keywords, jdbcType=VARCHAR})
@@ -29,8 +29,8 @@
     </select>
 
     <select id="fundMonitoring" resultType="com.otterwood.common.response.UserBillResponse" parameterType="map">
-        SELECT ub.id,ub.link_id AS linkId,ub.pm,ub.title,ub.category,ub.type,ub.number,ub.balance,ub.mark,ub.status,ub.create_time AS createTime,ub.update_time AS updateTime,u.nickname,ub.uid FROM eb_user_bill ub
-        LEFT JOIN eb_user u ON ub.uid = u.uid
+        SELECT ub.id,ub.link_id AS linkId,ub.pm,ub.title,ub.category,ub.type,ub.number,ub.balance,ub.mark,ub.status,ub.create_time AS createTime,ub.update_time AS updateTime,u.nickname,ub.uid FROM tb_user_bill ub
+        LEFT JOIN tb_user u ON ub.uid = u.uid
         where ub.category = 'now_money'
         <if test="keywords != '' and keywords != null ">
             and ( ub.uid like #{keywords} or u.nickname like #{keywords, jdbcType=VARCHAR})

@@ -27,7 +27,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_wechat_program_my_temp")
+@TableName("tb_wechat_program_my_temp")
 @ApiModel(value="WechatProgramMyTemp对象", description="小程序我的模板")
 public class WechatProgramMyTemp implements Serializable {
 

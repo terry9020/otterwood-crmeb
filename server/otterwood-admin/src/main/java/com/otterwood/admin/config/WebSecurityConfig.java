@@ -4,25 +4,25 @@ import com.otterwood.admin.filter.JwtAuthenticationTokenFilter;
 import com.otterwood.admin.manager.AuthenticationEntryPointImpl;
 import com.otterwood.admin.manager.CustomAccessDeniedHandler;
 import com.otterwood.admin.manager.CustomAuthenticationProvider;
-import com.otterwood.common.constants.Constants;
 import com.otterwood.common.constants.UploadConstants;
-import com.otterwood.service.service.impl.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.filter.CorsFilter;
 
 /**
- * Security配置
+ * Security配置（Spring Security 6 / Spring Boot 3）
  * +----------------------------------------------------------------------
  * | OTTERWOOD [ OTTERWOOD赋能开发者，助力企业发展 ]
  * +----------------------------------------------------------------------
@@ -35,8 +35,8 @@ import org.springframework.web.filter.CorsFilter;
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
+public class WebSecurityConfig {
 
     /**
      * 跨域过滤器
@@ -69,17 +69,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * 这里将Spring Security自带的authenticationManager声明成Bean，声明它的作用是用它帮我们进行认证操作，
-     * 调用这个Bean的authenticate方法会由Spring Security自动帮我们做认证。
+     * AuthenticationManager Bean，替代旧版本的 configure(AuthenticationManagerBuilder)。
+     * 这里通过方法参数注入 Spring 容器中 @Component 声明的 CustomAuthenticationProvider，
+     * 其内部依赖（UserDetailServiceImpl -> SystemAdminService/SystemMenuService）都会被 Spring 正确装配。
+     * 不要在此处使用 new 构造 provider，否则将绕过依赖注入导致运行时 NPE。
      */
-//    @Bean
-//    public AuthenticationManager authenticationManager() throws Exception {
-//        return new CusAuthenticationManager(customAuthenticationProvider);
-//    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(new CustomAuthenticationProvider(new UserDetailServiceImpl()));
+    @Bean
+    public AuthenticationManager authenticationManager(CustomAuthenticationProvider customAuthenticationProvider) {
+        return new ProviderManager(customAuthenticationProvider);
     }
 
     /**
@@ -97,64 +94,63 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * rememberMe          |   允许通过remember-me登录的用户访问
      * authenticated       |   用户登录后可访问
      */
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                // 启用 CORS，禁用 CSRF（基于 token，不使用 session）
+                .cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
+                // 认证/鉴权失败处理
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(unauthorizedHandler())
+                        .accessDeniedHandler(accessDeniedHandler()))
+                // 基于 token，不创建 session
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // 过滤请求
+                .authorizeHttpRequests(auth -> auth
+                        // 登录、验证码等放行
+                        .requestMatchers("/api/admin/login", "/api/admin/validate/code/get").permitAll()
+                        .requestMatchers("/api/admin/getLoginPic").permitAll()
+                        .requestMatchers("/api/admin/login/account/detection").permitAll()
+                        .requestMatchers("/api/admin/validate/code/getcaptchaconfig").permitAll()
+                        // 放行资源路径
+                        .requestMatchers("/" + UploadConstants.UPLOAD_FILE_KEYWORD + "/**").permitAll()
+                        .requestMatchers("/" + UploadConstants.DOWNLOAD_FILE_KEYWORD + "/**").permitAll()
+                        .requestMatchers("/" + UploadConstants.UPLOAD_AFTER_FILE_KEYWORD + "/**").permitAll()
+                        // 放行图片、文件上传
+                        .requestMatchers("/api/admin/upload/image").permitAll()
+                        .requestMatchers("/api/admin/upload/file").permitAll()
+                        // 静态资源（admin 为纯 REST 后端，不提供 html/css/js，原配置为历史冠余）
+                        // 注意：Spring Security 6 下 requestMatchers(String) 采用 PathPattern，
+                        // `**` 只允许出现在模式末尾；`/**/*.html` 这类写法不合法。
+                        .requestMatchers(HttpMethod.GET, "/*.html").permitAll()
+                        .requestMatchers("/profile/**").anonymous()
+                        .requestMatchers("/common/download/**").anonymous()
+                        .requestMatchers("/common/download/resource/**").anonymous()
+                        // Swagger / knife4j
+                        .requestMatchers("/doc.html").permitAll()
+                        .requestMatchers("/swagger-resources/**").permitAll()
+                        .requestMatchers("/webjars/**").permitAll()
+                        .requestMatchers("/v2/**").permitAll()
+                        .requestMatchers("/v3/**").permitAll()
+                        .requestMatchers("/swagger-ui.html/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/*/api-docs").anonymous()
+                        .requestMatchers("/druid/**").anonymous()
+                        .requestMatchers("/captcha/get", "/captcha/check").anonymous()
+                        .requestMatchers("/api/admin/payment/callback/**").anonymous()
+                        .requestMatchers("/api/public/**").permitAll()
+                        // 除上面外的所有请求全部需要鉴权认证
+                        .anyRequest().authenticated())
+                // 防止 iframe 造成跨域
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
-        // CRSF禁用，因为不使用session
-        http.cors().and().csrf().disable()
-            // 认证失败处理类
-            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler())
-                .accessDeniedHandler(accessDeniedHandler()).and()
-            // 基于token，所以不需要session
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            // 过滤请求
-            .authorizeRequests()
-            // 跨域预检请求
-//            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            // 对于登录login 验证码captchaImage 和其他放行的目录 允许匿名访问"/citylife/front/**"
-            .antMatchers("/api/admin/login", "/api/admin/validate/code/get").permitAll()
-            .antMatchers("/api/admin/getLoginPic").permitAll()
-            .antMatchers("/api/admin/login/account/detection").permitAll()
-            .antMatchers("/api/admin/validate/code/getcaptchaconfig").permitAll()
-                // 放行资源路径
-            .antMatchers("/"+ UploadConstants.UPLOAD_FILE_KEYWORD +"/**").permitAll()
-            .antMatchers("/"+ UploadConstants.DOWNLOAD_FILE_KEYWORD +"/**").permitAll()
-            .antMatchers("/"+ UploadConstants.UPLOAD_AFTER_FILE_KEYWORD +"/**").permitAll()
-                // 放行图片、文件上传
-            .antMatchers("/api/admin/upload/image").permitAll()
-            .antMatchers("/api/admin/upload/file").permitAll()
-//            .antMatchers("/wx/user/*/login","/citylife/nocheck/**").anonymous()
-            .antMatchers(
-                    HttpMethod.GET,
-                    "/*.html",
-                    "/**/*.html",
-                    "/**/*.css",
-                    "/**/*.js"
-            ).permitAll()
-            .antMatchers("/profile/**").anonymous()
-            .antMatchers("/common/download**").anonymous()
-            .antMatchers("/common/download/resource**").anonymous()
-            .antMatchers("/doc.html").permitAll()
-            .antMatchers("/swagger-resources/**").permitAll()
-            .antMatchers("/webjars/**").permitAll()
-            .antMatchers("/v2/**").permitAll()
-            .antMatchers("/swagger-ui.html/**").permitAll()
-            .antMatchers("/*/api-docs").anonymous()
-            .antMatchers("/druid/**").anonymous()
-            .antMatchers("/captcha/get", "/captcha/check").anonymous()
-            .antMatchers("/api/admin/payment/callback/**").anonymous()
-            .antMatchers("/api/public/**").permitAll()
-            // 除上面外的所有请求全部需要鉴权认证
-            .anyRequest().authenticated()
-            .and()
-            .headers().frameOptions().disable();// 防止iframe 造成跨域
-//        http.logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler);
-        // 添加JWT filter
-        // 开启登录认证流程过滤器
+        // 添加 JWT filter（开启登录认证流程过滤器）
         http.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        // 添加CORS filter
+        // 添加 CORS filter
         http.addFilterBefore(corsFilter, JwtAuthenticationTokenFilter.class);
         http.addFilterBefore(corsFilter, LogoutFilter.class);
-    }
 
+        return http.build();
+    }
 }

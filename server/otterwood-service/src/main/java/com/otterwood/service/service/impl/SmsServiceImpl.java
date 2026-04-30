@@ -1,5 +1,6 @@
 package com.otterwood.service.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -362,7 +363,7 @@ public class SmsServiceImpl implements SmsService {
      */
     @Override
     public Boolean sendPaySuccess(String phone, String orderNo, BigDecimal payPrice, Integer msgTempId) {
-        HashMap<String, Object> map = CollUtil.newHashMap();
+        HashMap<String, Object> map = MapUtil.newHashMap();
         map.put("pay_price", payPrice);
         map.put("order_id", orderNo);
         return sendMessages(phone, SmsConstants.SMS_CONFIG_TYPE_LOWER_ORDER_SWITCH, msgTempId, map);
@@ -379,7 +380,7 @@ public class SmsServiceImpl implements SmsService {
      */
     @Override
     public Boolean sendCreateOrderNotice(String phone, String orderNo, String realName, Integer msgTempId) {
-        HashMap<String, Object> map = CollUtil.newHashMap();
+        HashMap<String, Object> map = MapUtil.newHashMap();
         map.put("admin_name", realName);
         map.put("order_id", orderNo);
         return sendMessages(phone, SmsConstants.SMS_CONFIG_TYPE_ADMIN_LOWER_ORDER_SWITCH, msgTempId, map);
@@ -396,7 +397,7 @@ public class SmsServiceImpl implements SmsService {
      */
     @Override
     public Boolean sendOrderPaySuccessNotice(String phone, String orderNo, String realName, Integer msgTempId) {
-        HashMap<String, Object> map = CollUtil.newHashMap();
+        HashMap<String, Object> map = MapUtil.newHashMap();
         map.put("admin_name", realName);
         map.put("order_id", orderNo);
         return sendMessages(phone, SmsConstants.SMS_CONFIG_TYPE_ADMIN_PAY_SUCCESS_SWITCH, msgTempId, map);
@@ -413,7 +414,7 @@ public class SmsServiceImpl implements SmsService {
      */
     @Override
     public Boolean sendOrderRefundApplyNotice(String phone, String orderNo, String realName, Integer msgTempId) {
-        HashMap<String, Object> map = CollUtil.newHashMap();
+        HashMap<String, Object> map = MapUtil.newHashMap();
         map.put("admin_name", realName);
         map.put("order_id", orderNo);
         return sendMessages(phone, SmsConstants.SMS_CONFIG_TYPE_ADMIN_CONFIRM_TAKE_OVER_SWITCH, msgTempId, map);
@@ -428,7 +429,7 @@ public class SmsServiceImpl implements SmsService {
      */
     @Override
     public Boolean sendOrderReceiptNotice(String phone, String orderNo, String realName, Integer msgTempId) {
-        HashMap<String, Object> map = CollUtil.newHashMap();
+        HashMap<String, Object> map = MapUtil.newHashMap();
         map.put("admin_name", realName);
         map.put("order_id", orderNo);
         return sendMessages(phone, SmsConstants.SMS_CONFIG_TYPE_ADMIN_REFUND_SWITCH, msgTempId, map);
@@ -445,7 +446,7 @@ public class SmsServiceImpl implements SmsService {
      */
     @Override
     public Boolean sendOrderEditPriceNotice(String phone, String orderNo, BigDecimal price, Integer msgTempId) {
-        HashMap<String, Object> map = CollUtil.newHashMap();
+        HashMap<String, Object> map = MapUtil.newHashMap();
         map.put("order_id", orderNo);
         map.put("pay_price", price);
         return sendMessages(phone, SmsConstants.SMS_CONFIG_TYPE_PRICE_REVISION_SWITCH, msgTempId, map);
@@ -462,7 +463,7 @@ public class SmsServiceImpl implements SmsService {
      */
     @Override
     public Boolean sendOrderDeliverNotice(String phone, String nickName, String storeName, String orderNo, Integer msgTempId) {
-        HashMap<String, Object> map = CollUtil.newHashMap();
+        HashMap<String, Object> map = MapUtil.newHashMap();
         map.put("nickname", nickName);
         map.put("store_name", storeName);
         map.put("order_id", orderNo);

@@ -23,7 +23,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_page_diy")
+@TableName("tb_page_diy")
 @ApiModel(value="PageDiy对象", description="DIY数据表")
 public class PageDiy implements Serializable {
 

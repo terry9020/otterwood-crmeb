@@ -3,14 +3,14 @@
 <mapper namespace="com.otterwood.service.dao.StoreOrderInfoDao">
 
     <select id="getSalesNumByDateAndProductId" resultType="java.lang.Integer">
-        select IFNULL(sum(pay_num), 0) as pay_num from eb_store_order_info
-        where order_id in (SELECT id FROM `eb_store_order` where paid = 1 and date_format(create_time, '%Y-%m-%d') = #{date})
+        select IFNULL(sum(pay_num), 0) as pay_num from tb_store_order_info
+        where order_id in (SELECT id FROM `tb_store_order` where paid = 1 and date_format(create_time, '%Y-%m-%d') = #{date})
         and product_id = #{proId}
     </select>
 
     <select id="getSalesByDateAndProductId" resultType="java.math.BigDecimal">
-        select IFNULL(sum(vip_price), 0) as price from eb_store_order_info
-        where order_id in (SELECT id FROM `eb_store_order` where paid = 1 and date_format(create_time, '%Y-%m-%d') = #{date})
+        select IFNULL(sum(vip_price), 0) as price from tb_store_order_info
+        where order_id in (SELECT id FROM `tb_store_order` where paid = 1 and date_format(create_time, '%Y-%m-%d') = #{date})
         and product_id = #{proId}
     </select>
 

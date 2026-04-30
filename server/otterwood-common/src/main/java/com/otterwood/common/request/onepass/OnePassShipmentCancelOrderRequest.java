@@ -3,7 +3,7 @@ package com.otterwood.common.request.onepass;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * @Auther: 大粽子

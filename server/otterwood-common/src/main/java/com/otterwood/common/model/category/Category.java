@@ -27,7 +27,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_category")
+@TableName("tb_category")
 @ApiModel(value="Category对象", description="分类表")
 public class Category implements Serializable {
 

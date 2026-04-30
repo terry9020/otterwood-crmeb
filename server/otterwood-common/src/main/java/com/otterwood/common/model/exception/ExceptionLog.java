@@ -24,7 +24,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_exception_log")
+@TableName("tb_exception_log")
 @ApiModel(value = "ExceptionLog对象", description = "异常信息表")
 public class ExceptionLog implements Serializable {
 

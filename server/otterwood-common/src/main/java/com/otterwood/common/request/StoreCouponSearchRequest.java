@@ -24,7 +24,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_coupon")
+@TableName("tb_store_coupon")
 @ApiModel(value="StoreCouponSearchRequest对象", description="优惠券模板搜索")
 public class StoreCouponSearchRequest implements Serializable {
 

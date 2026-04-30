@@ -23,7 +23,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_schedule_job_log")
+@TableName("tb_schedule_job_log")
 @ApiModel(value="ScheduleJobLog对象", description="定时任务日志")
 public class ScheduleJobLog implements Serializable {
 

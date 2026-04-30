@@ -27,7 +27,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_admin")
+@TableName("tb_system_admin")
 @ApiModel(value="SystemAdmin对象", description="后台管理员表")
 public class SystemAdmin implements Serializable {
 

@@ -1,5 +1,6 @@
 package com.otterwood.service.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -39,7 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -816,7 +817,7 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         List<HashMap<String, Object>> mapList = bargainUserList.stream().map(e -> {
             // 获取用户昵称头像
             User user = userMap.get(e.getUid());
-            HashMap<String, Object> map = CollUtil.newHashMap();
+            HashMap<String, Object> map = MapUtil.newHashMap();
             map.put("nickName", user.getNickname());
             map.put("avatar", user.getAvatar());
             map.put("price", e.getBargainPriceMin());
@@ -837,7 +838,7 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         LambdaQueryWrapper<StoreBargain> lqw = new LambdaQueryWrapper<>();
         lqw.in(StoreBargain::getId, bargainIdList);
         List<StoreBargain> bargainList = dao.selectList(lqw);
-        HashMap<Integer, StoreBargain> map = CollUtil.newHashMap();
+        HashMap<Integer, StoreBargain> map = MapUtil.newHashMap();
         bargainList.forEach(e -> {
             map.put(e.getId(), e);
         });
@@ -854,7 +855,7 @@ public class StoreBargainServiceImpl extends ServiceImpl<StoreBargainDao, StoreB
         lqw.select(StoreBargain::getId, StoreBargain::getTitle);
         lqw.in(StoreBargain::getId, bargainIdList);
         List<StoreBargain> bargainList = dao.selectList(lqw);
-        HashMap<Integer, String> map = CollUtil.newHashMap();
+        HashMap<Integer, String> map = MapUtil.newHashMap();
         bargainList.forEach(e -> {
             map.put(e.getId(), e.getTitle());
         });

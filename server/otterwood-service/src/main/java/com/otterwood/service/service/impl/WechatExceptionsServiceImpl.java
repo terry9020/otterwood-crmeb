@@ -9,7 +9,7 @@ import com.otterwood.service.dao.WechatExceptionsDao;
 import com.otterwood.service.service.WechatExceptionsService;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Date;
 
 /**

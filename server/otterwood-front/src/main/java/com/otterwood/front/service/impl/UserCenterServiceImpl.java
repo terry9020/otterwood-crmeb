@@ -1,6 +1,7 @@
 package com.otterwood.front.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -765,7 +766,7 @@ public class UserCenterServiceImpl extends ServiceImpl<UserDao, User> implements
         List<UserBill> list = billPageInfo.getList();
 
         // 获取年-月
-        Map<String, List<UserBill>> map = CollUtil.newHashMap();
+        Map<String, List<UserBill>> map = MapUtil.newHashMap();
         list.forEach(i -> {
             String month = StrUtil.subPre(OtterwoodDateUtil.dateToStr(i.getCreateTime(), Constants.DATE_FORMAT), 7);
             if (map.containsKey(month)) {

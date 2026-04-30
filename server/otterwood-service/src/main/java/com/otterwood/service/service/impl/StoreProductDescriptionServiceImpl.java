@@ -8,7 +8,7 @@ import com.otterwood.service.dao.StoreProductDescriptionDao;
 import com.otterwood.service.service.StoreProductDescriptionService;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * StoreProductDescriptionServiceImpl 接口实现

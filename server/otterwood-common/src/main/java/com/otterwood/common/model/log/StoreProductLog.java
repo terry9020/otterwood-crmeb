@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_product_log")
+@TableName("tb_store_product_log")
 @ApiModel(value="StoreProductLog对象", description="商品统计")
 public class StoreProductLog implements Serializable {
 

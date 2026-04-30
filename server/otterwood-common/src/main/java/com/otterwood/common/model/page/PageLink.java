@@ -23,7 +23,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_page_link")
+@TableName("tb_page_link")
 @ApiModel(value="PageLink对象", description="页面链接")
 public class PageLink implements Serializable {
 

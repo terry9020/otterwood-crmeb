@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_coupon_user")
+@TableName("tb_store_coupon_user")
 @ApiModel(value="StoreCouponUser对象", description="优惠券领取搜索")
 public class StoreCouponUserSearchRequest implements Serializable {
 

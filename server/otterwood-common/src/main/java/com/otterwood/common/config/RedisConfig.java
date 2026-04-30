@@ -58,6 +58,12 @@ public class RedisConfig {
     @Value("${spring.redis.jedis.pool.time-between-eviction-runs}")
     private String timeBetweenEvictionRunsMillis;
 
+    @Value("${spring.redis.jedis.pool.test-on-borrow:false}")
+    private boolean testOnBorrow;
+
+    @Value("${spring.redis.jedis.pool.test-while-idle:false}")
+    private boolean testWhileIdle;
+
     @Value("${spring.redis.second.database}")
     private int redisSecondDatabase;
 
@@ -116,6 +122,8 @@ public class RedisConfig {
         jedisPoolConfig.setMaxWaitMillis(maxWaitMillis);
         jedisPoolConfig.setMinIdle(minIdle);
         jedisPoolConfig.setTimeBetweenEvictionRunsMillis(Integer.parseInt(timeBetweenEvictionRunsMillis));
+        jedisPoolConfig.setTestOnBorrow(testOnBorrow);
+        jedisPoolConfig.setTestWhileIdle(testWhileIdle);
         return jedisPoolConfig;
     }
 

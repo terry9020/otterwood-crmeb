@@ -23,7 +23,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_schedule_job")
+@TableName("tb_schedule_job")
 @ApiModel(value="ScheduleJob对象", description="定时任务")
 public class ScheduleJob implements Serializable {
 
@@ -52,7 +52,7 @@ public class ScheduleJob implements Serializable {
     private String remark;
 
     @ApiModelProperty(value = "是否删除")
-    private Boolean isDelte;
+    private Boolean isDelete;
 
     @ApiModelProperty(value = "创建时间")
     private Date createTime;

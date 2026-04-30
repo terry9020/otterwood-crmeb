@@ -1,4 +1,4 @@
-package com.otterwood.admin;
+package com.otterwood.front;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -8,7 +8,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * 程序主入口
@@ -23,22 +22,13 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * +----------------------------------------------------------------------
  */
 @EnableAsync //开启异步调用
-@EnableSwagger2
 @Configuration
 @EnableTransactionManagement
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class) //去掉数据源
-//@ComponentScan(basePackages={"com.utils",
-//        "com.otterwood.otterwood",
-//        "com.exception",
-//        "com.common",
-//        "com.aop"}) //扫描utils包和父包
-//@MapperScan(basePackages = {"com.otterwood.otterwood.*.dao", "com.otterwood.otterwood.*.*.dao"})
-@ComponentScan(basePackages = {"com.otterwood"})
+@ComponentScan(basePackages = {"com.otterwood", "com.otterwood.front"})
 @MapperScan(basePackages = {"com.otterwood.**.dao"})
-public class OtterwoodAdminApplication {
-
+public class OtterwoodFrontApplication {
     public static void main(String[] args) {
-        SpringApplication.run(OtterwoodAdminApplication.class, args);
+        SpringApplication.run(OtterwoodFrontApplication.class, args);
     }
-
 }

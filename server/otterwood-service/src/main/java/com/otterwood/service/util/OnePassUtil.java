@@ -1,5 +1,6 @@
 package com.otterwood.service.util;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -201,7 +202,7 @@ public class OnePassUtil {
      * @return
      */
     public HashMap<String, String> getCommonHeader(String accessToken) {
-        HashMap<String, String> header = CollUtil.newHashMap();
+        HashMap<String, String> header = MapUtil.newHashMap();
         header.put("Authorization", accessToken);
         return header;
     }

@@ -25,7 +25,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_product_coupon")
+@TableName("tb_store_product_coupon")
 @ApiModel(value="StoreProductCoupon对象", description="")
 public class StoreProductCoupon implements Serializable {
 

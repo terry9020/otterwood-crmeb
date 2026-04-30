@@ -1,16 +1,11 @@
 <template>
   <div class="layout-footer mt15">
-    <div class="layout-footer-warp">
-      <iCopyright />
-    </div>
+    <div class="layout-footer-warp"></div>
   </div>
 </template>
 
 <script>
-import iCopyright from '@/components/copyright';
-
 export default {
-  components: { iCopyright },
   name: 'layoutFooter',
   data() {
     return {};

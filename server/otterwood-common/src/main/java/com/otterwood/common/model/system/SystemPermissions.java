@@ -22,7 +22,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-//@TableName("eb_system_permissions")
+//@TableName("tb_system_permissions")
 @ApiModel(value="SystemPermissions对象", description="系统权限表")
 public class SystemPermissions implements Serializable {
 
@@ -45,7 +45,7 @@ public class SystemPermissions implements Serializable {
     private Integer sort;
 
     @ApiModelProperty(value = "是否删除")
-    private Boolean isDelte;
+    private Boolean isDelete;
 
 
 }

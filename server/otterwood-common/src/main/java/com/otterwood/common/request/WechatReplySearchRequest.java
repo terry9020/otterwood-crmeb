@@ -9,8 +9,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -28,7 +28,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_wechat_reply")
+@TableName("tb_wechat_reply")
 @ApiModel(value="WechatReply对象", description="微信关键字回复表")
 public class WechatReplySearchRequest implements Serializable {
 

@@ -22,7 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -153,7 +153,7 @@ public class SystemStoreServiceImpl extends ServiceImpl<SystemStoreDao, SystemSt
                     .or().like(SystemStore::getPhone, keywords));
         }
         lambdaQueryWrapper.orderByDesc(SystemStore::getUpdateTime).orderByDesc(SystemStore::getId);
-        return dao.selectCount(lambdaQueryWrapper);
+        return Math.toIntExact(dao.selectCount(lambdaQueryWrapper));
     }
 
     /**

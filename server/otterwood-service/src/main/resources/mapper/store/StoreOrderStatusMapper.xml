@@ -3,8 +3,8 @@
 <mapper namespace="com.otterwood.service.dao.StoreOrderStatusDao">
 
     <select id="getRefundOrderAmountByDate" resultType="java.math.BigDecimal">
-        SELECT IFNULL(sum(o.refund_price),0) FROM `eb_store_order_status` os
-        left join eb_store_order o on os.oid = o.id
+        SELECT IFNULL(sum(o.refund_price),0) FROM `tb_store_order_status` os
+        left join tb_store_order o on os.oid = o.id
         where date_format(os.create_time, '%Y-%m-%d') = #{date}
         and os.change_type = 'refund_price'
     </select>

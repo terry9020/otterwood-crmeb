@@ -25,7 +25,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_express")
+@TableName("tb_express")
 @ApiModel(value="Express对象", description="快递公司表")
 public class Express implements Serializable {
 

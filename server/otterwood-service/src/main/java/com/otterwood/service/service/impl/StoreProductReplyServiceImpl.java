@@ -41,7 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -433,7 +433,7 @@ public class StoreProductReplyServiceImpl extends ServiceImpl<StoreProductReplyD
                 lqw.apply(" (product_score + service_score) <= 4");
                 break;
         }
-        return dao.selectCount(lqw);
+        return Math.toIntExact(dao.selectCount(lqw));
     }
 
 
@@ -456,7 +456,7 @@ public class StoreProductReplyServiceImpl extends ServiceImpl<StoreProductReplyD
 //                lqw.apply( " (product_score + service_score) <= 4");
 //                break;
 //        }
-//        return dao.selectCount(lqw);
+//        return Math.toIntExact(dao.selectCount(lqw));
 //    }
 
     /**
@@ -535,7 +535,7 @@ public class StoreProductReplyServiceImpl extends ServiceImpl<StoreProductReplyD
             lambdaQueryWrapper.eq(StoreProductReply::getProductId, request.getProductId());
 
         }
-        return dao.selectCount(lambdaQueryWrapper);
+        return Math.toIntExact(dao.selectCount(lambdaQueryWrapper));
     }
 
 }

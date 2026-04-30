@@ -1,5 +1,6 @@
 package com.otterwood.service.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -23,11 +24,12 @@ import com.otterwood.service.service.SystemAttachmentService;
 import com.otterwood.service.service.SystemConfigService;
 import com.otterwood.service.service.SystemFormTempService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +56,7 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigDao, System
     private SystemFormTempService systemFormTempService;
 
     @Autowired
+    @Lazy // 打破 SystemConfigService ↔ SystemAttachmentService 的循环依赖（与 SystemAttachmentServiceImpl 端对称）
     private SystemAttachmentService systemAttachmentService;
 
     @Autowired
@@ -165,7 +168,7 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigDao, System
         lambdaQueryWrapper.eq(SystemConfig::getName, name);
         List<SystemConfig> systemConfigs = dao.selectList(lambdaQueryWrapper);
         if (systemConfigs.size() > 1) {
-            throw new OtterwoodException("配置名称存在多个请检查配置 eb_system_config 重复数据：" + name + "条数：" + systemConfigs.size());
+            throw new OtterwoodException("配置名称存在多个请检查配置 tb_system_config 重复数据：" + name + "条数：" + systemConfigs.size());
         }
         boolean result;
         SystemConfig systemConfig;
@@ -197,7 +200,7 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigDao, System
         lqw.eq(SystemConfig::getFormId, formId);
         List<SystemConfig> systemConfigList = dao.selectList(lqw);
         if (CollUtil.isEmpty(systemConfigList)) {
-            return CollUtil.newHashMap();
+            return MapUtil.newHashMap();
         }
         HashMap<String, String> map = new HashMap<>();
         for (SystemConfig systemConfig : systemConfigList) {
@@ -279,14 +282,6 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigDao, System
     public Boolean clearCache() {
         redisUtil.delete(Constants.CONFIG_LIST);
         return  Boolean.TRUE;
-    }
-
-    /**
-     * 获取授权地址
-     */
-    @Override
-    public SystemConfig getAuthHost() {
-        return getConfigByNameException(SysConfigConstants.CONFIG_COPYRIGHT_AUTH_HOST);
     }
 
     /**

@@ -4,11 +4,11 @@
 
     <select id="findPermissionByUserId" resultType="com.otterwood.common.model.system.SystemPermissions" parameterType="Integer" >
 		SELECT p.id,p.pid,p.name,p.path
-		FROM eb_system_permissions p
-		right join eb_system_role_permissions rp on rp.pid = p.id
-		right join eb_system_role r on rp.rid = r.id
-		right join eb_system_admin a on FIND_IN_SET(r.id, a.roles)
-		where  p.is_delte = 0 and r.`status` = 1 and a.id = #{userId}
+		FROM tb_system_permissions p
+		right join tb_system_role_permissions rp on rp.pid = p.id
+		right join tb_system_role r on rp.rid = r.id
+		right join tb_system_admin a on FIND_IN_SET(r.id, a.roles)
+		where  p.is_delete = 0 and r.`status` = 1 and a.id = #{userId}
 		GROUP BY p.id;
 	</select>
 

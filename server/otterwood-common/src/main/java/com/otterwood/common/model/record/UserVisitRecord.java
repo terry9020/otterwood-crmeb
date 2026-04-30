@@ -26,7 +26,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_user_visit_record")
+@TableName("tb_user_visit_record")
 @ApiModel(value="UserVisitRecord对象", description="用户访问记录表")
 public class UserVisitRecord implements Serializable {
 

@@ -31,7 +31,7 @@ import org.springframework.data.annotation.Transient;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_user_extract")
+@TableName("tb_user_extract")
 @ApiModel(value="UserExtract对象", description="用户提现表")
 public class UserExtract implements Serializable {
 

@@ -26,7 +26,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_wechat_pay_info")
+@TableName("tb_wechat_pay_info")
 @ApiModel(value="WechatPayInfo对象", description="微信订单表")
 public class WechatPayInfo implements Serializable {
 

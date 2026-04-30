@@ -6,7 +6,7 @@ import com.otterwood.common.request.LoginRequest;
 import com.otterwood.common.response.LoginConfigResponse;
 import com.otterwood.common.response.LoginResponse;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 移动端登录服务类

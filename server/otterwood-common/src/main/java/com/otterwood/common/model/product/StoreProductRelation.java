@@ -27,7 +27,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_store_product_relation")
+@TableName("tb_store_product_relation")
 @ApiModel(value="StoreProductRelation对象", description="商品点赞和收藏表")
 public class StoreProductRelation implements Serializable {
 

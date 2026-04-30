@@ -27,7 +27,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_wechat_qrcode")
+@TableName("tb_wechat_qrcode")
 @ApiModel(value="WechatQrcode对象", description="微信二维码管理表")
 public class WechatQrcode implements Serializable {
 

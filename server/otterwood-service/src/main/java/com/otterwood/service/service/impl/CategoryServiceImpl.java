@@ -26,7 +26,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -213,7 +213,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category> impl
         //查看是否有子类
         QueryWrapper<Category> objectQueryWrapper = new QueryWrapper<>();
         objectQueryWrapper.like("path", "/"+pid+"/");
-        return dao.selectCount(objectQueryWrapper);
+        return Math.toIntExact(dao.selectCount(objectQueryWrapper));
     }
 
     /**
@@ -396,7 +396,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category> impl
             lambdaQueryWrapper.eq(Category::getType, type);
             lambdaQueryWrapper.eq(Category::getPath, path);
         }
-        return dao.selectCount(lambdaQueryWrapper);
+        return Math.toIntExact(dao.selectCount(lambdaQueryWrapper));
     }
 
     /**

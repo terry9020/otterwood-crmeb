@@ -26,7 +26,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,7 @@ public class StoreOrderVerificationImpl implements StoreOrderVerification {
         //订单支付没有退款 数量-
         LambdaQueryWrapper<StoreOrder> lqwOrderCount = Wrappers.lambdaQuery();
         lqwOrderCount.eq(StoreOrder::getIsDel,false).eq(StoreOrder::getPaid,true).eq(StoreOrder::getRefundStatus,0);
-        storeStaffTopDetail.setOrderCount(dao.selectCount(lqwOrderCount));
+        storeStaffTopDetail.setOrderCount(Math.toIntExact(dao.selectCount(lqwOrderCount)));
         //订单支付没有退款 支付总金额
         LambdaQueryWrapper<StoreOrder> lqwSumPrice = Wrappers.lambdaQuery();
         lqwSumPrice.eq(StoreOrder::getIsDel,false).eq(StoreOrder::getPaid,true).eq(StoreOrder::getRefundStatus,0);
@@ -82,27 +82,27 @@ public class StoreOrderVerificationImpl implements StoreOrderVerification {
         //订单待支付 数量
         LambdaQueryWrapper<StoreOrder> lqwUnPaidCount = Wrappers.lambdaQuery();
         orderUtils.statusApiByWhere(lqwUnPaidCount,0);
-        storeStaffTopDetail.setUnpaidCount(dao.selectCount(lqwUnPaidCount));
+        storeStaffTopDetail.setUnpaidCount(Math.toIntExact(dao.selectCount(lqwUnPaidCount)));
         //订单待发货 数量
         LambdaQueryWrapper<StoreOrder> lqwUnShippedCount = Wrappers.lambdaQuery();
         orderUtils.statusApiByWhere(lqwUnShippedCount,1);
-        storeStaffTopDetail.setUnshippedCount(dao.selectCount(lqwUnShippedCount));
+        storeStaffTopDetail.setUnshippedCount(Math.toIntExact(dao.selectCount(lqwUnShippedCount)));
         //订单待收货 数量
         LambdaQueryWrapper<StoreOrder> lqwReceivedCount = Wrappers.lambdaQuery();
         orderUtils.statusApiByWhere(lqwReceivedCount,2);
-        storeStaffTopDetail.setReceivedCount(dao.selectCount(lqwReceivedCount));
+        storeStaffTopDetail.setReceivedCount(Math.toIntExact(dao.selectCount(lqwReceivedCount)));
         // 订单待核销数量
         LambdaQueryWrapper<StoreOrder> verificationCount = Wrappers.lambdaQuery();
         orderUtils.statusApiByWhere(verificationCount,3);
-        storeStaffTopDetail.setVerificationCount(dao.selectCount(verificationCount));
+        storeStaffTopDetail.setVerificationCount(Math.toIntExact(dao.selectCount(verificationCount)));
         //订单已完成 数量
         LambdaQueryWrapper<StoreOrder> lqwCompleteCount = Wrappers.lambdaQuery();
         orderUtils.statusApiByWhere(lqwCompleteCount,4);
-        storeStaffTopDetail.setCompleteCount(dao.selectCount(lqwCompleteCount));
+        storeStaffTopDetail.setCompleteCount(Math.toIntExact(dao.selectCount(lqwCompleteCount)));
         //订单退款 数量
         LambdaQueryWrapper<StoreOrder> lqwRefundCount = Wrappers.lambdaQuery();
         orderUtils.statusApiByWhere(lqwRefundCount,-3);
-        storeStaffTopDetail.setRefundCount(dao.selectCount(lqwRefundCount));
+        storeStaffTopDetail.setRefundCount(Math.toIntExact(dao.selectCount(lqwRefundCount)));
 
         // 获取今日，昨日，本月，订单金额
         String dayStart = OtterwoodDateUtil.nowDateTime(Constants.DATE_FORMAT_START);

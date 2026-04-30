@@ -1,0 +1,32 @@
+﻿[ERROR] COMPILATION ERROR : 
+[ERROR] /D:/workspace/cursor/otterwood-crmeb/server/otterwood-common/src/main/java/com/otterwood/common/utils/RedisUtil.java:[166,35] 对于delete(java.util.List<capture#1, 共 ?>), 找不到合适的方法
+    方法 org.springframework.data.redis.core.RedisTemplate.delete(java.lang.String)不适用
+      (参数不匹配; java.util.List<capture#2, 共 ?>无法转换为java.lang.String)
+    方法 org.springframework.data.redis.core.RedisTemplate.delete(java.util.Collection<java.lang.String>)不适用
+      (参数不匹配; java.util.List<capture#2, 共 ?>无法转换为java.util.Collection<java.lang.String>)
+[ERROR] /D:/workspace/cursor/otterwood-crmeb/server/otterwood-common/src/main/java/com/otterwood/common/utils/RedisUtil.java:[781,41] 对于delete(java.util.List<capture#3, 共 ?>), 找不到合适的方法
+    方法 org.springframework.data.redis.core.RedisTemplate.delete(java.lang.String)不适用
+      (参数不匹配; java.util.List<capture#4, 共 ?>无法转换为java.lang.String)
+    方法 org.springframework.data.redis.core.RedisTemplate.delete(java.util.Collection<java.lang.String>)不适用
+      (参数不匹配; java.util.List<capture#4, 共 ?>无法转换为java.util.Collection<java.lang.String>)
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.13.0:compile (default-compile) on project otterwood-common: Compilation failure: Compilation failure: 
+[ERROR] /D:/workspace/cursor/otterwood-crmeb/server/otterwood-common/src/main/java/com/otterwood/common/utils/RedisUtil.java:[166,35] 对于delete(java.util.List<capture#1, 共 ?>), 找不到合适的方法
+[ERROR]     方法 org.springframework.data.redis.core.RedisTemplate.delete(java.lang.String)不适用
+[ERROR]       (参数不匹配; java.util.List<capture#2, 共 ?>无法转换为java.lang.String)
+[ERROR]     方法 org.springframework.data.redis.core.RedisTemplate.delete(java.util.Collection<java.lang.String>)不适用
+[ERROR]       (参数不匹配; java.util.List<capture#2, 共 ?>无法转换为java.util.Collection<java.lang.String>)
+[ERROR] /D:/workspace/cursor/otterwood-crmeb/server/otterwood-common/src/main/java/com/otterwood/common/utils/RedisUtil.java:[781,41] 对于delete(java.util.List<capture#3, 共 ?>), 找不到合适的方法
+[ERROR]     方法 org.springframework.data.redis.core.RedisTemplate.delete(java.lang.String)不适用
+[ERROR]       (参数不匹配; java.util.List<capture#4, 共 ?>无法转换为java.lang.String)
+[ERROR]     方法 org.springframework.data.redis.core.RedisTemplate.delete(java.util.Collection<java.lang.String>)不适用
+[ERROR]       (参数不匹配; java.util.List<capture#4, 共 ?>无法转换为java.util.Collection<java.lang.String>)
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <args> -rf :otterwood-common

@@ -28,37 +28,33 @@
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
 
-        <!-- 此版本明确支持jdk8 oshi -->
+        <!-- OSHI 系统信息（版本由父 pom 管理） -->
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>5.8.6</version>
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
-            <version>5.13.0</version> <!-- 与 OSHI 5.8.6 兼容 -->
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
-            <version>5.13.0</version> <!-- 必须与 jna 版本一致 -->
         </dependency>
 
     </dependencies>
 
     <build>
         <!--打包配置-->
-        <finalName>Otterwood-admin</finalName>
+        <finalName>otterwood-admin</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.3.0.RELEASE</version>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>repackage</goal><!--可以把依赖的包都打包到生成的Jar包中-->
+                            <goal>repackage</goal>
                         </goals>
                     </execution>
                 </executions>

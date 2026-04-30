@@ -30,8 +30,4 @@ build/
 ### VS Code ###
 .vscode/
 /.idea/
-src/main/java/com/zbkj/.DS_Store
-src/main/java/com/.DS_Store
-src/main/java/.DS_Store
-src/main/.DS_Store
 .DS_Store

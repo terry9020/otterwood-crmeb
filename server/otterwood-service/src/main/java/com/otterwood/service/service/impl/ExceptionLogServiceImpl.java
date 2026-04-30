@@ -6,7 +6,7 @@ import com.otterwood.service.dao.ExceptionLogDao;
 import com.otterwood.service.service.ExceptionLogService;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * ExceptionLogServiceImpl 接口实现

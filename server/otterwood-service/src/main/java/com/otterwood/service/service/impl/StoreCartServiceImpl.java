@@ -33,7 +33,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -368,7 +368,7 @@ public class StoreCartServiceImpl extends ServiceImpl<StoreCartDao, StoreCart> i
         lambdaQueryWrapper.eq(StoreCart::getUid, userId);
         lambdaQueryWrapper.eq(StoreCart::getStatus, status);
         lambdaQueryWrapper.eq(StoreCart::getIsNew, false);
-        return dao.selectCount(lambdaQueryWrapper);
+        return Math.toIntExact(dao.selectCount(lambdaQueryWrapper));
     }
 
     /**

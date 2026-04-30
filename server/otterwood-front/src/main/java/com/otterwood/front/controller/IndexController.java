@@ -4,7 +4,6 @@ package com.otterwood.front.controller;
 import com.otterwood.common.model.system.SystemConfig;
 import com.otterwood.common.page.CommonPage;
 import com.otterwood.common.request.PageParamRequest;
-import com.otterwood.common.response.CopyrightConfigInfoResponse;
 import com.otterwood.common.response.IndexInfoResponse;
 import com.otterwood.common.response.IndexProductResponse;
 import com.otterwood.common.response.pagelayout.PageLayoutBottomNavigationResponse;
@@ -108,12 +107,6 @@ public class IndexController {
     @RequestMapping(value = "/image/domain", method = RequestMethod.GET)
     public CommonResult<String> getImageDomain() {
         return CommonResult.success(indexService.getImageDomain());
-    }
-
-    @ApiOperation(value = "获取版权信息")
-    @RequestMapping(value = "/copyright/info", method = RequestMethod.GET)
-    public CommonResult<CopyrightConfigInfoResponse> getCopyrightInfo() {
-        return CommonResult.success(indexService.getCopyrightInfo());
     }
 
     @ApiOperation(value = "获取底部导航信息")

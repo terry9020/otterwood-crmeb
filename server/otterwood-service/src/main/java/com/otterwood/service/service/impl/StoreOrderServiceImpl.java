@@ -1,5 +1,6 @@
 package com.otterwood.service.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -47,7 +48,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -810,7 +811,7 @@ public class StoreOrderServiceImpl extends ServiceImpl<StoreOrderDao, StoreOrder
         LambdaQueryWrapper<StoreOrder> lqw = new LambdaQueryWrapper<>();
         orderUtils.statusApiByWhere(lqw, status);
         lqw.eq(StoreOrder::getUid,userId);
-        return dao.selectCount(lqw);
+        return Math.toIntExact(dao.selectCount(lqw));
     }
 
     /**
@@ -971,7 +972,7 @@ public class StoreOrderServiceImpl extends ServiceImpl<StoreOrderDao, StoreOrder
      */
     @Override
     public Map<String, StoreOrder> getMapInOrderNo(List<String> orderNoList) {
-        Map<String, StoreOrder> map = CollUtil.newHashMap();
+        Map<String, StoreOrder> map = MapUtil.newHashMap();
         LambdaUpdateWrapper<StoreOrder> lqw = new LambdaUpdateWrapper<>();
         lqw.in(StoreOrder::getOrderId, orderNoList);
         List<StoreOrder> orderList = dao.selectList(lqw);
@@ -1091,7 +1092,7 @@ public class StoreOrderServiceImpl extends ServiceImpl<StoreOrderDao, StoreOrder
         lqw.eq(StoreOrder::getIsDel, false);
         lqw.eq(StoreOrder::getUid, uid);
         lqw.lt(StoreOrder::getRefundStatus, 2);
-        return dao.selectCount(lqw);
+        return Math.toIntExact(dao.selectCount(lqw));
     }
 
     /**
@@ -1127,7 +1128,7 @@ public class StoreOrderServiceImpl extends ServiceImpl<StoreOrderDao, StoreOrder
             DateLimitUtilVo dateLimit = OtterwoodDateUtil.getDateLimit(date);
             lqw.between(StoreOrder::getCreateTime, dateLimit.getStartTime(), dateLimit.getEndTime());
         }
-        return dao.selectCount(lqw);
+        return Math.toIntExact(dao.selectCount(lqw));
     }
 
     /**
@@ -1278,7 +1279,7 @@ public class StoreOrderServiceImpl extends ServiceImpl<StoreOrderDao, StoreOrder
         wrapper.select("id");
         wrapper.eq("paid", 1);
         wrapper.apply("date_format(create_time, '%Y-%m-%d') = {0}", date);
-        return dao.selectCount(wrapper);
+        return Math.toIntExact(dao.selectCount(wrapper));
     }
 
     /**
@@ -1292,7 +1293,7 @@ public class StoreOrderServiceImpl extends ServiceImpl<StoreOrderDao, StoreOrder
         wrapper.select("id");
         wrapper.eq("paid", 1);
         wrapper.apply("date_format(create_time, '%Y-%m-%d') = {0}", date);
-        return dao.selectCount(wrapper);
+        return Math.toIntExact(dao.selectCount(wrapper));
     }
 
     /**
@@ -2009,7 +2010,7 @@ public class StoreOrderServiceImpl extends ServiceImpl<StoreOrderDao, StoreOrder
             queryWrapper.between("create_time", dateLimitUtilVo.getStartTime(), dateLimitUtilVo.getEndTime());
         }
         getStatusWhereNew(queryWrapper, status);
-        return dao.selectCount(queryWrapper);
+        return Math.toIntExact(dao.selectCount(queryWrapper));
     }
 
     /**
@@ -2033,7 +2034,7 @@ public class StoreOrderServiceImpl extends ServiceImpl<StoreOrderDao, StoreOrder
         if (StringUtils.isNotBlank(orderNo)) {
             queryWrapper.eq("order_id", orderNo);
         }
-        return dao.selectCount(queryWrapper);
+        return Math.toIntExact(dao.selectCount(queryWrapper));
     }
 
     /**

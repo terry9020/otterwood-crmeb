@@ -33,7 +33,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -601,7 +601,7 @@ public class StoreBargainUserServiceImpl extends ServiceImpl<StoreBargainUserDao
         lqw.eq(StoreBargainUser::getUid, uid);
         lqw.eq(StoreBargainUser::getIsDel, false);
         lqw.eq(StoreBargainUser::getStatus, 3);
-        return dao.selectCount(lqw);
+        return Math.toIntExact(dao.selectCount(lqw));
     }
 
 }

@@ -5,7 +5,6 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.otterwood.common.page.CommonPage;
-import com.otterwood.common.response.CopyrightConfigInfoResponse;
 import com.otterwood.common.response.IndexInfoResponse;
 import com.otterwood.common.response.IndexProductResponse;
 import com.otterwood.common.response.ProductActivityItemResponse;
@@ -232,19 +231,6 @@ public class IndexServiceImpl implements IndexService {
     public String getImageDomain() {
         String localUploadUrl = systemConfigService.getValueByKey("localUploadUrl");
         return StrUtil.isBlank(localUploadUrl) ? "" : localUploadUrl;
-    }
-
-    /**
-     * 获取公司版权图片
-     */
-    @Override
-    public CopyrightConfigInfoResponse getCopyrightInfo() {
-        String copyrightCompanyImage = systemConfigService.getValueByKey(SysConfigConstants.CONFIG_COPYRIGHT_COMPANY_IMAGE);
-        String copyrightCompanyName = systemConfigService.getValueByKey(SysConfigConstants.CONFIG_COPYRIGHT_COMPANY_INFO);
-        CopyrightConfigInfoResponse response = new CopyrightConfigInfoResponse();
-        response.setCompanyName(copyrightCompanyName);
-        response.setCompanyImage(copyrightCompanyImage);
-        return response;
     }
 
     /**

@@ -26,7 +26,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_store")
+@TableName("tb_system_store")
 @ApiModel(value="SystemStoreSearchRequest对象", description="提货点搜索")
 public class SystemStoreSearchRequest implements Serializable {
 

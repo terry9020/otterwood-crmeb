@@ -27,7 +27,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_sms_record")
+@TableName("tb_sms_record")
 @ApiModel(value="SmsRecord对象", description="短信发送记录表")
 public class SmsRecord implements Serializable {
 

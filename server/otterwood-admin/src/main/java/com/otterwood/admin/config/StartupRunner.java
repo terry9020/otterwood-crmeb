@@ -1,57 +1,20 @@
 package com.otterwood.admin.config;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpUtil;
-import com.alibaba.fastjson.JSONObject;
-import com.otterwood.common.config.OtterwoodConfig;
-import com.otterwood.common.constants.SysConfigConstants;
-import com.otterwood.service.service.SystemConfigService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
+/**
+ * 应用启动完成后的初始化任务入口。
+ * <p>
+ * 二开版：已移除 CRMEB 官方"安装统计上报"逻辑（原会向 shop.crmeb.net 发送当前域名/版本，
+ * 二开场景下该域名不可达，且不具业务价值，故整体删除）。
+ * 如后续需要增加启动后初始化任务，直接在 {@link #run(String...)} 中扩展即可。
+ */
 @Component
 public class StartupRunner implements CommandLineRunner {
 
-    @Autowired
-    private SystemConfigService systemConfigService;
-    @Autowired
-    private OtterwoodConfig otterwoodConfig;
-
-
-
     @Override
-    public void run(String... args) throws Exception {
-        // 项目启动后立即执行的代码
-        System.out.println("项目启动完成，开始执行初始化任务...");
-        // 异步执行，不阻塞启动
-        CompletableFuture.runAsync(this::installStatistics);
-        System.out.println("初始化任务执行结束...");
-    }
-
-    public void installStatistics() {
-        try {
-            String version = otterwoodConfig.getVersion();
-            if (StrUtil.isBlank(version) ) {
-                version = "OTTERWOOD-JAVA-KY-EDIT";
-            }
-            String apiUrl = systemConfigService.getValueByKey(SysConfigConstants.CONFIG_KEY_API_URL);
-            if (StrUtil.isBlank(apiUrl) || !(StrUtil.startWithIgnoreCase(apiUrl, "http"))) {
-                return;
-            }
-            Map<String, String> map = new HashMap<>();
-            map.put("host", apiUrl);
-            map.put("version", version);
-            map.put("https", "https");
-            String result = HttpUtil.post("https://shop.otterwood.net/index.php/admin/server.upgrade_api/updatewebinfo", JSONObject.toJSONString(map));
-
-        } catch (Exception e) {
-            // 异步调用不应影响主流程
-            e.printStackTrace();
-        }
+    public void run(String... args) {
+        System.out.println("项目启动完成，初始化任务执行结束...");
     }
 }

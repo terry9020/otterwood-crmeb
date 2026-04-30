@@ -27,7 +27,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_city")
+@TableName("tb_system_city")
 @ApiModel(value="SystemCity对象", description="城市表")
 public class SystemCity implements Serializable {
 

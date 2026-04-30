@@ -6,7 +6,7 @@ import com.otterwood.service.dao.StoreProductLogDao;
 import com.otterwood.service.service.StoreProductLogService;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * StoreProductLogServiceImpl 接口实现

@@ -1,5 +1,6 @@
 package com.otterwood.service.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
@@ -38,7 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -520,7 +521,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
         productDetailResponse.setProductAttr(attrList);
 
         // 根据制式设置sku属性
-        HashMap<String, Object> skuMap = CollUtil.newHashMap();
+        HashMap<String, Object> skuMap = MapUtil.newHashMap();
         // 获取主商品sku
         List<StoreProductAttrValue> storeProductAttrValues = storeProductAttrValueService.getListByProductIdAndType(storeSeckill.getProductId(), Constants.PRODUCT_TYPE_NORMAL);
         // 获取秒杀商品sku
@@ -693,7 +694,7 @@ public class StoreSeckillServiceImpl extends ServiceImpl<StoreSeckillDao, StoreS
         lqw.le(StoreSeckill::getStartTime, currentDate);
         lqw.ge(StoreSeckill::getStopTime, currentDate);
         lqw.orderByDesc(StoreSeckill::getId);
-        return dao.selectCount(lqw);
+        return Math.toIntExact(dao.selectCount(lqw));
     }
 
     /**

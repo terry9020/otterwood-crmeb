@@ -3,16 +3,16 @@
 <mapper namespace="com.otterwood.service.dao.StoreOrderDao">
 
     <select id="getTotalPrice" resultType="java.math.BigDecimal">
-        select sum(pay_price) from eb_store_order where ${where} and refund_status = 0
+        select sum(pay_price) from tb_store_order where ${where} and refund_status = 0
     </select>
     <select id="getRefundPrice" resultType="java.math.BigDecimal">
-        select sum(refund_price) from eb_store_order where ${where} and refund_status = 2
+        select sum(refund_price) from tb_store_order where ${where} and refund_status = 2
     </select>
     <select id="getRefundTotal" resultType="java.lang.Integer">
-        select count(id) from eb_store_order where ${where} and refund_status = 2
+        select count(id) from tb_store_order where ${where} and refund_status = 2
     </select>
     <select id="findFrontList" resultType="com.otterwood.common.model.order.StoreOrder" parameterType="Map">
-        select * from eb_store_order
+        select * from tb_store_order
         where
         uid = #{uid}
         <if test="status != null ">
@@ -62,14 +62,14 @@
         <if test="keywords != null and keywords !='' ">
             and (order_id like CONCAT('%',#{keywords},'%')
             or
-            order_id in (select order_no from eb_store_order_info where product_name like CONCAT('%',#{keywords},'%')))
+            order_id in (select order_no from tb_store_order_info where product_name like CONCAT('%',#{keywords},'%')))
         </if>
         order by id desc
     </select>
     <select id="getOrderVerificationDetail" parameterType="com.otterwood.common.request.PageParamRequest"
             resultType="com.otterwood.common.response.StoreStaffDetail">
         select sum(o.`pay_price`) as price, count(o.`id`) as count, DATE_FORMAT(o.`create_time`, '%Y-%m-%d') as time
-        from `eb_store_order` o
+        from `tb_store_order` o
         where o.`is_del` = 0 and o.`paid` = 1 and o.`refund_status` = 0
         <if test="null != startTime and startTime != ''">
             and o.create_time >= #{ startTime }
@@ -82,7 +82,7 @@
     <select id="getOrderStatisticsPriceDetail" parameterType="com.otterwood.common.request.StoreDateRangeSqlPram"
             resultType="com.otterwood.common.response.StoreOrderStatisticsChartItemResponse">
         select sum(o.pay_price) as num,date_format(o.create_time, '%Y-%m-%d') as time
-        from eb_store_order o
+        from tb_store_order o
         where o.is_del >= 0 and o.paid >= 1 and o.refund_status >= 0
         and o.create_time >= #{ startTime }
         and o.create_time &lt; #{ endTime }
@@ -92,7 +92,7 @@
     <select id="getOrderStatisticsOrderCountDetail" parameterType="com.otterwood.common.request.StoreDateRangeSqlPram"
             resultType="com.otterwood.common.response.StoreOrderStatisticsChartItemResponse">
         select count(id) as num, date_format(o.create_time, '%Y-%m-%d') as time
-        from eb_store_order o
+        from tb_store_order o
         where o.is_del >= 0 and o.paid >= 1 and o.refund_status >= 0
         and o.create_time >= #{ startTime }
         and o.create_time &lt; #{ endTime }
@@ -102,8 +102,8 @@
 
     <select id="getBrokerageData" resultType="com.otterwood.common.response.OrderBrokerageData">
         select count(*) as num, sum(o.pay_price) as price
-        from eb_store_order as o
-        right join eb_user_brokerage_record as br on br.link_id = o.order_id and br.status = 3 and br.uid = #{spreadId}
+        from tb_store_order as o
+        right join tb_user_brokerage_record as br on br.link_id = o.order_id and br.status = 3 and br.uid = #{spreadId}
         where o.uid = #{uid} and o.status > 1;
     </select>
 </mapper>

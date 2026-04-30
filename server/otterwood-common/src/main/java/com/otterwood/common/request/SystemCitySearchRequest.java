@@ -8,8 +8,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -27,7 +27,7 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("eb_system_city")
+@TableName("tb_system_city")
 @ApiModel(value="SystemCitySearchRequest对象", description="城市表列表搜索条件")
 public class SystemCitySearchRequest implements Serializable {
 
